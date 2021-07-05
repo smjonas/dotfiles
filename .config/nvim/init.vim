@@ -24,6 +24,10 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
 
+Plug 'tpope/vim-fugitive'
+" Displays the current branch and more at the bottom 
+Plug 'vim-airline/vim-airline'
+
 " Initialize plugin system
 call plug#end()
 
@@ -43,3 +47,6 @@ nnoremap <leader>ff <cmd>Telescope find_files<cr>
 
 " Open vim.init
 nnoremap <leader>rc <cmd>e ~/.config/nvim/init.vim<cr> 
+
+" git status
+nnoremap <leader>gs <cmd>G<cr>
