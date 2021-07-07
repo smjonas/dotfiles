@@ -1,8 +1,8 @@
-set tw=80
+" filetype plugin indent on
 set tabstop=4
 set shiftwidth=4
 set expandtab
-set smartindent
+set textwidth=80
 set relativenumber
 set number
 set nohlsearch
@@ -10,12 +10,13 @@ set incsearch
 set ignorecase
 set smartcase
 set scrolloff=8
+set nowrap
 set noswapfile
-		
+
 " Directory for plugins
 call plug#begin('~/.vim/plugged')
 
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} 
 Plug 'morhetz/gruvbox'
 
 " Telescope stuff
@@ -41,21 +42,34 @@ vnoremap ii <Esc>gV
 onoremap ii <Esc>
 cnoremap ii <C-C><Esc>
 inoremap ii <Esc>`^
-inoremap <Leader><Tab> <Tab>
 
 " Remap windows movements
-map <leader>h :wincmd h<CR>
-map <leader>j :wincmd j<CR>
-map <leader>k :wincmd k<CR>
-map <leader>l :wincmd l<CR>
+map <C-h> :wincmd h<CR>
+map <C-j> :wincmd j<CR>
+map <C-k> :wincmd k<CR>
+map <C-l> :wincmd l<CR>
 
-nnoremap <leader>ff <cmd>Telescope find_files<cr>
+" Telescope remaps
+nnoremap <leader>ff <cmd>Telescope find_files hidden=true<cr>
+nnoremap <leader>fb <cmd>Telescope current_buffer_fuzzy_find<cr>
+nnoremap <leader>fo <cmd>Telescope oldfiles<cr>
 
 " Open vim.init
-nnoremap <leader>rc <cmd>e ~/.config/nvim/init.vim<cr> 
+nnoremap <leader>rc <cmd>e $MYVIMRC<cr> 
 
-" git status
+" Git status
 nnoremap <leader>gs <cmd>G<cr>
+
+" Faster file saving and exiting
+nnoremap <leader>w <cmd>w<cr>
+nnoremap <leader>q <cmd>q<cr>
+nnoremap <leader>wq <cmd>wq<cr>
+
+" Save and update (useful for vim.init file)
+nnoremap <leader>so <cmd>w<cr><cmd>so%<cr>
+
+" Format whole file
+nnoremap <leader>= gg=G''zz
 
 " Change font to 'Deja Vu Sans Mono for Powerline Book' in Edit > Preferences
 " (bash) or set the font in ~/.config/alacritty/alacritty.yml
@@ -63,7 +77,10 @@ nnoremap <leader>gs <cmd>G<cr>
 " and running ./install.sh
 let g:airline_powerline_fonts = 1
 
-"let g:airline_symbols = {}
-"let g:airline_symbols.linenr = ' l:'
-"let g:airline_symbols.colnr = ' c:'
+" let g:airline_symbols = {}
+" let g:airline_symbols.linenr = ' l:'
+" let g:airline_symbols.colnr = ' c:'
+
+" 2 spaces per tab for php files
+autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
 
