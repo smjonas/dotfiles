@@ -9,6 +9,8 @@ set nohlsearch
 set incsearch
 set ignorecase
 set smartcase
+set splitright
+set splitbelow
 set scrolloff=8
 set nowrap
 set noswapfile
@@ -42,6 +44,8 @@ vnoremap ii <Esc>gV
 onoremap ii <Esc>
 cnoremap ii <C-C><Esc>
 inoremap ii <Esc>`^
+" Remap exiting terminal mode
+tnoremap ii <C-\><C-n> 
 
 " Remap windows movements
 map <C-h> :wincmd h<CR>
@@ -63,13 +67,19 @@ nnoremap <leader>gs <cmd>G<cr>
 " Faster file saving and exiting
 nnoremap <leader>w <cmd>w<cr>
 nnoremap <leader>q <cmd>q<cr>
-nnoremap <leader>wq <cmd>wq<cr>
 
 " Save and update (useful for vim.init file)
-nnoremap <leader>so <cmd>w<cr><cmd>so%<cr>
+nnoremap <leader>so <cmd>w<cr><cmd>so %<cr>
 
 " Format whole file
 nnoremap <leader>= gg=G''zz
+
+" Open terminal in new window to the right
+nnoremap <leader>to <cmd>vsplit<cr><cmd>term<cr>
+" Automatically enter insert mode when in terminal mode
+" and change to current directory
+autocmd TermOpen * silent! lcd %:p:h 
+autocmd TermOpen * startinsert
 
 " Change font to 'Deja Vu Sans Mono for Powerline Book' in Edit > Preferences
 " (bash) or set the font in ~/.config/alacritty/alacritty.yml
