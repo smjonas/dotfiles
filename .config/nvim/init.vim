@@ -21,6 +21,10 @@ call plug#begin('~/.vim/plugged')
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} 
 Plug 'morhetz/gruvbox'
 
+Plug 'neovim/nvim-lspconfig'
+" Colors for LSP error messages etc.
+Plug 'folke/lsp-colors.nvim'
+
 " Telescope stuff
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
@@ -36,6 +40,18 @@ call plug#end()
 
 let g:gruvbox_contrast_dark = 'medium'
 colorscheme gruvbox
+
+" LSP configuration
+lua << EOF
+require'lspconfig'.pyright.setup{}
+
+require("lsp-colors").setup({
+  Error = "#db4b4b",
+  Warning = "#e0af68",
+  Information = "#0db9d7",
+  Hint = "#10B981"
+})
+EOF
 
 let mapleader = " "
 
@@ -87,9 +103,9 @@ autocmd TermOpen * startinsert
 " and running ./install.sh
 let g:airline_powerline_fonts = 1
 
-" let g:airline_symbols = {}
-" let g:airline_symbols.linenr = ' l:'
-" let g:airline_symbols.colnr = ' c:'
+"let g:airline_symbols = {}
+"let g:airline_symbols.linenr = ' l:'
+"let g:airline_symbols.colnr = ' c:'
 
 " 2 spaces per tab for php files
 autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
