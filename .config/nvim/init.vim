@@ -1,4 +1,3 @@
-" filetype plugin indent on
 set tabstop=4
 set shiftwidth=4
 set expandtab
@@ -14,6 +13,8 @@ set splitbelow
 set scrolloff=8
 set nowrap
 set noswapfile
+" Autocomplete settings
+set completeopt=menuone,preview,noinsert,noselect
 
 " Directory for plugins
 call plug#begin('~/.vim/plugged')
@@ -74,6 +75,16 @@ nnoremap <leader>ff <cmd>Telescope find_files hidden=true<cr>
 nnoremap <leader>fb <cmd>Telescope current_buffer_fuzzy_find<cr>
 nnoremap <leader>fo <cmd>Telescope oldfiles<cr>
 
+" Tab completion in autocomplete
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
+" LSP stuff
+nnoremap <F2> <cmd>lua vim.lsp.buf.rename()<cr>
+nnoremap gD <cmd>lua vim.lsp.buf.declaration()<cr>
+nnoremap gd <cmd>lua vim.lsp.buf.definition()<cr>
+" Format whole file
+nnoremap <leader>= <cmd>lua vim.lsp.buf.formatting()<cr>
+
 " Open vim.init
 nnoremap <leader>rc <cmd>e $MYVIMRC<cr> 
 
@@ -87,11 +98,9 @@ nnoremap <leader>q <cmd>q<cr>
 " Save and update (useful for vim.init file)
 nnoremap <leader>so <cmd>w<cr><cmd>so %<cr>
 
-" Format whole file
-nnoremap <leader>= gg=G''zz
-
 " Open terminal in new window to the right
 nnoremap <leader>to <cmd>vsplit<cr><cmd>term<cr>
+
 " Automatically enter insert mode when in terminal mode
 " and change to current directory
 autocmd TermOpen * silent! lcd %:p:h 

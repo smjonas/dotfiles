@@ -3,3 +3,5 @@
 [user]
 	email = jonas.strittmatter@gmx.de
 	name = jonasstr
+[pull]
+	rebase = true
