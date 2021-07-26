@@ -8,7 +8,7 @@ set expandtab
 set ignorecase
 set incsearch
 set nohlsearch
-" Current mode in insert mode is not necessary when using airline
+" Current mode in insert mode is not necessary when using status line plugin
 set noshowmode
 set noswapfile
 set nowrap
@@ -28,12 +28,12 @@ set timeoutlen=300
 call plug#begin('~/.vim/plugged')
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} 
-Plug 'morhetz/gruvbox'
-" Plug 'arcticicestudio/nord-vim'
+Plug 'sainnhe/gruvbox-material'
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
-" Colors for LSP error messages etc.
+
+"Colors for LSP error messages etc.
 Plug 'folke/lsp-colors.nvim'
 Plug 'glepnir/lspsaga.nvim'
 
@@ -45,19 +45,31 @@ Plug 'nvim-telescope/telescope-fzy-native.nvim'
 
 Plug 'preservim/nerdtree'
 Plug 'tpope/vim-fugitive'
-" Displays the current branch and more at the bottom 
-Plug 'vim-airline/vim-airline'
-" Use nerdfont patched font
+
+Plug 'hoob3rt/lualine.nvim', {'commit': 'dc2c711'}
+" Change font to 'Deja Vu Sans Mono for Powerline Book' in Edit > Preferences (bash) 
+" or set the font in ~/.config/alacritty/alacritty.yml
+" after installing powerline fonts cloning git@github.com:powerline/fonts.git
+" and running ./install.sh
 Plug 'ryanoasis/vim-devicons'
+
 Plug 'tpope/vim-surround'
+" Allows to repeat vim surround commands, e.g. cs'"
+Plug 'tpope/vim-repeat'
+Plug 'windwp/nvim-autopairs'
+Plug 'b3nj5m1n/kommentary'
+
 " Initialize plugin system
 call plug#end()
 
-let g:gruvbox_contrast_dark = 'medium'
-colorscheme gruvbox
+let g:gruvbox_material_palette = "mix"
+let g:gruvbox_material_background = "medium"
+colorscheme gruvbox-material
 
 " LSP configuration
 lua << EOF
+require('lualine').setup()
+
 require("lspconfig").pyright.setup{}
 
 require("lsp-colors").setup({
@@ -72,7 +84,7 @@ require("lspsaga").init_lsp_saga {
   warn_sign = '⚠️'
 }
 
-require'compe'.setup {
+require("compe").setup {
   enabled = true;
   autocomplete = false;
   debug = false;
@@ -105,6 +117,13 @@ require'compe'.setup {
     luasnip = true;
   };
 }
+
+require("nvim-autopairs").setup()
+
+require("nvim-autopairs.completion.compe").setup({
+  map_cr = true, --  map <CR> on insert mode
+  map_complete = true -- it will auto insert `(` after selecting function or method item
+})
 EOF
 
 let mapleader = " "
@@ -112,26 +131,81 @@ let mapleader = " "
 nnoremap ii <Esc>
 vnoremap ii <Esc>gV
 onoremap ii <Esc>
-cnoremap ii <C-C><Esc>
 inoremap ii <Esc>`^
+cnoremap ii <C-C><Esc>
 " Remap exiting terminal mode
-tnoremap ii <C-\><C-n> 
+tnoremap ii <C-\><C-n>
+
+" Basic movement in insert mode
+inoremap <C-h> <C-o>h
+inoremap <C-l> <C-o>a
+inoremap <C-j> <C-o>j
+inoremap <C-k> <C-o>k
+
+" Moving lines
+nnoremap <silent> <C-k> :move-2<cr>
+nnoremap <silent> <C-j> :move+<cr>
+nnoremap <silent> <C-h> <<
+nnoremap <silent> <C-l> >>
+xnoremap <silent> <C-k> :move-2<cr>gv
+xnoremap <silent> <C-j> :move'>+<cr>gv
+xnoremap <silent> <C-h> <gv
+xnoremap <silent> <C-l> >gv
+xnoremap < <gv
+xnoremap > >gv
+
+" Insert new line below and above without entering insert mode
+nnoremap oo o<esc>0"_D
+nnoremap OO O<esc>0"_D
+
+" Line break from within normal mode
+nnoremap <cr> myi<cr><esc>g`y
+
+" Yank to end of line
+nnoremap Y y$
+
+" Search and replace
+nnoremap <leader><F2> :%s///gc<left><left><left><left>
+
+" Circular window movements
+nnoremap <tab> <c-w>w
+nnoremap <s-tab> <c-w>W
+nnoremap <c-n> <cmd>NERDTreeToggle %<cr>
 
 " Faster file saving and exiting
 nnoremap <leader>w <cmd>w<cr>
 nnoremap <leader>q <cmd>q<cr>
 nnoremap <leader>! <cmd>q!<cr>
 
-" Insert new line below and above without entering insert mode
-nnoremap oo o<esc>0"_D
-nnoremap OO O<esc>0"_D
+lua << EOF
+function _G.yanked_contains_eol()
+    local reg = vim.fn.getreg('0')
+    local caret_j = vim.api.nvim_replace_termcodes("<C-j>", true, true, true)
+    -- If we do not have an eol character in reg, matchstr will return an empty string
+    return vim.fn.matchstr(reg, '[^' .. caret_j .. ']' .. caret_j) ~= ""
+end
 
-" Remap windows movements
-map <C-h> <cmd>wincmd h<CR>
-map <C-j> <cmd>wincmd j<CR>
-map <C-k> <cmd>wincmd k<CR>
-map <C-l> <cmd>wincmd l<CR>
-nnoremap <C-n> <cmd>NERDTreeToggle %<cr>
+function _G.cursor_on_last_char()
+    local cursor_pos = vim.api.nvim_win_get_cursor(0)
+    -- Make column index 1-based
+    local col = cursor_pos[2] + 1
+    local row_len = #vim.api.nvim_get_current_line()
+    return row_len == 0 or row_len == col
+end
+EOF
+
+" Paste contents of empty register (last yank) after the current
+" position (without new line character):
+
+" mx - store cursor position in mark x
+" p - paste last yanked contents to line below
+" "xd$ - delete everything until the last character into register x
+" g`x - restore cursor position to mark x (g to not change jumplist)
+nnoremap <expr><c-x> v:lua.yanked_contains_eol()
+    \ ? 'mxp"xd$g`xJ`x"_d$"xp'
+    \ : v:lua.cursor_on_last_char()
+        \ ? 'a<space><esc>"_d$p'
+        \ : 'l"_d$p'
 
 " Compe remaps
 inoremap <silent><expr> <c-n> compe#complete()
@@ -139,7 +213,7 @@ inoremap <silent><expr> <cr> compe#confirm('<CR>')
 
 " Telescope remaps
 nnoremap <leader>ff <cmd>Telescope find_files hidden=true<cr>
-nnoremap <leader>fb <cmd>Telescope current_buffer_fuzzy_find<cr>
+nnoremap <leader>fs <cmd>Telescope current_buffer_fuzzy_find<cr>
 nnoremap <leader>fo <cmd>Telescope oldfiles<cr>
 
 " Tab completion in autocomplete (for default completion and compe)
@@ -177,19 +251,10 @@ nnoremap <leader>to <cmd>vsplit<cr><cmd>term<cr>
 autocmd TermOpen * silent !lcd %:p:h 
 autocmd TermOpen * startinsert
 
-" Run on startup for faster keyboard movement
-autocmd VimEnter * silent !xset r rate 300 33
- 
-" Change font to 'Deja Vu Sans Mono for Powerline Book' in Edit > Preferences
-" (bash) or set the font in ~/.config/alacritty/alacritty.yml
-" after installing powerline fonts cloning git@github.com:powerline/fonts.git
-" and running ./install.sh
-let g:airline_powerline_fonts = 1
-
-" let g:airline_symbols = {}
-" let g:airline_symbols.linenr = ' l:'
-" let g:airline_symbols.colnr = ' c:'
-
 " 2 spaces per tab for php files
 autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
+autocmd FileType html setlocal shiftwidth=2 tabstop=2 expandtab
 
+" Run on startup for faster keyboard movement
+autocmd VimEnter * silent !xset r rate 250 33
+ 
