@@ -43,7 +43,14 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
 
-Plug 'preservim/nerdtree'
+" Fern and fern plugins
+Plug 'antoinemadec/FixCursorHold.nvim'
+Plug 'lambdalisue/fern.vim'
+    let g:fern#renderer = "nerdfont"
+Plug 'lambdalisue/fern-git-status.vim'
+Plug 'lambdalisue/glyph-palette.vim'
+Plug 'lambdalisue/nerdfont.vim'
+Plug 'lambdalisue/fern-renderer-nerdfont.vim'
 Plug 'tpope/vim-fugitive'
 
 Plug 'hoob3rt/lualine.nvim', {'commit': 'dc2c711'}
@@ -68,8 +75,6 @@ colorscheme gruvbox-material
 
 " LSP configuration
 lua << EOF
-require('lualine').setup()
-
 require("lspconfig").pyright.setup{}
 
 require("lsp-colors").setup({
@@ -117,6 +122,67 @@ require("compe").setup {
     luasnip = true;
   };
 }
+
+local cmd = "!watson status | grep -oP '\\(\\K[^\\)]+'"
+local timer = vim.loop.new_timer()
+local last_output = ""
+
+timer:start(0, 20000, vim.schedule_wrap(function()
+    result = vim.api.nvim_exec(cmd, true)
+    if string.find(result, "returned 1") then
+        last_output = ""
+        return
+    end
+    start_time = string.sub(result, -6, -2)
+    start_hours, start_mins = start_time:match("(%d+):(%d+)")
+    cur_hours, cur_mins = os.date("%H:%M"):match("(%d+):(%d+)")
+
+    if cur_mins < start_mins then
+        cur_mins = cur_mins + 60
+        cur_hours = cur_hours + 1
+    end
+    delta_hours = tonumber(cur_hours) - tonumber(start_hours)
+    delta_mins = tonumber(cur_mins) - tonumber(start_mins)
+    if delta_hours == 0 then
+      last_output = string.format("Working (%dmin)", delta_mins)
+    else
+      last_output = string.format("Working (%dh %dmin)", delta_hours, delta_mins)
+    end
+end
+))
+
+local function watson_start()
+  return last_output
+end
+
+require'lualine'.setup {
+  options = {
+    icons_enabled = true,
+    theme = 'gruvbox',
+    component_separators = {'', ''},
+    section_separators = {'', ''},
+    disabled_filetypes = {}
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch'},
+    lualine_c = { {'filename', full_path = true, symbols = {modified = '[*]'} } },
+    lualine_x = {'fileformat', 'filetype'},
+    lualine_y = {'location', 'progress'},
+    lualine_z = {watson_start}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = { {'filename', symbols = {modified = '[*]'} } },
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  extensions = {}
+}
+
 
 require("nvim-autopairs").setup()
 
@@ -170,7 +236,7 @@ nnoremap <leader><F2> :%s///gc<left><left><left><left>
 " Circular window movements
 nnoremap <tab> <c-w>w
 nnoremap <s-tab> <c-w>W
-nnoremap <c-n> <cmd>NERDTreeToggle %<cr>
+nnoremap <c-n> <cmd>:Fern . -drawer -toggle<cr>
 
 " Faster file saving and exiting
 nnoremap <leader>w <cmd>w<cr>
@@ -254,6 +320,7 @@ autocmd TermOpen * startinsert
 " 2 spaces per tab for php files
 autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
 autocmd FileType html setlocal shiftwidth=2 tabstop=2 expandtab
+autocmd FileType vim setlocal shiftwidth=2 tabstop=2 expandtab
 
 " Run on startup for faster keyboard movement
 autocmd VimEnter * silent !xset r rate 250 33
