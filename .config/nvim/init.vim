@@ -66,6 +66,7 @@ Plug 'tpope/vim-repeat'
 Plug 'windwp/nvim-autopairs'
 Plug 'b3nj5m1n/kommentary'
 
+Plug 'ccchapman/watson.nvim'
 " Initialize plugin system
 call plug#end()
 
@@ -129,7 +130,7 @@ local last_output = ""
 
 timer:start(0, 20000, vim.schedule_wrap(function()
     result = vim.api.nvim_exec(cmd, true)
-    if string.find(result, "returned 1") then
+    if result == nil or string.find(result, "returned 1", 1, true) then
         last_output = ""
         return
     end
@@ -168,8 +169,8 @@ require'lualine'.setup {
     lualine_b = {'branch'},
     lualine_c = { {'filename', full_path = true, symbols = {modified = '[*]'} } },
     lualine_x = {'fileformat', 'filetype'},
-    lualine_y = {'location', 'progress'},
-    lualine_z = {watson_start}
+    lualine_y = {'location'}, 
+    lualine_z = {'progress'}
   },
   inactive_sections = {
     lualine_a = {},
@@ -183,7 +184,6 @@ require'lualine'.setup {
   extensions = {}
 }
 
-
 require("nvim-autopairs").setup()
 
 require("nvim-autopairs.completion.compe").setup({
@@ -192,6 +192,10 @@ require("nvim-autopairs.completion.compe").setup({
 })
 EOF
 
+augroup MY_AUTO_GROUP
+    autocmd!
+    autocmd BufWrite *.vim exe "timer_stopall()"
+augroup END
 let mapleader = " "
 
 nnoremap ii <Esc>
@@ -302,6 +306,8 @@ nnoremap <leader>= <cmd>lua vim.lsp.buf.formatting()<cr>
 nnoremap <leader>rc <cmd>e $MYVIMRC<cr> 
 " Open vim.init and delete unsaved changes
 nnoremap <leader>rc! <cmd>e!<cr> <cmd>e $MYVIMRC<cr> 
+
+nnoremap <expr><silent><leader>ts ":!watson start inacon +" . input('Enter tags: ')"
 
 " Git status
 nnoremap <leader>gs <cmd>G<cr>
