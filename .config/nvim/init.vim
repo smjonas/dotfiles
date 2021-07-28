@@ -22,13 +22,16 @@ set splitright
 set tabstop=4
 set termguicolors
 set textwidth=90
-set timeoutlen=300
+set undodir=~/.vim/nvim-undo-dir
+set undofile
 
 " Directory for plugins
 call plug#begin('~/.vim/plugged')
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} 
 Plug 'sainnhe/gruvbox-material'
+  let g:gruvbox_material_palette = "mix"
+  let g:gruvbox_material_background = "medium"
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
@@ -46,7 +49,7 @@ Plug 'nvim-telescope/telescope-fzy-native.nvim'
 " Fern and fern plugins
 Plug 'antoinemadec/FixCursorHold.nvim'
 Plug 'lambdalisue/fern.vim'
-    let g:fern#renderer = "nerdfont"
+  let g:fern#renderer = "nerdfont"
 Plug 'lambdalisue/fern-git-status.vim'
 Plug 'lambdalisue/glyph-palette.vim'
 Plug 'lambdalisue/nerdfont.vim'
@@ -66,12 +69,10 @@ Plug 'tpope/vim-repeat'
 Plug 'windwp/nvim-autopairs'
 Plug 'b3nj5m1n/kommentary'
 
-Plug 'ccchapman/watson.nvim'
+Plug 'arp242/undofile_warn.vim'
 " Initialize plugin system
 call plug#end()
 
-let g:gruvbox_material_palette = "mix"
-let g:gruvbox_material_background = "medium"
 colorscheme gruvbox-material
 
 " LSP configuration
@@ -124,38 +125,6 @@ require("compe").setup {
   };
 }
 
-local cmd = "!watson status | grep -oP '\\(\\K[^\\)]+'"
-local timer = vim.loop.new_timer()
-local last_output = ""
-
-timer:start(0, 20000, vim.schedule_wrap(function()
-    result = vim.api.nvim_exec(cmd, true)
-    if result == nil or string.find(result, "returned 1", 1, true) then
-        last_output = ""
-        return
-    end
-    start_time = string.sub(result, -6, -2)
-    start_hours, start_mins = start_time:match("(%d+):(%d+)")
-    cur_hours, cur_mins = os.date("%H:%M"):match("(%d+):(%d+)")
-
-    if cur_mins < start_mins then
-        cur_mins = cur_mins + 60
-        cur_hours = cur_hours + 1
-    end
-    delta_hours = tonumber(cur_hours) - tonumber(start_hours)
-    delta_mins = tonumber(cur_mins) - tonumber(start_mins)
-    if delta_hours == 0 then
-      last_output = string.format("Working (%dmin)", delta_mins)
-    else
-      last_output = string.format("Working (%dh %dmin)", delta_hours, delta_mins)
-    end
-end
-))
-
-local function watson_start()
-  return last_output
-end
-
 require'lualine'.setup {
   options = {
     icons_enabled = true,
@@ -192,10 +161,6 @@ require("nvim-autopairs.completion.compe").setup({
 })
 EOF
 
-augroup MY_AUTO_GROUP
-    autocmd!
-    autocmd BufWrite *.vim exe "timer_stopall()"
-augroup END
 let mapleader = " "
 
 nnoremap ii <Esc>
@@ -292,6 +257,7 @@ inoremap <expr><tab> pumvisible() ? "<c-n>" : "<tab>"
 inoremap <expr><s-tab> pumvisible() ? "<c-p>" : "<s-tab>"
 
 " LSP stuff
+nnoremap <F1> <cmd>lua require("lspsaga.hover").render_hover_doc()<cr>
 nnoremap <F2> <cmd>lua require("lspsaga.rename").rename()<cr>
 nnoremap <leader>gD <cmd>lua vim.lsp.buf.declaration()<cr>
 nnoremap <leader>gd <cmd>lua vim.lsp.buf.definition()<cr>
@@ -318,16 +284,19 @@ nnoremap <leader>so <cmd>w<cr><cmd>so %<cr>
 " Open terminal in new window to the right
 nnoremap <leader>to <cmd>vsplit<cr><cmd>term<cr>
 
-" Automatically enter insert mode when in terminal mode
-" and change to current directory
-autocmd TermOpen * silent !lcd %:p:h 
-autocmd TermOpen * startinsert
+augroup MY_GROUP
+    autocmd!
+    " Automatically enter insert mode when in terminal mode
+    " and change to current directory
+    autocmd TermOpen * silent !lcd %:p:h 
+    autocmd TermOpen * startinsert
 
-" 2 spaces per tab for php files
-autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
-autocmd FileType html setlocal shiftwidth=2 tabstop=2 expandtab
-autocmd FileType vim setlocal shiftwidth=2 tabstop=2 expandtab
+    " 2 spaces per tab for php files
+    autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
+    autocmd FileType html setlocal shiftwidth=2 tabstop=2 expandtab
+    autocmd FileType vim setlocal shiftwidth=2 tabstop=2 expandtab
 
-" Run on startup for faster keyboard movement
-autocmd VimEnter * silent !xset r rate 250 33
+    " Run on startup for faster keyboard movement
+    autocmd VimEnter * silent !xset r rate 250 33
+augroup end
  
