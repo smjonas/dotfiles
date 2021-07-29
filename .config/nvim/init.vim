@@ -6,6 +6,8 @@ set completeopt=menuone,noselect,preview
 set cursorline
 set expandtab
 set ignorecase
+" Show replacement results while typing command
+set inccommand=nosplit
 set incsearch
 set nohlsearch
 " Current mode in insert mode is not necessary when using status line plugin
@@ -17,18 +19,25 @@ set relativenumber
 set scrolloff=8
 set shiftwidth=4
 set smartcase
-set splitbelow
-set splitright
+set splitbelow splitright
 set tabstop=4
-set termguicolors
 set textwidth=90
 set undodir=~/.vim/nvim-undo-dir
 set undofile
 
+" Fixes wrong colors in Vim when using tmux (don't know if this is still needed)
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
+
+set background=dark
+set t_Co=256
+
 " Directory for plugins
 call plug#begin('~/.vim/plugged')
-
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} 
+Plug 'nvim-treesitter/nvim-treesitter', { 'branch': '0.5-compat', 'do': ':TSUpdate' }
 Plug 'sainnhe/gruvbox-material'
   let g:gruvbox_material_palette = "mix"
   let g:gruvbox_material_background = "medium"
@@ -57,19 +66,23 @@ Plug 'lambdalisue/fern-renderer-nerdfont.vim'
 Plug 'tpope/vim-fugitive'
 
 Plug 'hoob3rt/lualine.nvim', {'commit': 'dc2c711'}
-" Change font to 'Deja Vu Sans Mono for Powerline Book' in Edit > Preferences (bash) 
+" Change font to Powerline compatible font in Edit > Preferences (bash)
 " or set the font in ~/.config/alacritty/alacritty.yml
-" after installing powerline fonts cloning git@github.com:powerline/fonts.git
+" after installing by cloning git@github.com:powerline/fonts.git
 " and running ./install.sh
 Plug 'ryanoasis/vim-devicons'
 
-Plug 'tpope/vim-surround'
-" Allows to repeat vim surround commands, e.g. cs'"
-Plug 'tpope/vim-repeat'
+Plug 'wellle/targets.vim'
 Plug 'windwp/nvim-autopairs'
 Plug 'b3nj5m1n/kommentary'
 
 Plug 'arp242/undofile_warn.vim'
+
+Plug 'tpope/vim-surround'
+" Allows to repeat vim surround commands, e.g. cs'"
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-obsession'
+
 " Initialize plugin system
 call plug#end()
 
@@ -78,6 +91,8 @@ colorscheme gruvbox-material
 " LSP configuration
 lua << EOF
 require("lspconfig").pyright.setup{}
+require("lspconfig").html.setup{}
+require("lspconfig").vimls.setup{}
 
 require("lsp-colors").setup({
   Error = "#db4b4b",
@@ -125,6 +140,10 @@ require("compe").setup {
   };
 }
 
+function obsessionStatus()
+   return vim.fn.ObsessionStatus("tracking", "paused")
+end
+
 require'lualine'.setup {
   options = {
     icons_enabled = true,
@@ -138,8 +157,8 @@ require'lualine'.setup {
     lualine_b = {'branch'},
     lualine_c = { {'filename', full_path = true, symbols = {modified = '[*]'} } },
     lualine_x = {'fileformat', 'filetype'},
-    lualine_y = {'location'}, 
-    lualine_z = {'progress'}
+    lualine_y = {'location', 'progress'},
+    lualine_z = {'obsessionStatus()'}
   },
   inactive_sections = {
     lualine_a = {},
@@ -176,6 +195,10 @@ inoremap <C-h> <C-o>h
 inoremap <C-l> <C-o>a
 inoremap <C-j> <C-o>j
 inoremap <C-k> <C-o>k
+
+" Movement when wrap option is enabled
+nnoremap j gj
+nnoremap k gk
 
 " Moving lines
 nnoremap <silent> <C-k> :move-2<cr>
@@ -248,6 +271,8 @@ inoremap <silent><expr> <cr> compe#confirm('<CR>')
 
 " Telescope remaps
 nnoremap <leader>ff <cmd>Telescope find_files hidden=true<cr>
+" Find files and folders in current directory
+nnoremap <leader>fc <cmd>Telescope file_browser hidden=true<cr>
 nnoremap <leader>fs <cmd>Telescope current_buffer_fuzzy_find<cr>
 nnoremap <leader>fo <cmd>Telescope oldfiles<cr>
 
@@ -262,18 +287,16 @@ nnoremap <F2> <cmd>lua require("lspsaga.rename").rename()<cr>
 nnoremap <leader>gD <cmd>lua vim.lsp.buf.declaration()<cr>
 nnoremap <leader>gd <cmd>lua vim.lsp.buf.definition()<cr>
 nnoremap <leader>ga <cmd>lua require("lspsaga.codeaction").code_action()<cr>
-nnoremap <leader>ge <cmd>lua vim.lsp.diagnostic.goto_next()<cr> 
-nnoremap <leader>gE <cmd>lua vim.lsp.diagnostic.goto_prev()<cr> 
+nnoremap <leader>ge <cmd>lua vim.lsp.diagnostic.goto_next()<cr>
+nnoremap <leader>gE <cmd>lua vim.lsp.diagnostic.goto_prev()<cr>
 
 " Format whole file
 nnoremap <leader>= <cmd>lua vim.lsp.buf.formatting()<cr>
 
 " Open vim.init
-nnoremap <leader>rc <cmd>e $MYVIMRC<cr> 
+nnoremap <leader>rc <cmd>e $MYVIMRC<cr>
 " Open vim.init and delete unsaved changes
-nnoremap <leader>rc! <cmd>e!<cr> <cmd>e $MYVIMRC<cr> 
-
-nnoremap <expr><silent><leader>ts ":!watson start inacon +" . input('Enter tags: ')"
+nnoremap <leader>rc! <cmd>e!<cr> <cmd>e $MYVIMRC<cr>
 
 " Git status
 nnoremap <leader>gs <cmd>G<cr>
@@ -284,19 +307,24 @@ nnoremap <leader>so <cmd>w<cr><cmd>so %<cr>
 " Open terminal in new window to the right
 nnoremap <leader>to <cmd>vsplit<cr><cmd>term<cr>
 
-augroup MY_GROUP
-    autocmd!
-    " Automatically enter insert mode when in terminal mode
-    " and change to current directory
-    autocmd TermOpen * silent !lcd %:p:h 
-    autocmd TermOpen * startinsert
-
-    " 2 spaces per tab for php files
-    autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
-    autocmd FileType html setlocal shiftwidth=2 tabstop=2 expandtab
-    autocmd FileType vim setlocal shiftwidth=2 tabstop=2 expandtab
-
-    " Run on startup for faster keyboard movement
-    autocmd VimEnter * silent !xset r rate 250 33
+augroup AUTO_CLEAR
+  autocmd!
 augroup end
- 
+
+" Run on startup for faster keyboard movement
+autocmd VimEnter * silent !xset r rate 250 33
+
+" Remove trailing whitespace on save (/e to hide errors)
+autocmd BufWritePre * %s/\s\+$//e
+
+" Automatically enter insert mode when in terminal mode
+" and change to current directory
+autocmd TermOpen * silent !lcd %:p:h
+autocmd TermOpen * startinsert
+
+" 2 spaces per tab for php files
+autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
+autocmd FileType html setlocal shiftwidth=2 tabstop=2 expandtab
+autocmd FileType vim setlocal shiftwidth=2 tabstop=2 expandtab
+
+
