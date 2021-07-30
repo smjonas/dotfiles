@@ -22,6 +22,7 @@ set smartcase
 set splitbelow splitright
 set tabstop=4
 set textwidth=90
+set timeoutlen=300
 set undodir=~/.vim/nvim-undo-dir
 set undofile
 
@@ -53,7 +54,7 @@ Plug 'glepnir/lspsaga.nvim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
-Plug 'nvim-telescope/telescope-fzy-native.nvim'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
 " Fern and fern plugins
 Plug 'antoinemadec/FixCursorHold.nvim'
@@ -106,9 +107,12 @@ require("lspsaga").init_lsp_saga {
   warn_sign = '⚠️'
 }
 
+require("telescope").setup()
+require("telescope").load_extension("fzf")
+
 require("compe").setup {
   enabled = true;
-  autocomplete = false;
+  autocomplete = true;
   debug = false;
   min_length = 1;
   preselect = 'enable';
@@ -200,27 +204,38 @@ inoremap <C-k> <C-o>k
 nnoremap j gj
 nnoremap k gk
 
-" Moving lines
-nnoremap <silent> <C-k> :move-2<cr>
-nnoremap <silent> <C-j> :move+<cr>
-nnoremap <silent> <C-h> <<
+" Moving lines (==) for correct indentation
+nnoremap <silent> <C-k> :move-2<cr>==
+nnoremap <silent> <C-j> :move+<cr>==
 nnoremap <silent> <C-l> >>
+nnoremap <silent> <C-h> <<
 xnoremap <silent> <C-k> :move-2<cr>gv
 xnoremap <silent> <C-j> :move'>+<cr>gv
 xnoremap <silent> <C-h> <gv
 xnoremap <silent> <C-l> >gv
-xnoremap < <gv
-xnoremap > >gv
 
 " Insert new line below and above without entering insert mode
-nnoremap oo o<esc>0"_D
-nnoremap OO O<esc>0"_D
+nnoremap <space>o o<esc>0"_D
+nnoremap <space>O O<esc>0"_D
 
 " Line break from within normal mode
 nnoremap <cr> myi<cr><esc>g`y
 
 " Yank to end of line
 nnoremap Y y$
+
+" Keep it centered (zv to open folds if necessary)
+nnoremap n nzzzv
+nnoremap N Nzzzv
+nnoremap J J$
+
+" Undo break points
+inoremap , ,<c-g>u
+inoremap . .<c-g>u
+
+" Jumplist mutations (O works as expected)
+nnoremap <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k'
+nnoremap <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j'
 
 " Search and replace
 nnoremap <leader><F2> :%s///gc<left><left><left><left>
@@ -270,10 +285,17 @@ inoremap <silent><expr> <c-n> compe#complete()
 inoremap <silent><expr> <cr> compe#confirm('<CR>')
 
 " Telescope remaps
+" [Find files]
 nnoremap <leader>ff <cmd>Telescope find_files hidden=true<cr>
-" Find files and folders in current directory
+" [Find Inacon]
+nnoremap <leader>fi <cmd>lua require("telescope.builtin").find_files (
+    \{search_dirs = { "~/Desktop/Inacon/Kurse", "~/Desktop/Inacon/Automation" }}
+\)<cr>
+" [Find current]: files and folders in current directory
 nnoremap <leader>fc <cmd>Telescope file_browser hidden=true<cr>
+" [Find search]
 nnoremap <leader>fs <cmd>Telescope current_buffer_fuzzy_find<cr>
+" [Find old]
 nnoremap <leader>fo <cmd>Telescope oldfiles<cr>
 
 " Tab completion in autocomplete (for default completion and compe)
@@ -316,6 +338,9 @@ autocmd VimEnter * silent !xset r rate 250 33
 
 " Remove trailing whitespace on save (/e to hide errors)
 autocmd BufWritePre * %s/\s\+$//e
+" Do not auto-wrap text, only comments. This does not work when set
+" as a global option (see https://vi.stackexchange.com/a/9367/37072)
+autocmd FileType * set formatoptions-=t
 
 " Automatically enter insert mode when in terminal mode
 " and change to current directory
@@ -326,5 +351,4 @@ autocmd TermOpen * startinsert
 autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
 autocmd FileType html setlocal shiftwidth=2 tabstop=2 expandtab
 autocmd FileType vim setlocal shiftwidth=2 tabstop=2 expandtab
-
 
