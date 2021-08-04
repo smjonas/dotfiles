@@ -1,3 +1,7 @@
+let $INACON_DIR = "~/Desktop/Inacon/"
+" Somehow, $XDG_CONFIG_HOME is not available
+let $CONFIG_DIR = "~/.config/nvim"
+
 " set cmdheight=2
 " Use system clipboard
 "
@@ -6,6 +10,8 @@ set clipboard^=unnamed,unnamedplus
 set completeopt=menuone,noselect,preview
 set cursorline
 set expandtab
+" Do not open folds when moving with { or }
+set foldopen-=block
 set ignorecase
 " Show replacement results while typing command
 set inccommand=nosplit
@@ -41,15 +47,20 @@ set t_Co=256
 call plug#begin('~/.vim/plugged')
 Plug 'nvim-treesitter/nvim-treesitter', { 'branch': '0.5-compat', 'do': ':TSUpdate' }
 Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'branch' : '0.5-compat'}
+
+" Color schemes
 Plug 'sainnhe/gruvbox-material'
   let g:gruvbox_material_palette = "mix"
   let g:gruvbox_material_background = "medium"
+  let g:gruvbox_material_transparent_background = 1
+Plug 'ghifarit53/tokyonight-vim'
+  let g:tokyonight_transparent_background = 1
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
 
 "Colors for LSP error messages etc.
-Plug 'folke/lsp-colors.nvim'
+" Plug 'folke/lsp-colors.nvim'
 Plug 'glepnir/lspsaga.nvim'
 
 " Telescope stuff
@@ -66,7 +77,6 @@ Plug 'lambdalisue/fern-git-status.vim'
 Plug 'lambdalisue/glyph-palette.vim'
 Plug 'lambdalisue/nerdfont.vim'
 Plug 'lambdalisue/fern-renderer-nerdfont.vim'
-Plug 'tpope/vim-fugitive'
 
 Plug 'hoob3rt/lualine.nvim', {'commit': 'dc2c711'}
 " Change font to Powerline compatible font in Edit > Preferences (bash)
@@ -75,10 +85,16 @@ Plug 'hoob3rt/lualine.nvim', {'commit': 'dc2c711'}
 " and running ./install.sh
 Plug 'kyazdani42/nvim-web-devicons'
 
+" New text objects
 Plug 'wellle/targets.vim'
+Plug 'kana/vim-textobj-user'
+" E.g. dav to delete b from a_b_c => a_c
+Plug 'Julian/vim-textobj-variable-segment'
+
 Plug 'windwp/nvim-autopairs'
 Plug 'b3nj5m1n/kommentary'
 
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 " Allows to repeat vim surround commands, e.g. cs'"
 Plug 'tpope/vim-repeat'
@@ -95,6 +111,7 @@ call plug#end()
 colorscheme gruvbox-material
 
 lua << EOF
+-- Plugin settings are in ~/.config/nvim/lua/plugins.lua
 require("plugins")
 EOF
 
@@ -128,6 +145,12 @@ xnoremap <silent> <C-j> :move'>+<cr>gv
 xnoremap <silent> <C-h> <gv
 xnoremap <silent> <C-l> >gv
 
+" Sideways text objects to select arguments
+omap <silent> aa <Plug>SidewaysArgumentTextobjA
+xmap <silent> aa <Plug>SidewaysArgumentTextobjA
+omap <silent> ia <Plug>SidewaysArgumentTextobjI
+xmap <silent> ia <Plug>SidewaysArgumentTextobjI
+
 " Swap function arguments
 nnoremap <M-h> <cmd>SidewaysLeft<cr>
 nnoremap <M-l> <cmd>SidewaysRight<cr>
@@ -136,7 +159,11 @@ nnoremap <M-l> <cmd>SidewaysRight<cr>
 nnoremap <leader>o o<Esc>0"_D
 nnoremap <leader>O O<Esc>0"_D
 
-" Line break from within normal mode
+" Use black hole register for deleting
+nnoremap <leader>d "_d
+nnoremap <leader>D "_D
+
+" Line break from normal mode
 nnoremap <cr> myi<cr><Esc>g`y
 
 " Yank to end of line
@@ -178,14 +205,21 @@ inoremap <silent><expr> <cr> compe#confirm('<CR>')
 nnoremap <leader>ff <cmd>Telescope find_files hidden=true<cr>
 " [Find Inacon]
 nnoremap <leader>fi <cmd>lua require("telescope.builtin").find_files (
-    \{search_dirs = { "~/Desktop/Inacon/Kurse", "~/Desktop/Inacon/Automation" }}
+    \{search_dirs = { vim.env.INACON_DIR .. "/Kurse", vim.env.INACON_DIR .. "/Automation" } }
 \)<cr>
-" [Find current]: files and folders in current directory
-nnoremap <leader>fc <cmd>Telescope file_browser hidden=true<cr>
-" [Find search]
-nnoremap <leader>fs <cmd>Telescope current_buffer_fuzzy_find<cr>
+" [Find old in Inacon]
+nnoremap <leader>fu <cmd>lua require("telescope.builtin").oldfiles (
+    \{search_dirs = { vim.env.INACON_DIR .. "/Kurse", vim.env.INACON_DIR .. "/Automation" } }
+\)<cr>
+" [Find config]: files and folders in current directory
+nnoremap <leader>fc <cmd>lua require("telescope.builtin").find_files (
+    \{search_dirs = { vim.env.CONFIG_DIR }, hidden = true }
+\)<cr>
+" [Find color scheme]
+nnoremap <leader>fs <cmd>Telescope colorscheme<cr>
 " [Find old]
 nnoremap <leader>fo <cmd>Telescope oldfiles<cr>
+
 
 " Tab completion in autocomplete (for default completion and compe)
 inoremap <expr><tab> pumvisible() ? "<c-n>" : "<tab>"
@@ -208,6 +242,8 @@ nnoremap <leader>= <cmd>lua vim.lsp.buf.formatting()<cr>
 nnoremap <leader>rc <cmd>e $MYVIMRC<cr>
 " Open vim.init and delete unsaved changes
 nnoremap <leader>rc! <cmd>e!<cr> <cmd>e $MYVIMRC<cr>
+" Open plugins.lua
+nnoremap <leader>rp <cmd>e ~/.config/nvim/lua/plugins.lua<cr>
 
 " Git status
 nnoremap <leader>gs <cmd>G<cr>
@@ -219,26 +255,27 @@ nnoremap <leader>so <cmd>lua require("plenary.reload").reload_module("plugins")<
 " Open terminal in new window to the right
 nnoremap <leader>to <cmd>vsplit<cr><cmd>term<cr>
 
-augroup AUTO_CLEAR
-  autocmd!
+augroup MY_AUTO_GROUP
+    autocmd!
+    " Run on startup for faster keyboard movement
+    autocmd VimEnter * silent !xset r rate 250 33
+
+    " Remove trailing whitespace on save (/e to hide errors)
+    autocmd BufWritePre * %s/\s\+$//e
+    " Do not auto-wrap text, only comments. This does not work when set
+    " as a global option (see https://vi.stackexchange.com/a/9367/37072)
+    autocmd FileType * set formatoptions-=t
+
+    autocmd BufEnter *.py setlocal foldmethod=indent foldlevel=0
+
+    " Automatically enter insert mode when in terminal mode
+    " and change to current directory
+    autocmd TermOpen * silent !lcd %:p:h
+    autocmd TermOpen * startinsert
+
+    " 2 spaces per tab for php files
+    autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
+    autocmd FileType html setlocal shiftwidth=2 tabstop=2 expandtab
+    autocmd FileType vim setlocal shiftwidth=2 tabstop=2 expandtab
 augroup end
-
-" Run on startup for faster keyboard movement
-autocmd VimEnter * silent !xset r rate 250 33
-
-" Remove trailing whitespace on save (/e to hide errors)
-autocmd BufWritePre * %s/\s\+$//e
-" Do not auto-wrap text, only comments. This does not work when set
-" as a global option (see https://vi.stackexchange.com/a/9367/37072)
-autocmd FileType * set formatoptions-=t
-
-" Automatically enter insert mode when in terminal mode
-" and change to current directory
-autocmd TermOpen * silent !lcd %:p:h
-autocmd TermOpen * startinsert
-
-" 2 spaces per tab for php files
-autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
-autocmd FileType html setlocal shiftwidth=2 tabstop=2 expandtab
-autocmd FileType vim setlocal shiftwidth=2 tabstop=2 expandtab
 

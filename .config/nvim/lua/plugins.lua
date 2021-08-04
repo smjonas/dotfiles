@@ -20,16 +20,28 @@ require("lspconfig").pyright.setup{}
 require("lspconfig").html.setup{}
 require("lspconfig").vimls.setup{}
 
-require("lsp-colors").setup({
+--[[ require("lsp-colors").setup({
   Error = "#db4b4b",
   Warning = "#e0af68",
   Information = "#0db9d7",
   Hint = "#10B981"
-})
+}) ]]
 
 require("lspsaga").init_lsp_saga {
   error_sign = '>>',
-  warn_sign = '⚠️'
+  warn_sign = '!'
+}
+
+local devicons = require("nvim-web-devicons")
+local all_icons = devicons.get_icons()
+local black_white_icons = all_icons
+for k, v in pairs(all_icons) do
+    -- Gruvbox material mix + dark background text color (fg0)
+    black_white_icons[k]["color"] = "#e2cca9"
+end
+
+devicons.setup {
+    override = black_white_icons
 }
 
 require("telescope").setup()
@@ -69,14 +81,16 @@ require("compe").setup {
   };
 }
 
-function obsessionStatus()
-   return vim.fn.ObsessionStatus("tracking", "paused")
+local cur_scheme = vim.api.nvim_exec("colorscheme", true)
+local statusline_theme = "gruvbox_material"
+if cur_scheme == "tokyonight" then
+    statusline_theme = "nightfly"
 end
 
 require'lualine'.setup {
   options = {
     icons_enabled = true,
-    theme = 'gruvbox',
+    theme = statusline_theme,
     component_separators = {'', ''},
     section_separators = {'', ''},
     disabled_filetypes = {}
@@ -86,8 +100,8 @@ require'lualine'.setup {
     lualine_b = {'branch'},
     lualine_c = { {'filename', full_path = true, symbols = {modified = '[*]'} } },
     lualine_x = {'fileformat', 'filetype'},
-    lualine_y = {'location', 'progress'},
-    lualine_z = {'obsessionStatus()'}
+    lualine_y = {'location'},
+    lualine_z = {}
   },
   inactive_sections = {
     lualine_a = {},
@@ -101,7 +115,9 @@ require'lualine'.setup {
   extensions = {}
 }
 
-require("nvim-autopairs").setup()
+require('nvim-autopairs').setup({
+  disable_filetype = { "TelescopePrompt" , "vim" },
+})
 
 require("nvim-autopairs.completion.compe").setup({
   map_cr = true, --  map <CR> on insert mode
