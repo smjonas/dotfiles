@@ -1,6 +1,8 @@
-let $INACON_DIR = "~/Desktop/Inacon/"
+let $INACON_DIR = "/home/jonas/Desktop/Inacon/"
+let $INACON_VENV_ACTIVATE = $INACON_DIR . "inacon_env/bin/activate"
+let $INACON_VENV_PYTHON = $INACON_DIR . "inacon_env/bin"
 " Somehow, $XDG_CONFIG_HOME is not available
-let $CONFIG_DIR = "~/.config/nvim"
+let $CONFIG_DIR = "$HOME/config/nvim"
 
 " set cmdheight=2
 " Use system clipboard
@@ -16,6 +18,8 @@ set ignorecase
 " Show replacement results while typing command
 set inccommand=nosplit
 set incsearch
+" Drag window with mouse
+set mouse=a
 set nohlsearch
 " Current mode in insert mode is not necessary when using status line plugin
 set noshowmode
@@ -49,6 +53,7 @@ Plug 'nvim-treesitter/nvim-treesitter', { 'branch': '0.5-compat', 'do': ':TSUpda
 Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'branch' : '0.5-compat'}
 
 " Color schemes
+Plug 'rafi/awesome-vim-colorschemes'
 Plug 'sainnhe/gruvbox-material'
   let g:gruvbox_material_palette = "mix"
   let g:gruvbox_material_background = "medium"
@@ -84,6 +89,14 @@ Plug 'hoob3rt/lualine.nvim', {'commit': 'dc2c711'}
 " after installing by cloning git@github.com:powerline/fonts.git
 " and running ./install.sh
 Plug 'kyazdani42/nvim-web-devicons'
+
+" Activate python virtual env, then run current test file in new window
+Plug 'vim-test/vim-test'
+  let g:test#python#pytest#executable = 'source $INACON_VENV_ACTIVATE && pytest'
+  let g:test#strategy = 'neovim'
+  let test#neovim#term_position = 'vertical 80'
+Plug 'nvim-lua/completion-nvim'
+Plug 'HallerPatrick/py_lsp.nvim'
 
 " New text objects
 Plug 'wellle/targets.vim'
@@ -126,14 +139,18 @@ cnoremap ii <C-C><Esc>
 tnoremap ii <C-\><C-n>
 
 " Basic movement in insert mode
-inoremap <C-h> <C-o>h
-inoremap <C-l> <C-o>a
-inoremap <C-j> <C-o>j
-inoremap <C-k> <C-o>k
+inoremap <C-h> <left>
+inoremap <C-l> <right>
+inoremap <C-j> <down>
+inoremap <C-k> <up>
 
 " Movement when wrap option is enabled
 nnoremap j gj
 nnoremap k gk
+
+" Faster moving to start / end of line
+nnoremap H ^
+nnoremap L $
 
 " Moving lines (==) for correct indentation
 nnoremap <silent> <C-k> :move-2<cr>==
@@ -169,10 +186,20 @@ nnoremap <cr> myi<cr><Esc>g`y
 " Yank to end of line
 nnoremap Y y$
 
+" Avoid accidentally recording a macro
+nnoremap q <nop>
+nnoremap <leader>q q
+
+" Do not move by accident
+nnoremap <space> <nop>
+
 " Keep it centered (zv to open folds if necessary)
 nnoremap n nzzzv
 nnoremap N Nzzzv
 nnoremap J J$
+
+" Center on buffer change
+nnoremap <c-6> <c-6>zz
 
 " Undo break points
 inoremap , ,<c-g>u
@@ -230,7 +257,7 @@ inoremap <expr><S-tab> pumvisible() ? "<c-p>" : "<S-tab>"
 nnoremap <F1> <cmd>lua require("lspsaga.hover").render_hover_doc()<cr>
 nnoremap <F2> <cmd>lua require("lspsaga.rename").rename()<cr>
 nnoremap <leader>gD <cmd>lua vim.lsp.buf.declaration()<cr>
-nnoremap <leader>gd <cmd>lua vim.lsp.buf.definition()<cr>
+nnoremap gd <cmd>lua vim.lsp.buf.definition()<cr>
 nnoremap <leader>ga <cmd>lua require("lspsaga.codeaction").code_action()<cr>
 nnoremap <leader>ge <cmd>lua vim.lsp.diagnostic.goto_next()<cr>
 nnoremap <leader>gE <cmd>lua vim.lsp.diagnostic.goto_prev()<cr>
@@ -245,8 +272,13 @@ nnoremap <leader>rc! <cmd>e!<cr> <cmd>e $MYVIMRC<cr>
 " Open plugins.lua
 nnoremap <leader>rp <cmd>e ~/.config/nvim/lua/plugins.lua<cr>
 
-" Git status
-nnoremap <leader>gs <cmd>G<cr>
+" git status
+nnoremap <leader>gs <cmd>Git<cr>
+" git push
+nnoremap <leader>gp <cmd>Git push<cr>
+
+nnoremap <leader>t <cmd>TestFile<cr>
+
 
 " Reload plugins module, save and resource vim.init file
 nnoremap <leader>so <cmd>lua require("plenary.reload").reload_module("plugins")<cr>
@@ -266,7 +298,9 @@ augroup MY_AUTO_GROUP
     " as a global option (see https://vi.stackexchange.com/a/9367/37072)
     autocmd FileType * set formatoptions-=t
 
-    autocmd BufEnter *.py setlocal foldmethod=indent foldlevel=0
+    autocmd BufRead *.py setlocal foldmethod=indent foldnestmax=1
+    " TODO: this does not do anything yet
+    autocmd BufRead *.py PyLspReloadVenv
 
     " Automatically enter insert mode when in terminal mode
     " and change to current directory

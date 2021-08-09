@@ -32,6 +32,10 @@ require("lspsaga").init_lsp_saga {
   warn_sign = '!'
 }
 
+require("py_lsp").setup {
+    host_python = vim.env.INACON_VENV_PYTHON
+}
+
 local devicons = require("nvim-web-devicons")
 local all_icons = devicons.get_icons()
 local black_white_icons = all_icons
