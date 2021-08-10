@@ -5,8 +5,8 @@ let $INACON_VENV_PYTHON = $INACON_DIR . "inacon_env/bin"
 let $CONFIG_DIR = "$HOME/config/nvim"
 
 " set cmdheight=2
+set background=dark
 " Use system clipboard
-"
 set clipboard^=unnamed,unnamedplus
 " Autocomplete settings
 set completeopt=menuone,noselect,preview
@@ -32,20 +32,12 @@ set shiftwidth=4
 set smartcase
 set splitbelow splitright
 set tabstop=4
+set t_Co=256
+set termguicolors
 set textwidth=90
 set timeoutlen=300
 set undodir=~/.vim/nvim-undo-dir
 set undofile
-
-" Fixes wrong colors in Vim when using tmux (don't know if this is still needed)
-if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
-endif
-
-set background=dark
-set t_Co=256
 
 " Directory for plugins
 call plug#begin('~/.vim/plugged')
@@ -77,11 +69,7 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 " Fern and fern plugins
 Plug 'antoinemadec/FixCursorHold.nvim'
 Plug 'lambdalisue/fern.vim'
-  let g:fern#renderer = "nerdfont"
-Plug 'lambdalisue/fern-git-status.vim'
-Plug 'lambdalisue/glyph-palette.vim'
-Plug 'lambdalisue/nerdfont.vim'
-Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+  let g:fern#drawer_width = 50
 
 Plug 'hoob3rt/lualine.nvim', {'commit': 'dc2c711'}
 " Change font to Powerline compatible font in Edit > Preferences (bash)
@@ -92,34 +80,45 @@ Plug 'kyazdani42/nvim-web-devicons'
 
 " Activate python virtual env, then run current test file in new window
 Plug 'vim-test/vim-test'
-  let g:test#python#pytest#executable = 'source $INACON_VENV_ACTIVATE && pytest'
+  let g:test#python#pytest#executable = 'source $INACON_VENV_ACTIVATE && pytest -rT'
   let g:test#strategy = 'neovim'
   let test#neovim#term_position = 'vertical 80'
-Plug 'nvim-lua/completion-nvim'
+" Make LSP client recognize python virtual env
 Plug 'HallerPatrick/py_lsp.nvim'
+  Plug 'nvim-lua/completion-nvim'
 
 " New text objects
 Plug 'wellle/targets.vim'
-Plug 'kana/vim-textobj-user'
+
 " E.g. dav to delete b from a_b_c => a_c
 Plug 'Julian/vim-textobj-variable-segment'
+  Plug 'kana/vim-textobj-user'
 
 Plug 'windwp/nvim-autopairs'
 Plug 'b3nj5m1n/kommentary'
 
+" Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 " Allows to repeat vim surround commands, e.g. cs'"
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-obsession'
 
+" Swap function arguments using Alt + arrow keys
 Plug 'AndrewRadev/sideways.vim'
-Plug 'unblevable/quick-scope'
-  let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+Plug 'ggandor/lightspeed.nvim'
+" Plug 'unblevable/quick-scope'
+"   let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 
 Plug 'arp242/undofile_warn.vim'
 " Initialize plugin system
 call plug#end()
+
+" " Fixes wrong colors in Vim when using tmux
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+endif
 
 colorscheme gruvbox-material
 
@@ -216,7 +215,10 @@ nnoremap <leader><F2> :%s///gc<left><left><left><left>
 " Circular window movements
 nnoremap <tab> <c-w>w
 nnoremap <S-tab> <c-w>W
-nnoremap <c-n> <cmd>:Fern . -drawer -toggle<cr>
+nnoremap <c-n> <cmd>:Fern %:p:h -drawer -toggle<cr>
+" nnoremap <c-n> <cmd>30 Lexplore %:p:h<cr>
+"     let g:netrw_liststyle = 3
+"     let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
 
 " Faster file saving and exiting
 nnoremap <leader>w <cmd>w<cr>
@@ -230,6 +232,8 @@ inoremap <silent><expr> <cr> compe#confirm('<CR>')
 " Telescope remaps
 " [Find files]
 nnoremap <leader>ff <cmd>Telescope find_files hidden=true<cr>
+" [Find buffers]
+nnoremap <leader>fb <cmd>Telescope buffers sort_mru=true<cr>
 " [Find Inacon]
 nnoremap <leader>fi <cmd>lua require("telescope.builtin").find_files (
     \{search_dirs = { vim.env.INACON_DIR .. "/Kurse", vim.env.INACON_DIR .. "/Automation" } }
@@ -237,10 +241,6 @@ nnoremap <leader>fi <cmd>lua require("telescope.builtin").find_files (
 " [Find old in Inacon]
 nnoremap <leader>fu <cmd>lua require("telescope.builtin").oldfiles (
     \{search_dirs = { vim.env.INACON_DIR .. "/Kurse", vim.env.INACON_DIR .. "/Automation" } }
-\)<cr>
-" [Find config]: files and folders in current directory
-nnoremap <leader>fc <cmd>lua require("telescope.builtin").find_files (
-    \{search_dirs = { vim.env.CONFIG_DIR }, hidden = true }
 \)<cr>
 " [Find color scheme]
 nnoremap <leader>fs <cmd>Telescope colorscheme<cr>
@@ -272,13 +272,14 @@ nnoremap <leader>rc! <cmd>e!<cr> <cmd>e $MYVIMRC<cr>
 " Open plugins.lua
 nnoremap <leader>rp <cmd>e ~/.config/nvim/lua/plugins.lua<cr>
 
-" git status
+" git interactive status
 nnoremap <leader>gs <cmd>Git<cr>
-" git push
+" Simpler git commit than vim-fugitive
+nnoremap <leader>gc :Git commit -m ""<left>
 nnoremap <leader>gp <cmd>Git push<cr>
 
+" Run tests
 nnoremap <leader>t <cmd>TestFile<cr>
-
 
 " Reload plugins module, save and resource vim.init file
 nnoremap <leader>so <cmd>lua require("plenary.reload").reload_module("plugins")<cr>
@@ -300,7 +301,7 @@ augroup MY_AUTO_GROUP
 
     autocmd BufRead *.py setlocal foldmethod=indent foldnestmax=1
     " TODO: this does not do anything yet
-    autocmd BufRead *.py PyLspReloadVenv
+    " autocmd BufRead *.py PyLspReloadVenv
 
     " Automatically enter insert mode when in terminal mode
     " and change to current directory
