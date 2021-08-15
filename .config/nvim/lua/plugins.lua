@@ -3,10 +3,8 @@ require("nvim-treesitter.configs").setup {
   textobjects = {
     select = {
       enable = true,
-
       -- Automatically jump forward to textobj, similar to targets.vim
       lookahead = true,
-
       keymaps = {
         ["af"] = "@function.outer",
         ["if"] = "@function.inner",
@@ -39,7 +37,7 @@ require("py_lsp").setup {
 local devicons = require("nvim-web-devicons")
 local all_icons = devicons.get_icons()
 local black_white_icons = all_icons
-for k, v in pairs(all_icons) do
+for k, _ in pairs(all_icons) do
     -- Gruvbox material mix + dark background text color (fg0)
     black_white_icons[k]["color"] = "#e2cca9"
 end
@@ -48,10 +46,16 @@ devicons.setup {
     override = black_white_icons
 }
 
+-- project.nvim
+require("project_nvim").setup {
+    silent_chdir = false
+}
+
 require("telescope").setup()
 require("telescope").load_extension("fzf")
+require("telescope").load_extension("projects")
 
-require("compe").setup {
+--[[ require("compe").setup {
   enabled = true;
   autocomplete = true;
   debug = false;
@@ -79,11 +83,11 @@ require("compe").setup {
     calc = true;
     nvim_lsp = true;
     nvim_lua = true;
-    vsnip = false;
+    vsnip = true;
     ultisnips = true;
     luasnip = true;
   };
-}
+} ]]
 
 local cur_scheme = vim.api.nvim_exec("colorscheme", true)
 local statusline_theme = "gruvbox_material"
@@ -91,7 +95,7 @@ if cur_scheme == "tokyonight" then
     statusline_theme = "nightfly"
 end
 
-require'lualine'.setup {
+require("lualine").setup {
   options = {
     icons_enabled = true,
     theme = statusline_theme,
@@ -119,12 +123,12 @@ require'lualine'.setup {
   extensions = {}
 }
 
-require('nvim-autopairs').setup({
+require("nvim-autopairs").setup({
   disable_filetype = { "TelescopePrompt" , "vim" },
 })
 
-require("nvim-autopairs.completion.compe").setup({
+--[[ require("nvim-autopairs.completion.compe").setup({
   map_cr = true, --  map <CR> on insert mode
   map_complete = true -- it will auto insert `(` after selecting function or method item
-})
+}) ]]
 

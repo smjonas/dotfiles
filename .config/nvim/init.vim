@@ -14,6 +14,8 @@ set cursorline
 set expandtab
 " Do not open folds when moving with { or }
 set foldopen-=block
+" Auto-save when switching to different buffer using ctrl-6
+set autowrite
 set ignorecase
 " Show replacement results while typing command
 set inccommand=nosplit
@@ -21,6 +23,7 @@ set incsearch
 " Drag window with mouse
 set mouse=a
 set nohlsearch
+set nojoinspaces
 " Current mode in insert mode is not necessary when using status line plugin
 set noshowmode
 set noswapfile
@@ -28,9 +31,11 @@ set nowrap
 set number
 set relativenumber
 set scrolloff=8
+set shiftround
 set shiftwidth=4
 set smartcase
 set splitbelow splitright
+set synmaxcol=250
 set tabstop=4
 set t_Co=256
 set termguicolors
@@ -38,6 +43,7 @@ set textwidth=90
 set timeoutlen=300
 set undodir=~/.vim/nvim-undo-dir
 set undofile
+set wildignorecase
 
 " Directory for plugins
 call plug#begin('~/.vim/plugged')
@@ -54,10 +60,12 @@ Plug 'ghifarit53/tokyonight-vim'
   let g:tokyonight_transparent_background = 1
 
 Plug 'neovim/nvim-lspconfig'
-Plug 'hrsh7th/nvim-compe'
+Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
+" Plug 'hrsh7th/nvim-compe'
+" Plug 'hrsh7th/vim-vsnip'
+" Plug 'rafamadriz/friendly-snippets'
 
-"Colors for LSP error messages etc.
-" Plug 'folke/lsp-colors.nvim'
 Plug 'glepnir/lspsaga.nvim'
 
 " Telescope stuff
@@ -66,7 +74,9 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
-" Fern and fern plugins
+Plug 'ahmedkhalf/project.nvim'
+
+" File browser
 Plug 'antoinemadec/FixCursorHold.nvim'
 Plug 'lambdalisue/fern.vim'
   let g:fern#drawer_width = 50
@@ -95,6 +105,8 @@ Plug 'Julian/vim-textobj-variable-segment'
   Plug 'kana/vim-textobj-user'
 
 Plug 'windwp/nvim-autopairs'
+Plug 'alvan/vim-closetag'
+
 Plug 'b3nj5m1n/kommentary'
 
 " Plug 'tpope/vim-vinegar'
@@ -110,11 +122,13 @@ Plug 'ggandor/lightspeed.nvim'
 " Plug 'unblevable/quick-scope'
 "   let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 
+" Misc
 Plug 'arp242/undofile_warn.vim'
-" Initialize plugin system
+Plug 'chrisbra/Colorizer'
+  let g:colorizer_auto_filetype='css,html,php,lua'
 call plug#end()
 
-" " Fixes wrong colors in Vim when using tmux
+" Fixes wrong colors in Vim when using tmux
 if exists('+termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
@@ -215,7 +229,11 @@ nnoremap <leader><F2> :%s///gc<left><left><left><left>
 " Circular window movements
 nnoremap <tab> <c-w>w
 nnoremap <S-tab> <c-w>W
-nnoremap <c-n> <cmd>:Fern %:p:h -drawer -toggle<cr>
+
+nnoremap <c-n> <cmd>:Fern %:h -drawer -toggle<cr>
+" Use . to go up a directory
+nmap <buffer><expr> . <Plug>(fern-action-leave)
+
 " nnoremap <c-n> <cmd>30 Lexplore %:p:h<cr>
 "     let g:netrw_liststyle = 3
 "     let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
@@ -226,27 +244,30 @@ nnoremap <leader>q <cmd>q<cr>
 nnoremap <leader>! <cmd>q!<cr>
 
 " Compe remaps
-inoremap <silent><expr> <c-n> compe#complete()
-inoremap <silent><expr> <cr> compe#confirm('<CR>')
+" inoremap <silent><expr> <c-n> compe#complete()
+" inoremap <silent><expr> <cr> compe#confirm('<CR>')
 
-" Telescope remaps
-" [Find files]
+" -- Telescope remaps --
+" Find files
 nnoremap <leader>ff <cmd>Telescope find_files hidden=true<cr>
-" [Find buffers]
+" Find buffers
 nnoremap <leader>fb <cmd>Telescope buffers sort_mru=true<cr>
-" [Find Inacon]
+" Find Inacon
 nnoremap <leader>fi <cmd>lua require("telescope.builtin").find_files (
     \{search_dirs = { vim.env.INACON_DIR .. "/Kurse", vim.env.INACON_DIR .. "/Automation" } }
 \)<cr>
-" [Find old in Inacon]
+" Find old in Inacon
 nnoremap <leader>fu <cmd>lua require("telescope.builtin").oldfiles (
     \{search_dirs = { vim.env.INACON_DIR .. "/Kurse", vim.env.INACON_DIR .. "/Automation" } }
 \)<cr>
-" [Find color scheme]
-nnoremap <leader>fs <cmd>Telescope colorscheme<cr>
-" [Find old]
+" Find old
 nnoremap <leader>fo <cmd>Telescope oldfiles<cr>
-
+" List color schemes
+nnoremap <leader>s <cmd>Telescope colorscheme<cr>
+" List keybindings
+nnoremap <leader>k <cmd>Telescope keymaps<cr>
+" List projects (project.nvim)
+nnoremap <leader>p <cmd>Telescope projects<cr>
 
 " Tab completion in autocomplete (for default completion and compe)
 inoremap <expr><tab> pumvisible() ? "<c-n>" : "<tab>"
@@ -267,8 +288,6 @@ nnoremap <leader>= <cmd>lua vim.lsp.buf.formatting()<cr>
 
 " Open vim.init
 nnoremap <leader>rc <cmd>e $MYVIMRC<cr>
-" Open vim.init and delete unsaved changes
-nnoremap <leader>rc! <cmd>e!<cr> <cmd>e $MYVIMRC<cr>
 " Open plugins.lua
 nnoremap <leader>rp <cmd>e ~/.config/nvim/lua/plugins.lua<cr>
 
