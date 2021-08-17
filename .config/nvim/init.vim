@@ -4,7 +4,6 @@ let $INACON_VENV_PYTHON = $INACON_DIR . "inacon_env/bin"
 " Somehow, $XDG_CONFIG_HOME is not available
 let $CONFIG_DIR = "$HOME/config/nvim"
 
-" set cmdheight=2
 set background=dark
 " Use system clipboard
 set clipboard^=unnamed,unnamedplus
@@ -15,7 +14,7 @@ set expandtab
 " Do not open folds when moving with { or }
 set foldopen-=block
 " Auto-save when switching to different buffer using ctrl-6
-set autowrite
+set autowriteall
 set ignorecase
 " Show replacement results while typing command
 set inccommand=nosplit
@@ -51,16 +50,18 @@ Plug 'nvim-treesitter/nvim-treesitter', { 'branch': '0.5-compat', 'do': ':TSUpda
 Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'branch' : '0.5-compat'}
 
 " Color schemes
-Plug 'rafi/awesome-vim-colorschemes'
 Plug 'sainnhe/gruvbox-material'
   let g:gruvbox_material_palette = "mix"
   let g:gruvbox_material_background = "medium"
   let g:gruvbox_material_transparent_background = 1
 Plug 'ghifarit53/tokyonight-vim'
   let g:tokyonight_transparent_background = 1
+Plug 'navarasu/onedark.nvim'
+  let g:onedark_style = 'warmer'
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+  let g:coq_settings = { 'auto_start': v:true }
 Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
 " Plug 'hrsh7th/nvim-compe'
 " Plug 'hrsh7th/vim-vsnip'
@@ -90,7 +91,7 @@ Plug 'kyazdani42/nvim-web-devicons'
 
 " Activate python virtual env, then run current test file in new window
 Plug 'vim-test/vim-test'
-  let g:test#python#pytest#executable = 'source $INACON_VENV_ACTIVATE && pytest -rT'
+  let g:test#python#pytest#executable = 'source $INACON_VENV_ACTIVATE && pytest -rT -vv'
   let g:test#strategy = 'neovim'
   let test#neovim#term_position = 'vertical 80'
 " Make LSP client recognize python virtual env
@@ -134,7 +135,7 @@ if exists('+termguicolors')
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
 
-colorscheme gruvbox-material
+colorscheme onedark
 
 lua << EOF
 -- Plugin settings are in ~/.config/nvim/lua/plugins.lua
@@ -232,7 +233,7 @@ nnoremap <S-tab> <c-w>W
 
 nnoremap <c-n> <cmd>:Fern %:h -drawer -toggle<cr>
 " Use . to go up a directory
-nmap <buffer><expr> . <Plug>(fern-action-leave)
+" nmap <buffer><expr> . <Plug>(fern-action-leave)
 
 " nnoremap <c-n> <cmd>30 Lexplore %:p:h<cr>
 "     let g:netrw_liststyle = 3
