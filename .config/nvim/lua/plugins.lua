@@ -1,4 +1,5 @@
 local fn = vim.fn
+local g = vim.g
 
 -- Adds new text objects
 require("nvim-treesitter.configs").setup {
@@ -17,10 +18,17 @@ require("nvim-treesitter.configs").setup {
   },
 }
 local lsp = require("lspconfig")
+local coq = require("coq")
 local servers = {"pyright", "html", "vimls"}
 for _, server in ipairs(servers) do
     lsp[server].setup(coq.lsp_ensure_capabilities())
 end
+
+-- Coq settings
+g.coq_settings = {
+    ["auto_start"] = true,
+    ["display.pum.source_context"] = { "[", "]" }
+}
 
 require("lspsaga").init_lsp_saga {
   error_sign = '>>',
@@ -34,7 +42,7 @@ require("py_lsp").setup {
 local devicons = require("nvim-web-devicons")
 local all_icons = devicons.get_icons()
 local black_white_icons = all_icons
-local cur_text_color = fn.synIDattr(fn.synIDtrans(fn.hlID("Normal")), "fg")
+
 for k, _ in pairs(all_icons) do
     -- Set devicons to same color as normal text color (e.g. in Telescope prompt)
     black_white_icons[k]["color"] = cur_text_color
@@ -46,7 +54,8 @@ devicons.setup {
 
 -- project.nvim
 require("project_nvim").setup {
-    silent_chdir = false
+    silent_chdir = false,
+    show_hidden = true
 }
 
 local telescope = require("telescope")
