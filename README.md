@@ -6,15 +6,6 @@
 - then run `pulseaudio -k`
 
 ## Haskell development (with Neovim)
-### Install stack
-```bash
-curl -sSL https://get.haskellstack.org/ | sh
-```
-### Install hls (haskell language server)
-1. Go to https://github.com/haskell/haskell-language-server/releases/latest.
-2. Download `haskell-language-server-wrapper-Linux.gz` and a specific version of hls, e.g. `haskell-language-server-Linux-8.10.5.gz`.
-3. Unpack them and make the wrapper file executable: `chmod +x haskell-language-server-wrapper`.
-4. Make sure the folder where you placed the wrapper is on your path (`echo $PATH`).
-
-
-
+- Install ghcup (accept all): `curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh`
+- Run `haskell-language-server-wrapper`:
+  - If you see an error message like `could not find any haskell-language-server exe, looked for: haskell-language-server-8.10.6`, install a supported ghc version using `ghcup install ghc 8.10.5` (the `ghcup list` command should display `hls-powered` in the "Notes" column for this version).
