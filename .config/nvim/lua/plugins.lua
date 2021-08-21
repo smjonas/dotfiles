@@ -1,5 +1,6 @@
-local fn = vim.fn
 local g = vim.g
+local fn = vim.fn
+local lsp = vim.lsp
 
 -- Adds new text objects
 require("nvim-treesitter.configs").setup {
@@ -12,27 +13,39 @@ require("nvim-treesitter.configs").setup {
         ["af"] = "@function.outer",
         ["if"] = "@function.inner",
         ["ac"] = "@class.outer",
-        ["ic"] = "@class.inner",
-      },
-    },
-  },
+        ["ic"] = "@class.inner"
+      }
+    }
+  }
 }
-local lsp = require("lspconfig")
+
+local lsp_conf = require("lspconfig")
 local coq = require("coq")
+
 local servers = {"pyright", "html", "vimls"}
 for _, server in ipairs(servers) do
-    lsp[server].setup(coq.lsp_ensure_capabilities())
+    lsp_conf[server].setup(coq.lsp_ensure_capabilities())
 end
 
--- Coq settings
+lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
+    lsp.diagnostic.on_publish_diagnostics, {
+        virtual_text = false
+    }
+)
+
+require("lint").linters_by_ft = {
+    python = {'flake8'}
+}
+
 g.coq_settings = {
-    ["auto_start"] = true,
-    ["display.pum.source_context"] = { "[", "]" }
+    auto_start = true,
+    keymap = { recommended = false },
+    display = { pum = { source_context = { "[", "]" } } }
 }
 
 require("lspsaga").init_lsp_saga {
   error_sign = '>>',
-  warn_sign = '!'
+  warn_sign = '>>'
 }
 
 require("py_lsp").setup {
@@ -54,19 +67,17 @@ devicons.setup {
 
 -- project.nvim
 require("project_nvim").setup {
-    silent_chdir = false,
-    show_hidden = true
+    silent_chdir = false
 }
-
-local telescope = require("telescope")
-telescope.setup()
-telescope.load_extension("fzf")
-telescope.load_extension("projects")
 
 local cur_scheme = vim.api.nvim_exec("colorscheme", true)
 local statusline_theme = cur_scheme
 if cur_scheme == "tokyonight" then
     statusline_theme = "nightfly"
+end
+
+local function line_percentage()
+    return math.floor((fn.line(".") * 100 / fn.line("$")) + 0.5) .. "%%"
 end
 
 require("lualine").setup {
@@ -81,15 +92,15 @@ require("lualine").setup {
     lualine_a = {'mode'},
     lualine_b = {'branch'},
     lualine_c = { {'filename', full_path = true, symbols = {modified = '[*]'} } },
-    lualine_x = {'fileformat', 'filetype'},
-    lualine_y = {'location'},
+    lualine_x = {'filetype'},
+    lualine_y = {'location', line_percentage},
     lualine_z = {}
   },
   inactive_sections = {
     lualine_a = {},
     lualine_b = {},
     lualine_c = { {'filename', symbols = {modified = '[*]'} } },
-    lualine_x = {'location'},
+    lualine_x = {'location', line_percentage},
     lualine_y = {},
     lualine_z = {}
   },
@@ -100,4 +111,44 @@ require("lualine").setup {
 require("nvim-autopairs").setup({
   disable_filetype = { "TelescopePrompt" , "vim" },
 })
+
+
+local telescope = require("telescope")
+local builtin = require("telescope.builtin")
+telescope.setup()
+telescope.load_extension("fzf")
+telescope.load_extension("projects")
+
+local M = {}
+function M.find_files()
+    builtin.find_files {
+        prompt_title = "Find files",
+        cwd = "~",
+        hidden = true,
+        sort_mru = true
+    }
+end
+
+function M.find_buffers()
+    builtin.buffers {
+        sort_mru = true
+    }
+end
+
+function M.find_inacon()
+    builtin.find_files {
+        prompt_title = "Find files in Inacon",
+        search_dirs = { vim.env.INACON_DIR .. "/Kurse", vim.env.INACON_DIR .. "/Automation" },
+        sort_mru = true
+    }
+end
+
+function M.find_old_inacon()
+    builtin.oldfiles {
+        prompt_title = "Find old files in Inacon",
+        search_dirs = { vim.env.INACON_DIR .. "/Kurse", vim.env.INACON_DIR .. "/Automation" },
+        sort_mru = true
+    }
+end
+return M
 

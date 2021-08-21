@@ -1,8 +1,6 @@
 let $INACON_DIR = "/home/jonas/Desktop/Inacon/"
 let $INACON_VENV_ACTIVATE = $INACON_DIR . "inacon_env/bin/activate"
 let $INACON_VENV_PYTHON = $INACON_DIR . "inacon_env/bin"
-" Somehow, $XDG_CONFIG_HOME is not available
-let $CONFIG_DIR = "$HOME/config/nvim"
 
 set background=dark
 " Use system clipboard
@@ -62,14 +60,12 @@ Plug 'navarasu/onedark.nvim'
   let g:onedark_style = "warmer"
 
 Plug 'neovim/nvim-lspconfig'
-Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
-
-Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
-" Plug 'hrsh7th/nvim-compe'
-" Plug 'hrsh7th/vim-vsnip'
-" Plug 'rafamadriz/friendly-snippets'
-
 Plug 'glepnir/lspsaga.nvim'
+" Modified version of mfussenegger/nvim-lint
+Plug 'jonasstr/nvim-lint'
+
+Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
 
 " Telescope stuff
 Plug 'nvim-lua/popup.nvim'
@@ -122,8 +118,6 @@ Plug 'tpope/vim-obsession'
 " Swap function arguments using Alt + arrow keys
 Plug 'AndrewRadev/sideways.vim'
 Plug 'ggandor/lightspeed.nvim'
-" Plug 'unblevable/quick-scope'
-"   let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 
 " Misc
 Plug 'arp242/undofile_warn.vim'
@@ -199,9 +193,6 @@ nno <leader>D "_D
 " Line break from normal mode
 nno <cr> myi<cr><Esc>g`y
 
-" Yank to end of line
-nno Y y$
-
 " Avoid accidentally recording a macro
 nno q <nop>
 nno <leader>q q
@@ -212,10 +203,12 @@ nno <space> <nop>
 " Keep it centered (zv to open folds if necessary)
 nno n nzzzv
 nno N Nzzzv
-" Center on buffer change
-nno <C-6> <C-6>zz
 nno g; g;zz
 nno g, g,zz
+
+" Center on buffer change
+nno <C-^> <C-^>zz
+nno <bs> <C-^>
 
 nno J J$
 
@@ -242,24 +235,19 @@ nno <C-n> <cmd>:Fern %:h -drawer -toggle<cr>
 " Faster file saving and exiting
 nno <leader>w <cmd>w<cr>
 nno <leader>q <cmd>q<cr>
-nno <leader>! <cmd>q!<cr>
 
 " Coq remaps
-ino <c-m> <cmd>lua COQnav_mark()<cr>
+ino <c-a> <cmd>lua COQnav_mark()<cr>
+" Tab completion in autocomplete (for default completion and coq)
+ino <expr><tab> pumvisible() ? "<C-n>" : "<tab>"
+" Go back using Shift+Tab instead of Ctrl+p
+ino <expr><S-tab> pumvisible() ? "<C-p>" : "<S-tab>"
 
 " -- Telescope remaps --
-" Find files
-nno <leader>ff <cmd>Telescope find_files hidden=true<cr>
-" Find buffers
-nno <leader>fb <cmd>Telescope buffers sort_mru=true<cr>
-" Find Inacon
-nno <leader>fi <cmd>lua require("telescope.builtin").find_files (
-    \{search_dirs = { vim.env.INACON_DIR .. "/Kurse", vim.env.INACON_DIR .. "/Automation" } }
-\)<cr>
-" Find old in Inacon
-nno <leader>fu <cmd>lua require("telescope.builtin").oldfiles (
-    \{search_dirs = { vim.env.INACON_DIR .. "/Kurse", vim.env.INACON_DIR .. "/Automation" } }
-\)<cr>
+nno <leader>ff <cmd>lua require("plugins").find_files()<cr>
+nno <leader>fb <cmd>lua require("plugins").find_buffers()<cr>
+nno <leader>fi <cmd>lua require("plugins").find_inacon()<cr>
+nno <leader>fu <cmd>lua require("plugins").find_old_inacon()<cr>
 " Find old
 nno <leader>fo <cmd>Telescope oldfiles<cr>
 " List color schemes
@@ -268,11 +256,8 @@ nno <leader>s <cmd>Telescope colorscheme<cr>
 nno <leader>k <cmd>Telescope keymaps<cr>
 " List projects (project.nvim)
 nno <leader>p <cmd>Telescope projects<cr>
-
-" Tab completion in autocomplete (for default completion and compe)
-ino <expr><tab> pumvisible() ? "<C-n>" : "<tab>"
-" Go back using Shift+Tab instead of Ctrl+p
-ino <expr><S-tab> pumvisible() ? "<C-p>" : "<S-tab>"
+" Run plug update
+nno <leader>u <cmd>PlugClean!<cr><cmd>PlugUpdate<cr>
 
 " LSP stuff
 nno <F1> <cmd>lua require("lspsaga.hover").render_hover_doc()<cr>
@@ -280,14 +265,15 @@ nno <F2> <cmd>lua require("lspsaga.rename").rename()<cr>
 nno <leader>gD <cmd>lua vim.lsp.buf.declaration()<cr>
 nno gd <cmd>lua vim.lsp.buf.definition()<cr>
 nno <leader>ga <cmd>lua require("lspsaga.codeaction").code_action()<cr>
-nno <leader>ge <cmd>lua vim.lsp.diagnostic.goto_next()<cr>
-nno <leader>gE <cmd>lua vim.lsp.diagnostic.goto_prev()<cr>
+nno gr <cmd>lua vim.lsp.diagnostic.goto_prev()<cr>
+nno gh <cmd>lua vim.lsp.diagnostic.goto_next()<cr>
 
 " Format whole file
 nno <leader>= <cmd>lua vim.lsp.buf.formatting()<cr>
 
 " Open vim.init
 nno <leader>rc <cmd>e $MYVIMRC<cr>
+nno <leader>Rc <cmd>e! $MYVIMRC<cr>
 " Open plugins.lua
 nno <leader>rp <cmd>e ~/.config/nvim/lua/plugins.lua<cr>
 
@@ -308,28 +294,28 @@ nno <leader>so <cmd>lua require("plenary.reload").reload_module("plugins")<cr>
 nno <leader>to <cmd>vsplit<cr><cmd>term<cr>
 
 augroup MY_AUTO_GROUP
-    autocmd!
+    au!
     " Run on startup for faster keyboard movement
-    autocmd VimEnter * silent !xset r rate 250 33
+    au VimEnter * silent !xset r rate 250 33
 
     " Remove trailing whitespace on save (/e to hide errors)
-    autocmd BufWritePre * %s/\s\+$//e
+    au BufWritePre * %s/\s\+$//e
     " Do not auto-wrap text, only comments. This does not work when set
     " as a global option (see https://vi.stackexchange.com/a/9367/37072)
-    autocmd FileType * set formatoptions-=t
+    au FileType * set formatoptions-=t
 
-    autocmd BufRead *.py setlocal foldmethod=indent foldnestmax=1
-    " TODO: this does not do anything yet
-    autocmd BufEnter *.py PyLspReloadVenv
+    au BufRead python setlocal foldmethod=indent foldnestmax=1
+    au BufEnter python PyLspReloadVenv
+    " nvim-lint
+    au BufEnter,BufWritePost * lua require("lint").try_lint()
 
     " Automatically enter insert mode when in terminal mode
     " and change to current directory
-    autocmd TermOpen * silent !lcd %:p:h
-    autocmd TermOpen * startinsert
+    au TermOpen * silent !lcd %:p:h
+    au TermOpen * startinsert
 
     " 2 spaces per tab for php files
-    autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
-    autocmd FileType html setlocal shiftwidth=2 tabstop=2 expandtab
-    autocmd FileType vim setlocal shiftwidth=2 tabstop=2 expandtab
+    au FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
+    au FileType html,vim setlocal shiftwidth=2 tabstop=2 expandtab
 augroup end
 
