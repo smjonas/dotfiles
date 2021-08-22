@@ -1,28 +1,12 @@
 local g = vim.g
 local fn = vim.fn
+local env = vim.env
 local lsp = vim.lsp
-
--- Adds new text objects
-require("nvim-treesitter.configs").setup {
-  textobjects = {
-    select = {
-      enable = true,
-      -- Automatically jump forward to textobj, similar to targets.vim
-      lookahead = true,
-      keymaps = {
-        ["af"] = "@function.outer",
-        ["if"] = "@function.inner",
-        ["ac"] = "@class.outer",
-        ["ic"] = "@class.inner"
-      }
-    }
-  }
-}
 
 local lsp_conf = require("lspconfig")
 local coq = require("coq")
 
-local servers = {"pyright", "html", "vimls"}
+local servers = {"pyright", "html", "vimls", "hls"}
 for _, server in ipairs(servers) do
     lsp_conf[server].setup(coq.lsp_ensure_capabilities())
 end
@@ -33,14 +17,14 @@ lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
     }
 )
 
-require("lint").linters_by_ft = {
-    python = {'flake8'}
-}
-
 g.coq_settings = {
     auto_start = true,
     keymap = { recommended = false },
     display = { pum = { source_context = { "[", "]" } } }
+}
+
+require("lint").linters_by_ft = {
+    python = {'flake8'}
 }
 
 require("lspsaga").init_lsp_saga {
@@ -49,7 +33,7 @@ require("lspsaga").init_lsp_saga {
 }
 
 require("py_lsp").setup {
-    host_python = vim.env.INACON_VENV_PYTHON
+    host_python = env.INACON_VENV_PYTHON
 }
 
 local devicons = require("nvim-web-devicons")
@@ -63,11 +47,6 @@ end
 
 devicons.setup {
     override = black_white_icons
-}
-
--- project.nvim
-require("project_nvim").setup {
-    silent_chdir = false
 }
 
 local cur_scheme = vim.api.nvim_exec("colorscheme", true)
@@ -108,10 +87,33 @@ require("lualine").setup {
   extensions = {}
 }
 
-require("nvim-autopairs").setup({
-  disable_filetype = { "TelescopePrompt" , "vim" },
-})
+require("nvim-treesitter.configs").setup {
+  textobjects = {
+    select = {
+      enable = true,
+      -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,
+      keymaps = {
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        ["ic"] = "@class.inner"
+      }
+    }
+  }
+}
 
+require("nvim-autopairs").setup {
+    disable_filetype = { "TelescopePrompt" , "vim" }
+}
+
+--[[ require("auto-session").setup {
+} ]]
+
+-- project.nvim
+require("project_nvim").setup {
+    silent_chdir = false
+}
 
 local telescope = require("telescope")
 local builtin = require("telescope.builtin")
@@ -138,7 +140,7 @@ end
 function M.find_inacon()
     builtin.find_files {
         prompt_title = "Find files in Inacon",
-        search_dirs = { vim.env.INACON_DIR .. "/Kurse", vim.env.INACON_DIR .. "/Automation" },
+        search_dirs = { env.INACON_DIR .. "/Kurse", env.INACON_DIR .. "/Automation" },
         sort_mru = true
     }
 end
@@ -146,7 +148,7 @@ end
 function M.find_old_inacon()
     builtin.oldfiles {
         prompt_title = "Find old files in Inacon",
-        search_dirs = { vim.env.INACON_DIR .. "/Kurse", vim.env.INACON_DIR .. "/Automation" },
+        search_dirs = { env.INACON_DIR .. "/Kurse", env.INACON_DIR .. "/Automation" },
         sort_mru = true
     }
 end

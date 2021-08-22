@@ -1,48 +1,6 @@
-let $INACON_DIR = "/home/jonas/Desktop/Inacon/"
+let $INACON_DIR = $HOME . "/Desktop/Inacon/"
 let $INACON_VENV_ACTIVATE = $INACON_DIR . "inacon_env/bin/activate"
 let $INACON_VENV_PYTHON = $INACON_DIR . "inacon_env/bin"
-
-set background=dark
-" Use system clipboard
-set clipboard^=unnamed,unnamedplus
-" Autocomplete settings
-set completeopt=menuone,noselect,preview
-set cursorline
-set expandtab
-" Do not open folds when moving with { or }
-set foldopen-=block
-" Auto-save when switching to different buffer using ctrl-6
-set autowriteall
-set ignorecase
-" Show replacement results while typing command
-set inccommand=nosplit
-set incsearch
-" Drag window with mouse
-set mouse=a
-set nohlsearch
-set nojoinspaces
-" Current mode in insert mode is not necessary when using status line plugin
-set noshowmode
-set noswapfile
-set nowrap
-set number
-set relativenumber
-set scrolloff=9
-set shiftround
-set shiftwidth=4
-" Do not display ins-completion-menu messages
-set shortmess+=c
-set smartcase
-set splitbelow splitright
-set synmaxcol=250
-set tabstop=4
-set t_Co=256
-set termguicolors
-set textwidth=90
-set timeoutlen=300
-set undodir=~/.vim/nvim-undo-dir
-set undofile
-set wildignorecase
 
 " Directory for plugins
 call plug#begin('~/.vim/plugged')
@@ -72,7 +30,6 @@ Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
-
 Plug 'ahmedkhalf/project.nvim'
 
 " File browser
@@ -98,7 +55,6 @@ Plug 'HallerPatrick/py_lsp.nvim'
 
 " New text objects
 Plug 'wellle/targets.vim'
-
 " E.g. dav to delete b from a_b_c => a_c
 Plug 'Julian/vim-textobj-variable-segment'
   Plug 'kana/vim-textobj-user'
@@ -108,12 +64,11 @@ Plug 'alvan/vim-closetag'
 
 Plug 'b3nj5m1n/kommentary'
 
-" Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 " Allows to repeat vim surround commands, e.g. cs'"
 Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-obsession'
+Plug 'rmagatti/auto-session'
 
 " Swap function arguments using Alt + arrow keys
 Plug 'AndrewRadev/sideways.vim'
@@ -134,7 +89,8 @@ endif
 colorscheme onedark
 
 lua << EOF
--- Plugin settings are in ~/.config/nvim/lua/plugins.lua
+-- Load config files from ~/.config/nvim/lua/
+require("options")
 require("plugins")
 EOF
 
@@ -195,7 +151,7 @@ nno <cr> myi<cr><Esc>g`y
 
 " Avoid accidentally recording a macro
 nno q <nop>
-nno <leader>q q
+nno Q q
 
 " Do not move by accident
 nno <space> <nop>
@@ -250,13 +206,11 @@ nno <leader>fi <cmd>lua require("plugins").find_inacon()<cr>
 nno <leader>fu <cmd>lua require("plugins").find_old_inacon()<cr>
 " Find old
 nno <leader>fo <cmd>Telescope oldfiles<cr>
-" List color schemes
+nno <leader>h <cmd>Telescope help_tags<cr>
 nno <leader>s <cmd>Telescope colorscheme<cr>
-" List keybindings
 nno <leader>k <cmd>Telescope keymaps<cr>
 " List projects (project.nvim)
 nno <leader>p <cmd>Telescope projects<cr>
-" Run plug update
 nno <leader>u <cmd>PlugClean!<cr><cmd>PlugUpdate<cr>
 
 " LSP stuff
@@ -274,8 +228,9 @@ nno <leader>= <cmd>lua vim.lsp.buf.formatting()<cr>
 " Open vim.init
 nno <leader>rc <cmd>e $MYVIMRC<cr>
 nno <leader>Rc <cmd>e! $MYVIMRC<cr>
-" Open plugins.lua
+" Open lua config files
 nno <leader>rp <cmd>e ~/.config/nvim/lua/plugins.lua<cr>
+nno <leader>ro <cmd>e ~/.config/nvim/lua/options.lua<cr>
 
 " git interactive status
 nno <leader>gs <cmd>Git<cr>
@@ -288,6 +243,7 @@ nno <leader>t <cmd>TestFile<cr>
 
 " Reload plugins module, save and resource vim.init file
 nno <leader>so <cmd>lua require("plenary.reload").reload_module("plugins")<cr>
+    \<cmd>lua require("plenary.reload").reload_module("options")<cr>
     \<cmd>w<cr><cmd>so $MYVIMRC<cr>
 
 " Open terminal in new window to the right
