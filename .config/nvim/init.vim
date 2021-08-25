@@ -183,6 +183,8 @@ nno <leader><F2> :%s///gc<left><left><left><left>
 " Circular window movements
 nno <tab> <C-w>w
 nno <S-tab> <C-w>W
+" Open new horizontal split (consistent with Ctrl-W + v)
+nno <C-w>h <cmd>split<cr>
 
 nno <C-n> <cmd>Fern %:h -drawer -toggle<cr>
 " Use . to go up a directory
