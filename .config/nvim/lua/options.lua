@@ -26,6 +26,7 @@ o.wrap = false
 o.number = true
 o.relativenumber = true
 o.scrolloff = 9
+o.sessionoptions = o.sessionoptions + "options,resize,winpos,terminal"
 o.shiftround = true
 o.shiftwidth = 4
 -- Do not display ins-completion-menu messages
@@ -39,6 +40,6 @@ o.tabstop = 4
 o.termguicolors = true
 o.textwidth = 90
 o.timeoutlen = 300
-o.undodir = "~/.vim/nvim-undo-dir"
+o.undodir = vim.env.HOME .. "/vim/nvim-undo-dir"
 o.undofile = true
 o.wildignorecase = true

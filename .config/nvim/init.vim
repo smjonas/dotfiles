@@ -37,7 +37,7 @@ Plug 'antoinemadec/FixCursorHold.nvim'
 Plug 'lambdalisue/fern.vim'
   let g:fern#drawer_width = 50
 
-Plug 'hoob3rt/lualine.nvim', {'commit': 'dc2c711'}
+Plug 'shadmansaleh/lualine.nvim' ", {'commit': 'dc2c711'}
 " Change font to Powerline compatible font in Edit > Preferences (bash)
 " or set the font in ~/.config/alacritty/alacritty.yml
 " after installing by cloning git@github.com:powerline/fonts.git
@@ -68,7 +68,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 " Allows to repeat vim surround commands, e.g. cs'"
 Plug 'tpope/vim-repeat'
-Plug 'rmagatti/auto-session'
+" Plug 'rmagatti/auto-session'
 
 " Swap function arguments using Alt + arrow keys
 Plug 'AndrewRadev/sideways.vim'
@@ -184,7 +184,7 @@ nno <leader><F2> :%s///gc<left><left><left><left>
 nno <tab> <C-w>w
 nno <S-tab> <C-w>W
 
-nno <C-n> <cmd>:Fern %:h -drawer -toggle<cr>
+nno <C-n> <cmd>Fern %:h -drawer -toggle<cr>
 " Use . to go up a directory
 " nmap <buffer><expr> . <Plug>(fern-action-leave)
 
@@ -201,6 +201,8 @@ ino <expr><S-tab> pumvisible() ? "<C-p>" : "<S-tab>"
 
 " -- Telescope remaps --
 nno <leader>ff <cmd>lua require("plugins").find_files()<cr>
+nno <leader>fg <cmd>lua require("plugins").live_grep()<cr>
+" Requires ripgrep to be installed (sudo apt install ripgrep)
 nno <leader>fb <cmd>lua require("plugins").find_buffers()<cr>
 nno <leader>fi <cmd>lua require("plugins").find_inacon()<cr>
 nno <leader>fu <cmd>lua require("plugins").find_old_inacon()<cr>
