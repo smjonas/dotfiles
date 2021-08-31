@@ -8,8 +8,9 @@ local coq = require("coq")
 
 local servers = {"pyright", "html", "vimls", "hls"}
 for _, server in ipairs(servers) do
-    lsp_conf[server].setup(coq.lsp_ensure_capabilities())
+    lsp_conf[server].setup{}
 end
+require("lsp_signature").setup()
 
 lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
     lsp.diagnostic.on_publish_diagnostics, {
@@ -19,8 +20,8 @@ lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
 
 g.coq_settings = {
     auto_start = true,
-    keymap = { recommended = false },
-    display = { pum = { source_context = { "[", "]" } } }
+    keymap = { jump_to_mark = "<c-p>" },
+    display = { pum = { source_context = { " [", "] " } } }
 }
 
 require("lint").linters_by_ft = {
@@ -88,6 +89,9 @@ require("lualine").setup {
 }
 
 require("nvim-treesitter.configs").setup {
+  highlight = {
+    enable = true
+  },
   textobjects = {
     select = {
       enable = true,

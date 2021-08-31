@@ -40,6 +40,6 @@ o.tabstop = 4
 o.termguicolors = true
 o.textwidth = 90
 o.timeoutlen = 300
-o.undodir = vim.env.HOME .. "/vim/nvim-undo-dir"
+o.undodir = vim.env.HOME .. "/.vim/nvim-undo-dir"
 o.undofile = true
 o.wildignorecase = true

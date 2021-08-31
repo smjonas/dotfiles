@@ -1,5 +1,7 @@
 alias ..='cd ..'
 alias v='vim'
+# Restart pulseaudio to fix audio issues
+alias pk='pulseaudio -k'
 
 alias am='cd ~/Desktop/Inacon && ./activate_venv.sh'
 alias stox='clear && cd ~/Desktop/Inacon/Automation/stocks && \

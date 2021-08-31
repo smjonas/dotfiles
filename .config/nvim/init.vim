@@ -4,8 +4,8 @@ let $INACON_VENV_PYTHON = $INACON_DIR . "inacon_env/bin"
 
 " Directory for plugins
 call plug#begin('~/.vim/plugged')
-Plug 'nvim-treesitter/nvim-treesitter', { 'branch': '0.5-compat', 'do': ':TSUpdate' }
-Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'branch' : '0.5-compat'}
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
+Plug 'nvim-treesitter/nvim-treesitter-textobjects' ", {'branch' : '0.5-compat'}
 
 " Color schemes
 Plug 'sainnhe/gruvbox-material'
@@ -19,6 +19,7 @@ Plug 'navarasu/onedark.nvim'
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'glepnir/lspsaga.nvim'
+Plug 'ray-x/lsp_signature.nvim'
 " Modified version of mfussenegger/nvim-lint
 Plug 'jonasstr/nvim-lint'
 
@@ -144,6 +145,7 @@ nno <leader>O O<Esc>0"_D
 
 " Use black hole register for deleting
 nno <leader>d "_d
+nno <leader>dd "_dd
 nno <leader>D "_D
 
 " Line break from normal mode
@@ -168,7 +170,7 @@ nno <bs> <C-^>
 
 nno J J$
 
-" Undo break points
+" Better undo break points
 ino , ,<C-g>u
 ino . .<C-g>u
 ino _ _<C-g>u
@@ -194,8 +196,6 @@ nno <C-n> <cmd>Fern %:h -drawer -toggle<cr>
 nno <leader>w <cmd>w<cr>
 nno <leader>q <cmd>q<cr>
 
-" Coq remaps
-ino <c-a> <cmd>lua COQnav_mark()<cr>
 " Tab completion in autocomplete (for default completion and coq)
 ino <expr><tab> pumvisible() ? "<C-n>" : "<tab>"
 " Go back using Shift+Tab instead of Ctrl+p
