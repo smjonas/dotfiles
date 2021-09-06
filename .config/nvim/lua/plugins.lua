@@ -3,13 +3,44 @@ local fn = vim.fn
 local env = vim.env
 local lsp = vim.lsp
 
-local lsp_conf = require("lspconfig")
-local coq = require("coq")
-
-local servers = {"pyright", "html", "vimls", "hls"}
-for _, server in ipairs(servers) do
-    lsp_conf[server].setup{}
+function P(table)
+    print(vim.inspect(table))
+    return table
 end
+
+g.coq_settings = {
+    auto_start = true,
+    keymap = { jump_to_mark = "<c-p>" },
+    display = {
+        pum = { source_context = { " [", "] " } },
+        icons = { mode = "none" }
+    }
+}
+
+local lspinstall = require("lspinstall")
+local function setup_lsp_servers()
+    lspinstall.setup()
+
+    local lsp_conf = require("lspconfig")
+    local coq = require("coq")
+
+    local servers = lspinstall.installed_servers()
+    local manually_installed = {"pyright", "html", "vimls", "hls"}
+    for _, server in ipairs(manually_installed) do
+        table.insert(servers, server)
+    end
+    for _, server in ipairs(servers) do
+        lsp_conf[server].setup{}
+    end
+end
+
+-- Automatically install after :LspInstall <server>
+lspinstall.post_install_hook = function()
+    setup_lsp_servers()
+    -- Triggers the autocmd that starts the server
+    vim.cmd("bufdo e")
+end
+
 require("lsp_signature").setup()
 
 lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
@@ -17,12 +48,6 @@ lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
         virtual_text = false
     }
 )
-
-g.coq_settings = {
-    auto_start = true,
-    keymap = { jump_to_mark = "<c-p>" },
-    display = { pum = { source_context = { " [", "] " } } }
-}
 
 require("lint").linters_by_ft = {
     python = {'flake8'}
@@ -41,6 +66,8 @@ local devicons = require("nvim-web-devicons")
 local all_icons = devicons.get_icons()
 local black_white_icons = all_icons
 
+--[[ local cur_text_color = fn.synIDattr("Normal", "fg#")
+print(cur_text_color)
 for k, _ in pairs(all_icons) do
     -- Set devicons to same color as normal text color (e.g. in Telescope prompt)
     black_white_icons[k]["color"] = cur_text_color
@@ -48,7 +75,8 @@ end
 
 devicons.setup {
     override = black_white_icons
-}
+} ]]
+
 
 local cur_scheme = vim.api.nvim_exec("colorscheme", true)
 local statusline_theme = cur_scheme
@@ -90,7 +118,7 @@ require("lualine").setup {
 
 require("nvim-treesitter.configs").setup {
   highlight = {
-    enable = true
+    enable = false
   },
   textobjects = {
     select = {
@@ -108,7 +136,7 @@ require("nvim-treesitter.configs").setup {
 }
 
 require("nvim-autopairs").setup {
-    disable_filetype = { "TelescopePrompt" , "vim" }
+    disable_filetype = { "TelescopePrompt" , "vim", "tex" }
 }
 
 require("project_nvim").setup {
@@ -121,6 +149,10 @@ local builtin = require("telescope.builtin")
 telescope.setup {
     sort_mru = true
 }
+
+vim.cmd [[highlight TelescopeBorder guifg=#4c4c4c]]
+vim.cmd [[highlight TelescopeSelection guifg=#ffffff guibg=#393939 gui=bold]]
+vim.cmd [[highlight TelescopeSelectionCaret guifg=#749484 gui=bold]]
 
 telescope.load_extension("fzf")
 telescope.load_extension("projects")

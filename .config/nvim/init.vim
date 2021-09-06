@@ -18,8 +18,9 @@ Plug 'navarasu/onedark.nvim'
   let g:onedark_style = "warmer"
 
 Plug 'neovim/nvim-lspconfig'
+Plug 'kabouzeid/nvim-lspinstall'
 Plug 'glepnir/lspsaga.nvim'
-Plug 'ray-x/lsp_signature.nvim'
+" Plug 'ray-x/lsp_signature.nvim'
 " Modified version of mfussenegger/nvim-lint
 Plug 'jonasstr/nvim-lint'
 
@@ -53,6 +54,7 @@ Plug 'vim-test/vim-test'
 " Make LSP client recognize python virtual env
 Plug 'HallerPatrick/py_lsp.nvim'
   Plug 'nvim-lua/completion-nvim'
+Plug 'lervag/vimtex'
 
 " New text objects
 Plug 'wellle/targets.vim'
@@ -268,6 +270,8 @@ augroup MY_AUTO_GROUP
     au BufEnter python PyLspReloadVenv
     " nvim-lint
     au BufEnter,BufWritePost * lua require("lint").try_lint()
+    " vimtex
+    au User VimtexEventInitPost VimtexCompile
 
     " Automatically enter insert mode when in terminal mode
     " and change to current directory
