@@ -13,7 +13,14 @@ g.coq_settings = {
     keymap = { jump_to_mark = "<c-p>" },
     display = {
         pum = { source_context = { " [", "] " } },
-        icons = { mode = "none" }
+        icons = { mode = "none" },
+        ghost_text = { enabled = false }
+    },
+    clients = {
+        snippets = { weight_adjust = 1.7 },
+        lsp = { weight_adjust = 1.5 },
+        tree_sitter = { weight_adjust = -1.5 },
+        buffers = { weight_adjust = -1.7 }
     }
 }
 
@@ -41,7 +48,7 @@ lspinstall.post_install_hook = function()
     vim.cmd("bufdo e")
 end
 
-require("lsp_signature").setup()
+-- require("lsp_signature").setup()
 
 lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
     lsp.diagnostic.on_publish_diagnostics, {

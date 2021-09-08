@@ -5,7 +5,7 @@ let $INACON_VENV_PYTHON = $INACON_DIR . "inacon_env/bin"
 " Directory for plugins
 call plug#begin('~/.vim/plugged')
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
-Plug 'nvim-treesitter/nvim-treesitter-textobjects' ", {'branch' : '0.5-compat'}
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
 " Color schemes
 Plug 'sainnhe/gruvbox-material'
@@ -75,6 +75,9 @@ Plug 'tpope/vim-repeat'
 
 " Swap function arguments using Alt + arrow keys
 Plug 'AndrewRadev/sideways.vim'
+
+" Remap to Alt + s to preserve default behaviour of S
+nmap <M-s> <Plug>Lightspeed_S
 Plug 'ggandor/lightspeed.nvim'
 
 " Misc
@@ -121,7 +124,7 @@ nno k gk
 nno H ^
 nno L $
 
-" Moving lines (==) for correct indentation
+" Indenting lines
 nno <silent> <C-k> :move-2<cr>==
 nno <silent> <C-j> :move+<cr>==
 nno <silent> <C-l> >>
@@ -171,6 +174,7 @@ nno <C-^> <C-^>zz
 nno <bs> <C-^>
 
 nno J J$
+nno Y y$
 
 " Better undo break points
 ino , ,<C-g>u
@@ -246,6 +250,8 @@ nno <leader>gp <cmd>Git push<cr>
 
 " Run tests
 nno <leader>t <cmd>TestFile<cr>
+" Run nearest test
+nno <leader>n <cmd>TestNearest<cr>
 
 " Reload plugins module, save and resource vim.init file
 nno <leader>so <cmd>lua require("plenary.reload").reload_module("plugins")<cr>
