@@ -2,7 +2,7 @@ local o = vim.opt
 
 o.background = "dark"
 -- Use system clipboard
-o.clipboard = o.clipboard ^ "unnamed,unnamedplus"
+-- o.clipboard = o.clipboard ^ "unnamed,unnamedplus"
 -- Autocomplete settings
 o.completeopt = "menuone,noselect,preview"
 o.cursorline = true

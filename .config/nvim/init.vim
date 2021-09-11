@@ -148,13 +148,15 @@ nno <M-l> <cmd>SidewaysRight<cr>
 nno <leader>o o<Esc>0"_D
 nno <leader>O O<Esc>0"_D
 
-" Use black hole register for deleting
+" Line break from normal mode
+nno <cr> myi<cr><Esc>g`y
+
+" Use black hole register
 nno <leader>d "_d
 nno <leader>dd "_dd
 nno <leader>D "_D
-
-" Line break from normal mode
-nno <cr> myi<cr><Esc>g`y
+nno c "_c
+nno C "_C
 
 " Avoid accidentally recording a macro
 nno q <nop>
@@ -166,15 +168,35 @@ nno <space> <nop>
 " Keep it centered (zv to open folds if necessary)
 nno n nzzzv
 nno N Nzzzv
-nno g; g;zz
-nno g, g,zz
 
 " Center on buffer change
 nno <C-^> <C-^>zz
 nno <bs> <C-^>
 
+" More centering
+nno g; g;zz
+nno g, g,zz
+nno { {zz
+nno } }zz
+
+" Easier incrementing / decrementing
+nno + <C-a>
+nno - <C-x>
+xno + g<C-a>
+xno - g<C-x>
+
 nno J J$
 nno Y y$
+" Clone current paragraph
+nno cp yap<S-}>p
+" Copy to clipboard
+nno <C-c> "+y
+" Insert from clipboard
+ino <C-v> <C-r>+
+nno <C-v> a<C-r>+<Esc>
+
+" Repeat last command in visual mode
+xno . :norm.<cr>
 
 " Better undo break points
 ino , ,<C-g>u
@@ -195,6 +217,7 @@ nno <S-tab> <C-w>W
 nno <C-w>h <cmd>split<cr>
 
 nno <C-n> <cmd>Fern %:h -drawer -toggle<cr>
+nno <M-n> <cmd>Fern %:h<cr>
 " Use . to go up a directory
 " nmap <buffer><expr> . <Plug>(fern-action-leave)
 
@@ -235,6 +258,8 @@ nno gh <cmd>lua vim.lsp.diagnostic.goto_next()<cr>
 " Format whole file
 nno <leader>= <cmd>lua vim.lsp.buf.formatting()<cr>
 
+nno <F3> <cmd>exe ':silent !sensible-browser %'<cr>
+
 " Open vim.init
 nno <leader>rc <cmd>e $MYVIMRC<cr>
 nno <leader>Rc <cmd>e! $MYVIMRC<cr>
@@ -268,6 +293,10 @@ augroup MY_AUTO_GROUP
 
     " Remove trailing whitespace on save (/e to hide errors)
     au BufWritePre * %s/\s\+$//e
+
+    " Equalize splits after resizing
+    au VimResized * wincmd =
+
     " Do not auto-wrap text, only comments. This does not work when set
     " as a global option (see https://vi.stackexchange.com/a/9367/37072)
     au FileType * set formatoptions-=t
