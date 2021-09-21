@@ -26,7 +26,7 @@ o.wrap = false
 o.number = true
 o.relativenumber = true
 o.scrolloff = 9
-o.sessionoptions = o.sessionoptions + "options,resize,winpos,terminal"
+o.sessionoptions = o.sessionoptions + "resize,winpos,terminal"
 o.shiftround = true
 o.shiftwidth = 4
 -- Do not display ins-completion-menu messages

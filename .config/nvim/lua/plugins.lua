@@ -2,6 +2,7 @@ local g = vim.g
 local fn = vim.fn
 local env = vim.env
 local lsp = vim.lsp
+local handlers = lsp.handlers
 
 function P(table)
     print(vim.inspect(table))
@@ -17,12 +18,17 @@ g.coq_settings = {
         ghost_text = { enabled = false }
     },
     clients = {
-        snippets = { weight_adjust = 1.7 },
-        lsp = { weight_adjust = 1.5 },
-        tree_sitter = { weight_adjust = -1.5 },
-        buffers = { weight_adjust = -1.7 }
+        buffers = { weight_adjust = 1.7 },
+        snippets = { weight_adjust = 1.5 },
+        lsp = { weight_adjust = -1.5 },
+        tree_sitter = { weight_adjust = -1.7 }
     }
 }
+
+-- Borders around lsp windows
+local popup_opts = { border = "single", max_width = 60 }
+handlers["textDocument/hover"] = lsp.with(handlers.hover, popup_opts)
+handlers["textDocument/signatureHelp"] = lsp.with(handlers.signature_help, popup_opts)
 
 local lspinstall = require("lspinstall")
 local function setup_lsp_servers()
@@ -40,6 +46,7 @@ local function setup_lsp_servers()
         lsp_conf[server].setup{}
     end
 end
+setup_lsp_servers()
 
 -- Automatically install after :LspInstall <server>
 lspinstall.post_install_hook = function()
@@ -47,8 +54,6 @@ lspinstall.post_install_hook = function()
     -- Triggers the autocmd that starts the server
     vim.cmd("bufdo e")
 end
-
--- require("lsp_signature").setup()
 
 lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
     lsp.diagnostic.on_publish_diagnostics, {
@@ -65,9 +70,9 @@ require("lspsaga").init_lsp_saga {
   warn_sign = '>>'
 }
 
-require("py_lsp").setup {
+--[[ require("py_lsp").setup {
     host_python = env.INACON_VENV_PYTHON
-}
+} ]]
 
 local devicons = require("nvim-web-devicons")
 local all_icons = devicons.get_icons()
@@ -99,14 +104,14 @@ require("lualine").setup {
   options = {
     icons_enabled = true,
     theme = statusline_theme,
-    component_separators = {'', ''},
-    section_separators = {'', ''},
+    component_separators = { left = '', right = '' },
+    section_separators = { left = '', right = '' },
     disabled_filetypes = {}
   },
   sections = {
     lualine_a = {'mode'},
     lualine_b = {'branch'},
-    lualine_c = { {'filename', full_path = true, symbols = {modified = '[*]'} } },
+    lualine_c = { { 'filename', full_path = true, symbols = { modified = '[*]' } } },
     lualine_x = {'filetype'},
     lualine_y = {'location', line_percentage},
     lualine_z = {}
@@ -114,8 +119,8 @@ require("lualine").setup {
   inactive_sections = {
     lualine_a = {},
     lualine_b = {},
-    lualine_c = { {'filename', symbols = {modified = '[*]'} } },
-    lualine_x = {'location', line_percentage},
+    lualine_c = { { 'filename', symbols = { modified = '[*]' } } },
+    lualine_x = { 'location', line_percentage },
     lualine_y = {},
     lualine_z = {}
   },
@@ -142,8 +147,18 @@ require("nvim-treesitter.configs").setup {
   }
 }
 
+g.user_emmet_expandabbr_key = "<M-c>"
+
 require("nvim-autopairs").setup {
     disable_filetype = { "TelescopePrompt" , "vim", "tex" }
+}
+
+--[[ require("indent_blankline").setup {
+    filetype = { "html", "python" }
+} ]]
+
+require("focus").setup {
+    hybridnumber = true
 }
 
 require("project_nvim").setup {
@@ -154,7 +169,10 @@ local telescope = require("telescope")
 local builtin = require("telescope.builtin")
 
 telescope.setup {
-    sort_mru = true
+    defaults = {
+        sort_mru = true,
+        path_display = { "truncate" }
+    }
 }
 
 vim.cmd [[highlight TelescopeBorder guifg=#4c4c4c]]
@@ -163,19 +181,27 @@ vim.cmd [[highlight TelescopeSelectionCaret guifg=#749484 gui=bold]]
 
 telescope.load_extension("fzf")
 telescope.load_extension("projects")
+telescope.load_extension("frecency")
 
 local M = {}
 function M.find_files()
     builtin.find_files {
-        prompt_title = "find files",
         cwd = "~",
         hidden = true
     }
 end
 
+function M.project_search()
+    builtin.find_files {
+        previewer = false,
+        prompt_title = "Project Search",
+        layout_strategy = "vertical",
+        cwd = require("lspconfig/util").root_pattern ".git"(vim.fn.expand "%:p"),
+    }
+end
+
 function M.live_grep()
     builtin.live_grep {
-        prompt_title = "live grep",
         -- path_display = {"tail"}
     }
 end
@@ -186,14 +212,14 @@ end
 
 function M.find_inacon()
     builtin.find_files {
-        prompt_title = "find files in inacon",
+        prompt_title = "Find Inacon Files",
         search_dirs = { env.INACON_DIR .. "/Kurse", env.INACON_DIR .. "/Automation" }
     }
 end
 
 function M.find_old_inacon()
     builtin.oldfiles {
-        prompt_title = "find old files in inacon",
+        prompt_title = "Find Old Inacon Files",
         search_dirs = { env.INACON_DIR .. "/Kurse", env.INACON_DIR .. "/Automation" }
     }
 end

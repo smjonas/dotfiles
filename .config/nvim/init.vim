@@ -24,7 +24,7 @@ Plug 'glepnir/lspsaga.nvim'
 " Modified version of mfussenegger/nvim-lint
 Plug 'jonasstr/nvim-lint'
 
-Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+Plug 'ms-jpq/coq_nvim', { 'branch': 'coq', 'do': ':COQnow' }
 Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
 
 " Telescope stuff
@@ -32,6 +32,8 @@ Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+Plug 'nvim-telescope/telescope-frecency.nvim'
+  Plug 'tami5/sqlite.lua'
 Plug 'ahmedkhalf/project.nvim'
 
 " File browser
@@ -52,8 +54,8 @@ Plug 'vim-test/vim-test'
   let g:test#strategy = 'neovim'
   let test#neovim#term_position = 'vertical 80'
 " Make LSP client recognize python virtual env
-Plug 'HallerPatrick/py_lsp.nvim'
-  Plug 'nvim-lua/completion-nvim'
+" Plug 'HallerPatrick/py_lsp.nvim'
+  " Plug 'nvim-lua/completion-nvim'
 Plug 'lervag/vimtex'
 
 " New text objects
@@ -62,7 +64,9 @@ Plug 'wellle/targets.vim'
 Plug 'Julian/vim-textobj-variable-segment'
   Plug 'kana/vim-textobj-user'
 
+" Auto-close / html plugins
 Plug 'windwp/nvim-autopairs'
+Plug 'mattn/emmet-vim'
 Plug 'alvan/vim-closetag'
 
 Plug 'b3nj5m1n/kommentary'
@@ -79,9 +83,11 @@ Plug 'AndrewRadev/sideways.vim'
 " Remap to Alt + s to preserve default behaviour of S
 nmap <M-s> <Plug>Lightspeed_S
 Plug 'ggandor/lightspeed.nvim'
+Plug 'beauwilliams/focus.nvim'
 
 " Misc
 Plug 'arp242/undofile_warn.vim'
+" Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'chrisbra/Colorizer'
   let g:colorizer_auto_filetype='css,html,php,lua'
 call plug#end()
@@ -187,13 +193,14 @@ xno - g<C-x>
 
 nno J J$
 nno Y y$
-" Clone current paragraph
-nno cp yap<S-}>p
+" Copy and paste current paragraph
+nno cp vap:t'><cr>
+
 " Copy to clipboard
 nno <C-c> "+y
 " Insert from clipboard
-ino <C-v> <C-r>+
-nno <C-v> a<C-r>+<Esc>
+ino <M-v> <C-r>+
+nno <M-v> a<C-r>+<Esc>
 
 " Repeat last command in visual mode
 xno . :norm.<cr>
@@ -220,6 +227,7 @@ nno <C-n> <cmd>Fern %:h -drawer -toggle<cr>
 nno <M-n> <cmd>Fern %:h<cr>
 " Use . to go up a directory
 " nmap <buffer><expr> . <Plug>(fern-action-leave)
+nno <silent> <C-a> <cmd>FocusSplitNicely<cr>
 
 " Faster file saving and exiting
 nno <leader>w <cmd>w<cr>
@@ -237,14 +245,19 @@ nno <leader>fg <cmd>lua require("plugins").live_grep()<cr>
 nno <leader>fb <cmd>lua require("plugins").find_buffers()<cr>
 nno <leader>fi <cmd>lua require("plugins").find_inacon()<cr>
 nno <leader>fu <cmd>lua require("plugins").find_old_inacon()<cr>
+nno <leader>p <cmd>lua require("plugins").project_search()<cr>
+
 " Find old
 nno <leader>fo <cmd>Telescope oldfiles<cr>
 nno <leader>h <cmd>Telescope help_tags<cr>
 nno <leader>s <cmd>Telescope colorscheme<cr>
 nno <leader>k <cmd>Telescope keymaps<cr>
 " List projects (project.nvim)
-nno <leader>p <cmd>Telescope projects<cr>
+nno <leader>P <cmd>Telescope projects<cr>
+nno <leader>rr <cmd>Telescope frecency<cr>
+
 nno <leader>u <cmd>PlugClean!<cr><cmd>PlugUpdate<cr>
+nno <leader>i <cmd>PlugInstall<cr>
 
 " LSP stuff
 nno <F1> <cmd>lua require("lspsaga.hover").render_hover_doc()<cr>
@@ -258,6 +271,7 @@ nno gh <cmd>lua vim.lsp.diagnostic.goto_next()<cr>
 " Format whole file
 nno <leader>= <cmd>lua vim.lsp.buf.formatting()<cr>
 
+" Open current file in browser
 nno <F3> <cmd>exe ':silent !sensible-browser %'<cr>
 
 " Open vim.init
