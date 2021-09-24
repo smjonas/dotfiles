@@ -153,10 +153,6 @@ require("nvim-autopairs").setup {
     disable_filetype = { "TelescopePrompt" , "vim", "tex" }
 }
 
---[[ require("indent_blankline").setup {
-    filetype = { "html", "python" }
-} ]]
-
 require("focus").setup {
     hybridnumber = true
 }
@@ -170,14 +166,14 @@ local builtin = require("telescope.builtin")
 
 telescope.setup {
     defaults = {
-        sort_mru = true,
+        -- sort_mru = true,
         path_display = { "truncate" }
     }
 }
 
-vim.cmd [[highlight TelescopeBorder guifg=#4c4c4c]]
-vim.cmd [[highlight TelescopeSelection guifg=#ffffff guibg=#393939 gui=bold]]
-vim.cmd [[highlight TelescopeSelectionCaret guifg=#749484 gui=bold]]
+-- vim.cmd [[highlight TelescopeBorder guifg=#4c4c4c]]
+-- vim.cmd [[highlight TelescopeSelection guifg=#ffffff guibg=#393939 gui=bold]]
+-- vim.cmd [[highlight TelescopeSelectionCaret guifg=#749484 gui=bold]]
 
 telescope.load_extension("fzf")
 telescope.load_extension("projects")
@@ -197,12 +193,6 @@ function M.project_search()
         prompt_title = "Project Search",
         layout_strategy = "vertical",
         cwd = require("lspconfig/util").root_pattern ".git"(vim.fn.expand "%:p"),
-    }
-end
-
-function M.live_grep()
-    builtin.live_grep {
-        -- path_display = {"tail"}
     }
 end
 
