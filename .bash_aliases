@@ -1,5 +1,5 @@
 alias ..='cd ..'
-alias v='vim'
+alias v='nvim'
 # Restart pulseaudio to fix audio issues
 alias pk='pulseaudio -k'
 alias xampp='sudo /opt/lampp/manager-linux-x64.run'

@@ -3,7 +3,8 @@ let $INACON_VENV_ACTIVATE = $INACON_DIR . "inacon_env/bin/activate"
 let $INACON_VENV_PYTHON = $INACON_DIR . "inacon_env/bin"
 
 " Directory for plugins
-call plug#begin('~/.vim/plugged')
+call plug#begin(stdpath('data') . '/plugged')
+
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
@@ -19,7 +20,7 @@ Plug 'navarasu/onedark.nvim'
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'kabouzeid/nvim-lspinstall'
-Plug 'glepnir/lspsaga.nvim'
+Plug 'tami5/lspsaga.nvim'
 Plug 'ray-x/lsp_signature.nvim'
 " Modified version of mfussenegger/nvim-lint
 Plug 'jonasstr/nvim-lint'
@@ -30,13 +31,17 @@ Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
 " Telescope stuff
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope.nvim', {'branch': 'master'}
+" Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
-Plug 'nvim-telescope/telescope-frecency.nvim'
-  Plug 'tami5/sqlite.lua'
+
+Plug 'tami5/sqlite.lua'
+  Plug 'nvim-telescope/telescope-frecency.nvim'
+  " Plug 'nvim-telescope/telescope-cheat.nvim', { 'commit': '7322a73' }
+
 Plug 'ahmedkhalf/project.nvim'
 
-" File browser
+" File browser:
 Plug 'antoinemadec/FixCursorHold.nvim'
 Plug 'lambdalisue/fern.vim'
   let g:fern#drawer_width = 50
@@ -60,6 +65,7 @@ Plug 'lervag/vimtex'
 
 " New text objects
 Plug 'wellle/targets.vim'
+
 " E.g. dav to delete b from a_b_c => a_c
 Plug 'Julian/vim-textobj-variable-segment'
   Plug 'kana/vim-textobj-user'

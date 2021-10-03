@@ -3,6 +3,7 @@ local o = vim.opt
 o.background = "dark"
 -- Use system clipboard
 -- o.clipboard = o.clipboard ^ "unnamed,unnamedplus"
+o.cmdheight = 2
 -- Autocomplete settings
 o.completeopt = "menuone,noselect,preview"
 o.cursorline = true
@@ -27,6 +28,7 @@ o.number = true
 o.relativenumber = true
 o.scrolloff = 9
 o.sessionoptions = o.sessionoptions + "resize,winpos,terminal"
+o.sessionoptions = o.sessionoptions - "buffers"
 o.shiftround = true
 o.shiftwidth = 4
 -- Do not display ins-completion-menu messages
@@ -40,6 +42,6 @@ o.tabstop = 4
 o.termguicolors = true
 o.textwidth = 90
 o.timeoutlen = 300
-o.undodir = vim.env.HOME .. "/.vim/nvim-undo-dir"
+o.undodir = vim.env.HOME .. vim.fn.stdpath("data") .. "/undo"
 o.undofile = true
 o.wildignorecase = true

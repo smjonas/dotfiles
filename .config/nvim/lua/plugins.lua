@@ -9,6 +9,25 @@ function P(table)
     return table
 end
 
+g.user_emmet_expandabbr_key = "<C-q>"
+
+require("kommentary.config").configure_language("default", {
+    prefer_single_line_comments = true
+})
+
+require("nvim-autopairs").setup {
+    disable_filetype = { "TelescopePrompt" , "vim", "tex" }
+}
+
+require("focus").setup {
+    hybridnumber = true
+}
+
+require("auto-session").setup {
+    -- Need to type RestoreSession manually
+    auto_restore_enabled = false
+}
+
 g.coq_settings = {
     auto_start = true,
     keymap = { jump_to_mark = "<c-p>" },
@@ -74,12 +93,12 @@ require("lspsaga").init_lsp_saga {
     host_python = env.INACON_VENV_PYTHON
 } ]]
 
-local devicons = require("nvim-web-devicons")
+--[[ local devicons = require("nvim-web-devicons")
 local all_icons = devicons.get_icons()
 local black_white_icons = all_icons
-
---[[ local cur_text_color = fn.synIDattr("Normal", "fg#")
+cur_text_color = fn.synIDattr("Normal", "fg#")
 print(cur_text_color)
+
 for k, _ in pairs(all_icons) do
     -- Set devicons to same color as normal text color (e.g. in Telescope prompt)
     black_white_icons[k]["color"] = cur_text_color
@@ -88,7 +107,6 @@ end
 devicons.setup {
     override = black_white_icons
 } ]]
-
 
 local cur_scheme = vim.api.nvim_exec("colorscheme", true)
 local statusline_theme = cur_scheme
@@ -111,7 +129,8 @@ require("lualine").setup {
   sections = {
     lualine_a = {'mode'},
     lualine_b = {'branch'},
-    lualine_c = { { 'filename', full_path = true, symbols = { modified = '[*]' } } },
+    -- 1 = show relative path
+    lualine_c = { { 'filename', path = 1, symbols = { modified = '[*]' } } },
     lualine_x = {'filetype'},
     lualine_y = {'location', line_percentage},
     lualine_z = {}
@@ -147,16 +166,6 @@ require("nvim-treesitter.configs").setup {
   }
 }
 
-g.user_emmet_expandabbr_key = "<M-c>"
-
-require("nvim-autopairs").setup {
-    disable_filetype = { "TelescopePrompt" , "vim", "tex" }
-}
-
-require("focus").setup {
-    hybridnumber = true
-}
-
 require("project_nvim").setup {
     silent_chdir = false
 }
@@ -171,13 +180,15 @@ telescope.setup {
     }
 }
 
--- vim.cmd [[highlight TelescopeBorder guifg=#4c4c4c]]
--- vim.cmd [[highlight TelescopeSelection guifg=#ffffff guibg=#393939 gui=bold]]
--- vim.cmd [[highlight TelescopeSelectionCaret guifg=#749484 gui=bold]]
+-- Cyan Telescope borders
+vim.cmd [[highlight TelescopeResultsBorder guifg=#57a5e5]]
+vim.cmd [[highlight TelescopePreviewBorder guifg=#57a5e5]]
+vim.cmd [[highlight TelescopePromptBorder guifg=#57a5e5]]
 
 telescope.load_extension("fzf")
 telescope.load_extension("projects")
 telescope.load_extension("frecency")
+-- telescope.load_extension("cheat")
 
 local M = {}
 function M.find_files()
@@ -194,10 +205,6 @@ function M.project_search()
         layout_strategy = "vertical",
         cwd = require("lspconfig/util").root_pattern ".git"(vim.fn.expand "%:p"),
     }
-end
-
-function M.find_buffers()
-    builtin.buffers()
 end
 
 function M.find_inacon()
