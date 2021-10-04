@@ -37,6 +37,8 @@ o.sidescrolloff = 6
 o.smartcase = true
 o.splitbelow = true
 o.splitright = true
+-- Try to stay in the current column, e.g. when deleting the current line
+o.startofline = false
 o.synmaxcol = 250
 o.tabstop = 4
 o.termguicolors = true
@@ -44,4 +46,6 @@ o.textwidth = 90
 o.timeoutlen = 300
 o.undodir = vim.env.HOME .. vim.fn.stdpath("data") .. "/undo"
 o.undofile = true
+-- Enables selecting a block of text across line boundaries
+o.virtualedit = o.virtualedit + "block"
 o.wildignorecase = true

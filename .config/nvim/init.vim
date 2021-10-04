@@ -5,6 +5,8 @@ let $INACON_VENV_PYTHON = $INACON_DIR . "inacon_env/bin"
 " Directory for plugins
 call plug#begin(stdpath('data') . '/plugged')
 
+Plug '~/Desktop/bubbleup.nvim'
+
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
@@ -31,13 +33,13 @@ Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
 " Telescope stuff
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim', {'branch': 'master'}
-" Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope.nvim', { 'commit': '4e629cdea' }
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
 Plug 'tami5/sqlite.lua'
   Plug 'nvim-telescope/telescope-frecency.nvim'
   " Plug 'nvim-telescope/telescope-cheat.nvim', { 'commit': '7322a73' }
+" Plug 'ludovicchabant/vim-gutentags'
 
 Plug 'ahmedkhalf/project.nvim'
 
@@ -92,6 +94,7 @@ Plug 'ggandor/lightspeed.nvim'
 Plug 'beauwilliams/focus.nvim'
 
 " Misc
+Plug 'zirrostig/vim-schlepp'
 Plug 'arp242/undofile_warn.vim'
 " Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'chrisbra/Colorizer'
@@ -106,6 +109,8 @@ endif
 
 colorscheme onedark
 
+vmap <F5> <cmd>lua require("bubbleup").test(1)<cr>
+
 lua << EOF
 -- Load config files from ~/.config/nvim/lua/
 require("options")
@@ -116,7 +121,7 @@ runtime mappings.vim
 augroup MY_AUTO_GROUP
     au!
     " Run on startup for faster keyboard movement
-    au VimEnter * silent !xset r rate 250 33
+    au VimEnter * silent !xset r rate 210 33
 
     " Remove trailing whitespace on save (/e to hide errors)
     au BufWritePre * %s/\s\+$//e
