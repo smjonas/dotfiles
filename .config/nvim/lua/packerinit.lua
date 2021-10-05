@@ -6,9 +6,15 @@ end
 
 require('packer').startup(function()
 
-  local map = require('utils').map
-
-  use 'wbthomason/packer.nvim'
+  use {
+    'wbthomason/packer.nvim',
+    config = function()
+      local map = require('utils').map
+      map('n', '<leader>c', '<cmd>PackerClean<cr>')
+      map('n', '<leader>u', '<cmd>PackerUpdate<cr>')
+      map('n', '<leader>i', '<cmd>PackerInstall<cr>')
+    end
+  }
 
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 
@@ -69,16 +75,20 @@ require('packer').startup(function()
   use {
     {
       'neovim/nvim-lspconfig',
-      config = function() require('plugins.lsp') end
+      config = function() require('plugins.lsp') end,
     },
     'kabouzeid/nvim-lspinstall',
     {
       'tami5/lspsaga.nvim',
       config = function()
-        require("lspsaga").init_lsp_saga {
+        require('lspsaga').init_lsp_saga {
           error_sign = '>>',
           warn_sign = '>>'
         }
+        local map = require('utils').map
+        map('n', '<F1>', '<cmd>lua require("lspsaga.hover").render_hover_doc()<cr>')
+        map('n', '<F2>', '<cmd>lua require("lspsaga.rename").rename()<cr>')
+        map('n', '<leader>ga', '<cmd>lua require("lspsaga.codeaction").code_action()<cr>')
       end
     },
     'ray-x/lsp_signature.nvim',
@@ -94,7 +104,12 @@ require('packer').startup(function()
   -- Tree viewer / file browser
   use {
     'lambdalisue/fern.vim', requires = 'antoinemadec/FixCursorHold.nvim',
-    setup = function() vim.g['fern#drawer_width'] = 50 end
+    config = function()
+      vim.g['fern#drawer_width'] = 50
+      local map = require('utils').map
+      map('n', '<C-n>', '<cmd>Fern %:h -drawer -toggle<cr>')
+      map('n', '<M-n>', '<cmd>Fern %:h<cr>')
+    end
   }
 
   -- Auto-completion
@@ -135,24 +150,36 @@ require('packer').startup(function()
   -- Filetype specific plugins
   use {
     'mattn/emmet-vim',
-    ft = {'html', 'php'},
-    setup = function() vim.g.user_emmet_expandabbr_key = "<C-q>" end
+    ft = { 'html', 'php' },
+    setup = function() vim.g.user_emmet_expandabbr_key = '<C-q>' end
   }
 
   use { 'alvan/vim-closetag', ft = { 'html', 'php' } }
 
-  use { 'chrisbra/Colorizer', ft = { 'css', 'html', 'php', 'lua' } }
+  use { 'lervag/vimtex', ft = 'tex' }
 
-  use { 'lervag/vimtex', ft = { 'tex' } }
+  use {
+    'chrisbra/Colorizer',
+    setup = function()
+      vim.g.colorizer_auto_filetype = 'css,html,php,lua'
+      vim.g.colorizer_colornames = 0
+    end
+  }
 
   use {
     'vim-test/vim-test',
-    ft = { 'python' },
-    setup = function()
+    ft = 'python',
+    config = function()
       -- Activate python virtual env, then run current test file in new window
       vim.g['test#python#pytest#executable'] = 'source $INACON_VENV_ACTIVATE && pytest -rT -vv'
       vim.g['test#strategy'] = 'neovim'
       vim.g['test#neovim#term_position'] = 'vertical 80'
+
+      local map = require('utils').map
+      -- Run tests
+      map('n', '<leader>t', '<cmd>TestFile<cr>')
+      -- Run nearest test
+      map('n', '<leader>n', '<cmd>TestNearest<cr>')
     end
   }
 
@@ -160,39 +187,59 @@ require('packer').startup(function()
 
   -- New ways to manipulate text
   use {
-    { 'wellle/targets.vim' },
+    'wellle/targets.vim',
     -- E.g. dav to delete b from a_b_c => a_c
     { 'Julian/vim-textobj-variable-segment', requires = 'kana/vim-textobj-user' },
-    -- Swap function arguments using Alt + arrow keys
-    { 'AndrewRadev/sideways.vim' },
+    { 'AndrewRadev/sideways.vim',
+        config = function()
+          local map = require('utils').map
+          -- Sideways text objects to select arguments
+          map('o', 'aa', '<Plug>SidewaysArgumentTextobjA')
+          map('x', 'aa', '<Plug>SidewaysArgumentTextobjA')
+          map('o', 'ia', '<Plug>SidewaysArgumentTextobjI')
+          map('x', 'ia', '<Plug>SidewaysArgumentTextobjI')
+
+          -- Swap function arguments using Alt + arrow keys
+          map('n', '<M-h>', '<cmd>SidewaysLeft<cr>')
+          map('n', '<M-l>', '<cmd>SidewaysRight<cr>')
+        end
+      },
     { 'tpope/vim-surround', requires = 'tpope/vim-repeat' },
-    { 'zirrostig/vim-schlepp' }
+    {
+       -- 'Schlepp' text around while respecting existing text
+       'zirrostig/vim-schlepp',
+       config = function()
+         local map = require('utils').map
+         map('v', '<up>', '<Plug>SchleppUp', { noremap = false })
+         map('v', '<down>', '<Plug>SchleppDown', { noremap = false })
+         map('v', '<left>', '<Plug>SchleppLeft', { noremap = false })
+         map('v', '<right>', '<Plug>SchleppRight', { noremap = false })
+       end
+    }
   }
 
   use {
     'b3nj5m1n/kommentary',
     config = function()
       local kommentary = require('kommentary.config')
-      kommentary.configure_language("default", { prefer_single_line_comments = true })
-      kommentary.configure_language("java", { prefer_single_line_comments = false })
+      kommentary.configure_language('default', { prefer_single_line_comments = true })
+      kommentary.configure_language('java', { prefer_single_line_comments = false })
     end
   }
 
   use {
-    {
-      'windwp/nvim-autopairs',
-      config = function()
-        require("nvim-autopairs").setup {
-          disable_filetype = { "TelescopePrompt" , "vim", "tex" }
+    'windwp/nvim-autopairs',
+    config = function()
+        require('nvim-autopairs').setup {
+            disable_filetype = { 'TelescopePrompt' , 'vim', 'tex' }
         }
-      end
-    },
+    end
   }
 
   use {
     'rmagatti/auto-session',
     config = function()
-      require("auto-session").setup {
+      require('auto-session').setup {
         -- Need to type RestoreSession manually
         auto_restore_enabled = false
       }
@@ -201,21 +248,31 @@ require('packer').startup(function()
 
   use {
     'beauwilliams/focus.nvim',
-    config = function() require('focus').setup { hybridnumber = true } end
+    config = function()
+      require('focus').setup { hybridnumber = true }
+      require('utils').map('n', '<C-a>', '<cmd>FocusSplitNicely<cr>')
+    end
   }
 
   use {
     'ggandor/lightspeed.nvim',
     config = function()
       -- Remap to Alt + s to preserve default behaviour of S
-      map('n', '<M-s>', '<Plug>Lightspeed_S')
+      require('utils').map('n', '<M-s>', '<Plug>Lightspeed_S', { noremap = false })
     end
   }
 
   use {
     'tpope/vim-fugitive',
-    'arp242/undofile_warn.vim'
+    config = function()
+      local map = require('utils').map
+      map('n', '<leader>gs', '<cmd>Git<cr>')
+      -- Simpler git commit than vim-fugitive
+      map('n', '<leader>gc', ':Git commit -m')
+      map('n', '<leader>gp', '<cmd>Git push<cr>')
+    end
   }
 
+  use 'arp242/undofile_warn.vim'
 end)
 

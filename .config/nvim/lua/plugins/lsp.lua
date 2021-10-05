@@ -19,7 +19,7 @@ local function setup_lsp_servers()
     table.insert(servers, server)
   end
   for _, server in ipairs(servers) do
-    lsp_conf[server].setup{}
+    lsp_conf[server].setup(coq.lsp_ensure_capabilities())
   end
 end
 setup_lsp_servers()
@@ -36,3 +36,12 @@ lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
     virtual_text = false
   }
 )
+
+local map = require('../utils').map
+map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>')
+map('n', 'gr', '<cmd>lua vim.lsp.diagnostic.goto_prev()<cr>')
+map('n', 'gh', '<cmd>lua vim.lsp.diagnostic.goto_next()<cr>')
+
+-- Format whole file
+map('n', '<leader>=', '<cmd>lua vim.lsp.buf.formatting_sync()<cr>')
+
