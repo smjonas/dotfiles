@@ -35,7 +35,7 @@ o.shiftwidth = 4
 o.shortmess = o.shortmess + "c"
 o.sidescrolloff = 6
 o.smartcase = true
-o.splitbelow = true
+o.splitbelow = false
 o.splitright = true
 -- Try to stay in the current column, e.g. when deleting the current line
 o.startofline = false

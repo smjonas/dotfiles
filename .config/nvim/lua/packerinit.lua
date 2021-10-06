@@ -16,30 +16,15 @@ require('packer').startup(function()
     end
   }
 
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-
+  -- Treesitter
   use {
-    'nvim-treesitter/nvim-treesitter-textobjects',
-    after = 'nvim-treesitter',
+    'nvim-treesitter/nvim-treesitter', run = ':TSUpdate',
+    requires = {
+      'nvim-treesitter/nvim-treesitter-textobjects',
+      module = 'nvim-treesitter-textobjects'
+    },
     config = function()
-      require('nvim-treesitter.configs').setup {
-        highlight = {
-          enable = false
-        },
-        textobjects = {
-          select = {
-            enable = true,
-            -- Automatically jump forward to textobj, similar to targets.vim
-            lookahead = true,
-            keymaps = {
-              ['af'] = '@function.outer',
-              ['if'] = '@function.inner',
-              ['ac'] = '@class.outer',
-              ['ic'] = '@class.inner'
-            }
-          }
-        }
-      }
+      require('plugins.treesitter')
     end
   }
 
@@ -51,7 +36,7 @@ require('packer').startup(function()
       setup = function()
         vim.g.gruvbox_material_palette = 'mix'
         vim.g.gruvbox_material_background = 'medium'
-        vim.g.gruvbox_material_transparent_background = 1
+        vim.g.gruvbox_material_transparent_background = 0
       end
     },
     { 'ghifarit53/tokyonight-vim' },
@@ -191,88 +176,91 @@ require('packer').startup(function()
     -- E.g. dav to delete b from a_b_c => a_c
     { 'Julian/vim-textobj-variable-segment', requires = 'kana/vim-textobj-user' },
     { 'AndrewRadev/sideways.vim',
-        config = function()
-          local map = require('utils').map
-          -- Sideways text objects to select arguments
-          map('o', 'aa', '<Plug>SidewaysArgumentTextobjA')
-          map('x', 'aa', '<Plug>SidewaysArgumentTextobjA')
-          map('o', 'ia', '<Plug>SidewaysArgumentTextobjI')
-          map('x', 'ia', '<Plug>SidewaysArgumentTextobjI')
-
-          -- Swap function arguments using Alt + arrow keys
-          map('n', '<M-h>', '<cmd>SidewaysLeft<cr>')
-          map('n', '<M-l>', '<cmd>SidewaysRight<cr>')
-        end
-      },
-    { 'tpope/vim-surround', requires = 'tpope/vim-repeat' },
-    {
-       -- 'Schlepp' text around while respecting existing text
-       'zirrostig/vim-schlepp',
-       config = function()
-         local map = require('utils').map
-         map('v', '<up>', '<Plug>SchleppUp', { noremap = false })
-         map('v', '<down>', '<Plug>SchleppDown', { noremap = false })
-         map('v', '<left>', '<Plug>SchleppLeft', { noremap = false })
-         map('v', '<right>', '<Plug>SchleppRight', { noremap = false })
-       end
-    }
-  }
-
-  use {
-    'b3nj5m1n/kommentary',
-    config = function()
-      local kommentary = require('kommentary.config')
-      kommentary.configure_language('default', { prefer_single_line_comments = true })
-      kommentary.configure_language('java', { prefer_single_line_comments = false })
-    end
-  }
-
-  use {
-    'windwp/nvim-autopairs',
-    config = function()
-        require('nvim-autopairs').setup {
-            disable_filetype = { 'TelescopePrompt' , 'vim', 'tex' }
-        }
-    end
-  }
-
-  use {
-    'rmagatti/auto-session',
-    config = function()
-      require('auto-session').setup {
-        -- Need to type RestoreSession manually
-        auto_restore_enabled = false
-      }
-    end
-  }
-
-  use {
-    'beauwilliams/focus.nvim',
-    config = function()
-      require('focus').setup { hybridnumber = true }
-      require('utils').map('n', '<C-a>', '<cmd>FocusSplitNicely<cr>')
-    end
-  }
-
-  use {
-    'ggandor/lightspeed.nvim',
-    config = function()
-      -- Remap to Alt + s to preserve default behaviour of S
-      require('utils').map('n', '<M-s>', '<Plug>Lightspeed_S', { noremap = false })
-    end
-  }
-
-  use {
-    'tpope/vim-fugitive',
     config = function()
       local map = require('utils').map
-      map('n', '<leader>gs', '<cmd>Git<cr>')
-      -- Simpler git commit than vim-fugitive
-      map('n', '<leader>gc', ':Git commit -m')
-      map('n', '<leader>gp', '<cmd>Git push<cr>')
+      -- Sideways text objects to select arguments
+      map('o', 'aa', '<Plug>SidewaysArgumentTextobjA')
+      map('x', 'aa', '<Plug>SidewaysArgumentTextobjA')
+      map('o', 'ia', '<Plug>SidewaysArgumentTextobjI')
+      map('x', 'ia', '<Plug>SidewaysArgumentTextobjI')
+
+      -- Swap function arguments using Alt + arrow keys
+      map('n', '<M-h>', '<cmd>SidewaysLeft<cr>')
+      map('n', '<M-l>', '<cmd>SidewaysRight<cr>')
+    end
+  },
+  { 'machakann/vim-sandwich' },
+  {
+    -- 'Schlepp' text around while respecting existing text
+    'zirrostig/vim-schlepp',
+    config = function()
+      local map = require('utils').map
+      map('v', '<up>', '<Plug>SchleppUp', { noremap = false })
+      map('v', '<down>', '<Plug>SchleppDown', { noremap = false })
+      map('v', '<left>', '<Plug>SchleppLeft', { noremap = false })
+      map('v', '<right>', '<Plug>SchleppRight', { noremap = false })
     end
   }
+}
 
-  use 'arp242/undofile_warn.vim'
-end)
+use {
+  'b3nj5m1n/kommentary',
+  config = function()
+    local kommentary = require('kommentary.config')
+    kommentary.configure_language('default', { prefer_single_line_comments = true })
+    kommentary.configure_language('java', { prefer_single_line_comments = false })
+  end
+}
+
+use {
+  'windwp/nvim-autopairs',
+  config = function()
+    require('nvim-autopairs').setup {
+      disable_filetype = { 'TelescopePrompt' , 'vim', 'tex' }
+    }
+  end
+}
+
+use {
+  'rmagatti/auto-session',
+  config = function()
+    require('auto-session').setup {
+      -- Need to type RestoreSession manually
+      auto_restore_enabled = false
+    }
+  end
+}
+
+use {
+  'beauwilliams/focus.nvim',
+  config = function()
+    require('focus').setup { hybridnumber = true }
+    require('utils').map('n', '<C-a>', '<cmd>FocusSplitNicely<cr>')
+  end
+}
+
+use {
+  'ggandor/lightspeed.nvim',
+  config = function()
+    -- Remap to Alt + s to preserve default behaviour of S
+    require('utils').map('n', '<M-s>', '<Plug>Lightspeed_S', { noremap = false })
+  end
+}
+
+use {
+  'tpope/vim-fugitive',
+  config = function()
+    local map = require('utils').map
+    map('n', '<leader>gs', '<cmd>Git<cr>')
+    -- Simpler git commit than vim-fugitive
+    map('n', '<leader>gc', ':Git commit -m')
+    map('n', '<leader>gp', '<cmd>Git push<cr>')
+  end
+}
+
+use 'arp242/undofile_warn.vim'
+
+use 'tpope/vim-repeat'
+
+    end)
 

@@ -45,11 +45,11 @@ augroup my_auto_group
 
   " 2 spaces per tab for php files
   autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
-  autocmd FileType html,vim,lua setlocal shiftwidth=2 tabstop=2 expandtab
+  autocmd FileType lua,html,vim setlocal shiftwidth=2 tabstop=2 expandtab
 augroup end
 
 augroup packer_user_config
   autocmd!
-  autocmd BufWritePost packerinit.lua source <afile> | PackerCompile | echo 'Recompiled packerinit.lua'
+  autocmd BufWritePost packerinit.lua PackerCompile
 augroup end
 

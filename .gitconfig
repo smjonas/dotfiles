@@ -1,5 +1,6 @@
 [alias]
 	st = status
+    amend = commit --amend --no-edit
 [user]
 	email = jonas.strittmatter@gmx.de
 	name = jonasstr
