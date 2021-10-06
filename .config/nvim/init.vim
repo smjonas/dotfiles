@@ -32,7 +32,6 @@ augroup my_auto_group
   " as a global option (see https://vi.stackexchange.com/a/9367/37072)
   autocmd FileType * set formatoptions-=t
 
-  autocmd BufRead python setlocal foldmethod=indent foldnestmax=1
   " nvim-lint
   autocmd BufEnter,BufWritePost * lua require("lint").try_lint()
   " vimtex
@@ -44,8 +43,7 @@ augroup my_auto_group
   autocmd TermOpen * startinsert
 
   " 2 spaces per tab for php files
-  autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2 expandtab
-  autocmd FileType lua,html,vim setlocal shiftwidth=2 tabstop=2 expandtab
+  " autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2
 augroup end
 
 augroup packer_user_config
