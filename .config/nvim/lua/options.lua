@@ -34,6 +34,8 @@ o.shiftwidth = 4
 -- Do not display ins-completion-menu messages
 o.shortmess = o.shortmess + "c"
 o.sidescrolloff = 6
+-- Display diagnostics signs instead of line number (if there is a symbol to show)
+o.signcolumn = "number"
 o.smartcase = true
 o.splitbelow = false
 o.splitright = true

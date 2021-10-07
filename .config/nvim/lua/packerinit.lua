@@ -1,10 +1,11 @@
+-- @diagnostic disable: different-requires
 
 function P(table)
   print(vim.inspect(table))
   return table
 end
 
-require('packer').startup(function()
+require('packer').startup(function(use)
 
   use {
     'wbthomason/packer.nvim',
@@ -97,6 +98,11 @@ require('packer').startup(function()
     end
   }
 
+  use {
+    "luukvbaal/nnn.nvim",
+    config = function() require("nnn").setup() end
+  }
+
   -- Auto-completion
   use {
     {
@@ -144,11 +150,9 @@ require('packer').startup(function()
   use { 'lervag/vimtex', ft = 'tex' }
 
   use {
-    'chrisbra/Colorizer',
-    setup = function()
-      vim.g.colorizer_auto_filetype = 'css,html,php,lua'
-      vim.g.colorizer_colornames = 0
-    end
+    'norcalli/nvim-colorizer.lua',
+    ft = { 'css', 'html', 'lua', 'php' },
+    config = function() require('colorizer').setup() end
   }
 
   use {
@@ -176,91 +180,94 @@ require('packer').startup(function()
     -- E.g. dav to delete b from a_b_c => a_c
     { 'Julian/vim-textobj-variable-segment', requires = 'kana/vim-textobj-user' },
     { 'AndrewRadev/sideways.vim',
-    config = function()
-      local map = require('utils').map
-      -- Sideways text objects to select arguments
-      map('o', 'aa', '<Plug>SidewaysArgumentTextobjA')
-      map('x', 'aa', '<Plug>SidewaysArgumentTextobjA')
-      map('o', 'ia', '<Plug>SidewaysArgumentTextobjI')
-      map('x', 'ia', '<Plug>SidewaysArgumentTextobjI')
+      config = function()
+        local map = require('utils').map
+        -- Sideways text objects to select arguments
+        map('o', 'aa', '<Plug>SidewaysArgumentTextobjA')
+        map('x', 'aa', '<Plug>SidewaysArgumentTextobjA')
+        map('o', 'ia', '<Plug>SidewaysArgumentTextobjI')
+        map('x', 'ia', '<Plug>SidewaysArgumentTextobjI')
 
-      -- Swap function arguments using Alt + arrow keys
-      map('n', '<M-h>', '<cmd>SidewaysLeft<cr>')
-      map('n', '<M-l>', '<cmd>SidewaysRight<cr>')
-    end
-  },
-  { 'machakann/vim-sandwich' },
-  {
-    -- 'Schlepp' text around while respecting existing text
-    'zirrostig/vim-schlepp',
+        -- Swap function arguments using Alt + arrow keys
+        map('n', '<M-h>', '<cmd>SidewaysLeft<cr>')
+        map('n', '<M-l>', '<cmd>SidewaysRight<cr>')
+      end
+    },
+    { 'machakann/vim-sandwich' },
+    {
+      -- 'Schlepp' text around while respecting existing text
+      'zirrostig/vim-schlepp',
+      config = function()
+        local map = require('utils').map
+        map('v', '<up>', '<Plug>SchleppUp', { noremap = false })
+        map('v', '<down>', '<Plug>SchleppDown', { noremap = false })
+        map('v', '<left>', '<Plug>SchleppLeft', { noremap = false })
+        map('v', '<right>', '<Plug>SchleppRight', { noremap = false })
+      end
+    }
+  }
+
+  use {
+    'b3nj5m1n/kommentary',
     config = function()
-      local map = require('utils').map
-      map('v', '<up>', '<Plug>SchleppUp', { noremap = false })
-      map('v', '<down>', '<Plug>SchleppDown', { noremap = false })
-      map('v', '<left>', '<Plug>SchleppLeft', { noremap = false })
-      map('v', '<right>', '<Plug>SchleppRight', { noremap = false })
+      local kommentary = require('kommentary.config')
+      kommentary.configure_language('default', { prefer_single_line_comments = true })
+      kommentary.configure_language('java', { prefer_single_line_comments = false })
     end
   }
-}
 
-use {
-  'b3nj5m1n/kommentary',
-  config = function()
-    local kommentary = require('kommentary.config')
-    kommentary.configure_language('default', { prefer_single_line_comments = true })
-    kommentary.configure_language('java', { prefer_single_line_comments = false })
-  end
-}
+  use {
+    'windwp/nvim-autopairs',
+    config = function()
+      require('nvim-autopairs').setup {
+        disable_filetype = { 'TelescopePrompt' , 'vim', 'tex' }
+      }
+    end
+  }
 
-use {
-  'windwp/nvim-autopairs',
-  config = function()
-    require('nvim-autopairs').setup {
-      disable_filetype = { 'TelescopePrompt' , 'vim', 'tex' }
-    }
-  end
-}
+  use {
+    'rmagatti/auto-session',
+    config = function()
+      require('auto-session').setup {
+        -- Need to type RestoreSession manually
+        auto_restore_enabled = false
+      }
+    end
+  }
 
-use {
-  'rmagatti/auto-session',
-  config = function()
-    require('auto-session').setup {
-      -- Need to type RestoreSession manually
-      auto_restore_enabled = false
-    }
-  end
-}
+  use {
+    'beauwilliams/focus.nvim',
+    config = function()
+      require('focus').setup { hybridnumber = true }
+      require('utils').map('n', '<C-a>', '<cmd>FocusSplitNicely<cr>')
+    end
+  }
 
-use {
-  'beauwilliams/focus.nvim',
-  config = function()
-    require('focus').setup { hybridnumber = true }
-    require('utils').map('n', '<C-a>', '<cmd>FocusSplitNicely<cr>')
-  end
-}
+  use {
+    'ggandor/lightspeed.nvim',
+    config = function()
+      -- Remap to Alt + s to preserve default behaviour of S
+      require('utils').map('n', '<M-s>', '<Plug>Lightspeed_S', { noremap = false })
+    end
+  }
 
-use {
-  'ggandor/lightspeed.nvim',
-  config = function()
-    -- Remap to Alt + s to preserve default behaviour of S
-    require('utils').map('n', '<M-s>', '<Plug>Lightspeed_S', { noremap = false })
-  end
-}
+  use {
+    'tpope/vim-fugitive',
+    config = function()
+      local map = require('utils').map
+      map('n', '<leader>gs', '<cmd>Git<cr>')
+      -- Simpler git commit than vim-fugitive
+      map('n', '<leader>gc', ':Git commit -m')
+      map('n', '<leader>gp', '<cmd>Git push<cr>')
+    end
+  }
 
-use {
-  'tpope/vim-fugitive',
-  config = function()
-    local map = require('utils').map
-    map('n', '<leader>gs', '<cmd>Git<cr>')
-    -- Simpler git commit than vim-fugitive
-    map('n', '<leader>gc', ':Git commit -m')
-    map('n', '<leader>gp', '<cmd>Git push<cr>')
-  end
-}
 
-use 'arp242/undofile_warn.vim'
+  -- use { 'michaelb/sniprun', run = 'bash ./install.sh' }
 
-use 'tpope/vim-repeat'
+  use 'arp242/undofile_warn.vim'
 
-    end)
+  use 'tpope/vim-repeat'
+
+end)
 
