@@ -45,7 +45,7 @@ o.synmaxcol = 250
 o.tabstop = 4
 o.termguicolors = true
 o.textwidth = 90
-o.timeoutlen = 300
+o.timeoutlen = 250
 o.undodir = vim.env.HOME .. vim.fn.stdpath("data") .. "/undo"
 o.undofile = true
 -- Enables selecting a block of text across line boundaries

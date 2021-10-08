@@ -1,5 +1,4 @@
--- @diagnostic disable: different-requires
-
+---@diagnostic disable: different-requires
 function P(table)
   print(vim.inspect(table))
   return table
@@ -66,6 +65,7 @@ require('packer').startup(function(use)
     'kabouzeid/nvim-lspinstall',
     {
       'tami5/lspsaga.nvim',
+      commit = 'bafeddf',
       config = function()
         require('lspsaga').init_lsp_saga {
           error_sign = '>>',
@@ -262,6 +262,23 @@ require('packer').startup(function(use)
     end
   }
 
+  use {
+    'max397574/better-escape.nvim',
+    config = function()
+      require("better_escape").setup {
+        mapping = { 'ii' },
+      }
+    end
+  }
+
+  use {
+    'nvim-neorg/neorg',
+    requires = 'nvim-lua/plenary.nvim',
+    after = 'nvim-treesitter',
+    config = function()
+      require('plugins.neorg')
+    end
+  }
 
   -- use { 'michaelb/sniprun', run = 'bash ./install.sh' }
 
