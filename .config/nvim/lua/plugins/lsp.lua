@@ -6,32 +6,56 @@ local popup_opts = { border = "single", max_width = 60 }
 handlers["textDocument/hover"] = lsp.with(handlers.hover, popup_opts)
 handlers["textDocument/signatureHelp"] = lsp.with(handlers.signature_help, popup_opts)
 
+local lsp_conf = require("lspconfig")
 local lspinstall = require("lspinstall")
+
+local cmp_lsp, coq
+
+local function setup_lsp(server, args)
+  -- Prefer cmp over coq if both are available
+  if cmp_lsp ~= nil then
+    lsp_conf[server].setup(cmp_lsp.update_capabilities(
+      args or lsp.protocol.make_client_capabilities()
+    ))
+  elseif coq ~= nil then
+    lsp_conf[server].setup(coq.lsp_ensure_capabilities(args))
+  end
+end
+
+local function setup_sumneko_lsp()
+  local settings = {
+    Lua = {
+      diagnostics = {
+        -- Fix global vim is undefined
+        globals = { 'vim' }
+      },
+      telemetry = {
+        enable = false
+      }
+    }
+  }
+  setup_lsp("lua", settings)
+end
+
 local function setup_lsp_servers()
   lspinstall.setup()
-
-  local lsp_conf = require("lspconfig")
-  local coq = require("coq")
-
   local servers = lspinstall.installed_servers()
   local manually_installed = {"pyright", "html", "vimls", "hls"}
   for _, server in ipairs(manually_installed) do
     table.insert(servers, server)
   end
+
+  if package.loaded["cmp_nvim_lsp"] then
+    cmp_lsp = require("cmp_nvim_lsp")
+  elseif package.loaded["coq"] then
+    coq = require("coq")
+  end
+
   for _, server in ipairs(servers) do
-    -- Fix global vim is undefined
     if server == 'lua' then
-      lsp_conf.lua.setup(coq.lsp_ensure_capabilities {
-        settings = {
-          Lua = {
-            diagnostics = {
-              globals = { 'vim' }
-            }
-          }
-        }
-    })
+      setup_sumneko_lsp()
     else
-      lsp_conf[server].setup(coq.lsp_ensure_capabilities())
+      setup_lsp(server)
     end
   end
 end

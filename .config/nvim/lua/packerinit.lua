@@ -1,4 +1,4 @@
----@diagnostic disable: different-requires
+--@diagnostic disable: different-requires
 function P(table)
   print(vim.inspect(table))
   return table
@@ -61,6 +61,7 @@ require('packer').startup(function(use)
     {
       'neovim/nvim-lspconfig',
       config = function() require('plugins.lsp') end,
+      after = 'nvim-cmp'
     },
     'kabouzeid/nvim-lspinstall',
     {
@@ -103,13 +104,21 @@ require('packer').startup(function(use)
     config = function() require("nnn").setup() end
   }
 
-  -- Auto-completion
+  -- Auto-completion and snippets
   use {
     {
-      'ms-jpq/coq_nvim', branch = 'coq',
+      'ms-jpq/coq_nvim', disabled = true, branch = 'coq',
       setup = function() require('plugins.coq') end
     },
     { 'ms-jpq/coq.artifacts', branch = 'artifacts', after = 'coq_nvim' }
+  }
+
+  use {
+    'hrsh7th/nvim-cmp',
+    config = function()
+      require('plugins.cmp')
+    end,
+    requires = 'SirVer/ultisnips'
   }
 
   -- Telescope
