@@ -11,14 +11,19 @@ local lspinstall = require("lspinstall")
 
 local cmp_lsp, coq
 
-local function setup_lsp(server, args)
+local function setup_lsp(server, settings)
   -- Prefer cmp over coq if both are available
   if cmp_lsp ~= nil then
-    lsp_conf[server].setup(cmp_lsp.update_capabilities(
-      args or lsp.protocol.make_client_capabilities()
-    ))
+    local capabilities = cmp_lsp.update_capabilities(
+      lsp.protocol.make_client_capabilities()
+    )
+    lsp_conf[server].setup {
+      capabilities = capabilities, settings = settings
+    }
   elseif coq ~= nil then
-    lsp_conf[server].setup(coq.lsp_ensure_capabilities(args))
+    lsp_conf[server].setup {
+      capabilities = coq.lsp_ensure_capabilities(), settings = settings
+    }
   end
 end
 

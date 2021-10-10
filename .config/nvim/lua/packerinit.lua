@@ -1,4 +1,4 @@
---@diagnostic disable: different-requires
+---@diagnostic disable: different-requires
 function P(table)
   print(vim.inspect(table))
   return table
@@ -118,7 +118,7 @@ require('packer').startup(function(use)
     config = function()
       require('plugins.cmp')
     end,
-    requires = 'SirVer/ultisnips'
+    requires = { 'SirVer/ultisnips', 'quangnguyen30192/cmp-nvim-ultisnips' }
   }
 
   -- Telescope
