@@ -8,14 +8,14 @@ if exists('+termguicolors')
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
 
-colorscheme edge
-
 lua << EOF
 -- Load config files from ~/.config/nvim/lua/
 require("packerinit")
 require("options")
 EOF
 runtime mappings.vim
+
+colorscheme edge
 
 augroup my_auto_group
   autocmd!

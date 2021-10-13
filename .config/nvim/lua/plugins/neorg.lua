@@ -7,7 +7,7 @@ require('neorg').setup {
       -- Manage your directories with Neorg
       config = {
         workspaces = {
-          my_workspace = '~/neorg'
+          work = '~/Desktop/neorg_todos'
         }
       }
     }

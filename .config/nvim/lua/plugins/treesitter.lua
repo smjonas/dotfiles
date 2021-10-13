@@ -22,7 +22,10 @@ require('nvim-treesitter.configs').setup {
         ['af'] = '@function.outer',
         ['if'] = '@function.inner',
         ['ac'] = '@class.outer',
-        ['ic'] = '@class.inner'
+        ['ic'] = '@class.inner',
+        ['ia'] = {
+          html = "@custom_attribute.inner"
+        }
       }
     }
   }

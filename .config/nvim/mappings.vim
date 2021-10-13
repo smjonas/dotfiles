@@ -123,8 +123,8 @@ nno <leader><F2> :%s///gc<left><left><left><left>
 xno <F2> :s/\%V//g<left><left><left>
 
 " Circular window movements
-nno <tab>   <C-w>w
-nno <S-tab> <C-w>W
+nno <tab> <C-w>w
+nno <S-tab>       <C-w>W
 " Open new horizontal split (consistent with Ctrl-W + v)
 nno <C-w>h     <cmd>split<cr>
 nno <C-w><C-h> <cmd>split<cr>
@@ -159,11 +159,13 @@ nno <leader>rp <cmd>e ~/.config/nvim/lua/packerinit.lua<cr>
 nno <leader>ro <cmd>e ~/.config/nvim/lua/options.lua<cr>
 nno <leader>ru <cmd>e ~/.config/nvim/lua/utils.lua<cr>
 nno <leader>rm <cmd>e ~/.config/nvim/mappings.vim<cr>
+nno <leader>rs <cmd>e ~/.config/nvim/UltiSnips/html.snippets<cr>
 
 " Reload plugins module, save and resource vim files
 nno <leader>so <cmd>lua require("plenary.reload").reload_module("plugins")<cr>
             \<cmd>lua require("plenary.reload").reload_module("options")<cr>
             \<cmd>w<cr><cmd>so $MYVIMRC<cr><cmd>runtime mappings.vim<cr>
+
 
 " Open terminal in new window to the right
 nno <leader>to <cmd>vsplit<cr><cmd>term<cr>

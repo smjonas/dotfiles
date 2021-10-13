@@ -4,7 +4,7 @@ local has_any_words_before = function()
   if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
     return false
   end
-  local line, col = table.unpack(vim.api.nvim_win_get_cursor(0))
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
@@ -12,7 +12,6 @@ local press = function(key)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), "n", true)
 end
 
--- Boilerplate code for compatibility with UltiSnips (see cmp-nvim-ultisnips plugin)
 cmp.setup({
   snippet = {
     expand = function(args)
@@ -21,11 +20,13 @@ cmp.setup({
   },
   sources = {
     { name = 'nvim_lsp' },
-    { name = 'vsnip' },
+    -- { name = 'vsnip' },
     -- { name = 'luasnip' },
     { name = 'ultisnips' },
+    { name = 'path' },
     { name = 'buffer' }
   },
+  -- Boilerplate code for compatibility with UltiSnips (see cmp-nvim-ultisnips plugin)
   -- <TAB> and <S-TAB>: cycle forward and backward through autocompletion items
   -- <TAB> and <S-TAB>: cycle forward and backward through snippets tabstops and placeholders
   -- <TAB> to expand snippet when no completion item selected
@@ -72,8 +73,8 @@ cmp.setup({
         fallback()
       end
     end, {
-      "s",
       "i",
+      "s",
     })
   }
 })

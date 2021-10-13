@@ -21,6 +21,7 @@ require('packer').startup(function(use)
     'nvim-treesitter/nvim-treesitter', run = ':TSUpdate',
     requires = {
       'nvim-treesitter/nvim-treesitter-textobjects',
+      'nvim-treesitter/playground',
       module = 'nvim-treesitter-textobjects'
     },
     config = function()
@@ -100,17 +101,18 @@ require('packer').startup(function(use)
   }
 
   use {
-    "luukvbaal/nnn.nvim",
+    "luukvbaal/nnn.nvim", disable = true,
     config = function() require("nnn").setup() end
   }
 
   -- Auto-completion and snippets
+  local disable_coq = true
   use {
     {
-      'ms-jpq/coq_nvim', disabled = true, branch = 'coq',
+      'ms-jpq/coq_nvim', disable = disable_coq, branch = 'coq',
       setup = function() require('plugins.coq') end
     },
-    { 'ms-jpq/coq.artifacts', branch = 'artifacts', after = 'coq_nvim' }
+    { 'ms-jpq/coq.artifacts', disable = disable_coq, branch = 'artifacts', after = 'coq_nvim' }
   }
 
   use {
@@ -118,7 +120,18 @@ require('packer').startup(function(use)
     config = function()
       require('plugins.cmp')
     end,
-    requires = { 'SirVer/ultisnips', 'quangnguyen30192/cmp-nvim-ultisnips' }
+    requires = {
+      'quangnguyen30192/cmp-nvim-ultisnips',
+      'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path'
+    },
+    after = 'ultisnips'
+  }
+
+  use {
+    'SirVer/ultisnips',
+    setup = function()
+      vim.g.UltiSnipsRemoveSelectModeMappings = 0
+    end
   }
 
   -- Telescope
@@ -202,7 +215,21 @@ require('packer').startup(function(use)
         map('n', '<M-l>', '<cmd>SidewaysRight<cr>')
       end
     },
-    { 'machakann/vim-sandwich' },
+    { 'machakann/vim-sandwich',
+      config = function()
+        -- Use vim surround-like keybindings
+        vim.api.nvim_command('runtime macros/sandwich/keymap/surround.vim')
+        -- '{' will insert space, '}' will not
+        vim.g['sandwich#recipes'] = vim.list_extend(vim.g['sandwich#recipes'], {
+          { buns = { '{ ', ' }' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '{' } },
+          { buns = { '[ ', ' ]' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '[' } },
+          { buns = { '( ', ' )' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '(' } },
+          { buns = { '{\\s*', '\\s*}' },     nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '{' } },
+          { buns = { '\\[\\s*', '\\s*\\]' }, nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '[' } },
+          { buns = { '(\\s*', '\\s*)' },     nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '(' } },
+        })
+      end
+    },
     {
       -- 'Schlepp' text around while respecting existing text
       'zirrostig/vim-schlepp',
@@ -281,7 +308,7 @@ require('packer').startup(function(use)
   }
 
   use {
-    'nvim-neorg/neorg',
+    'nvim-neorg/neorg', branch = 'unstable',
     requires = 'nvim-lua/plenary.nvim',
     after = 'nvim-treesitter',
     config = function()
