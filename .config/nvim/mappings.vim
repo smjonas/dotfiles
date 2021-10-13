@@ -68,10 +68,10 @@ nno cg vat:copy'><cr>vato<esc>O<esc><down>
 " Duplicate selection in visual mode
 xmap <leader>p y'>p
 
-" Insert from clipboard
-nno <M-v> a<C-r>+<Esc>
-ino <M-v> <C-r>+
-xno <M-v> "+p
+" Insert from clipboard in paste mode
+nno <A-v> <cmd>set paste<cr>a<C-r>+<Esc><cmd>set nopaste<cr>
+ino <A-v> <cmd>set paste<cr><C-r>+<cmd>set nopaste<cr>
+xno <A-v> <cmd>set paste<cr>"+p<cmd>set nopaste<cr>
 
 " Avoids accidentally recording a macro
 nno q <nop>
@@ -122,9 +122,21 @@ nno <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j'
 nno <leader><F2> :%s///gc<left><left><left><left>
 xno <F2> :s/\%V//g<left><left><left>
 
+" Quickfix list mappings
+function! ToggleQfList()
+    if empty(filter(getwininfo(), 'v:val.quickfix'))
+        copen
+    else
+        cclose
+    endif
+endfunction
+nno <silent> <C-q> <cmd>call ToggleQfList()<cr>
+nno <leader>j <cmd>cprev<cr>
+nno <leader>k <cmd>cnext<cr>
+
 " Circular window movements
-nno <tab> <C-w>w
-nno <S-tab>       <C-w>W
+nno <tab>   <C-w>w
+nno <S-tab> <C-w>W
 " Open new horizontal split (consistent with Ctrl-W + v)
 nno <C-w>h     <cmd>split<cr>
 nno <C-w><C-h> <cmd>split<cr>
@@ -155,17 +167,17 @@ endfun
 nno <leader>rc <cmd>e $MYVIMRC<cr>
 nno <leader>RC <cmd>e! $MYVIMRC<cr>
 " Open lua config files
-nno <leader>rp <cmd>e ~/.config/nvim/lua/packerinit.lua<cr>
-nno <leader>ro <cmd>e ~/.config/nvim/lua/options.lua<cr>
-nno <leader>ru <cmd>e ~/.config/nvim/lua/utils.lua<cr>
-nno <leader>rm <cmd>e ~/.config/nvim/mappings.vim<cr>
-nno <leader>rs <cmd>e ~/.config/nvim/UltiSnips/html.snippets<cr>
+let nvim_config_root = stdpath('config')
+nno <leader>rp <cmd>execute 'e ' . nvim_config_root . '/lua/packerinit.lua'<cr>
+nno <leader>ro <cmd>execute 'e ' . nvim_config_root . '/lua/options.lua'<cr>
+nno <leader>ru <cmd>execute 'e ' . nvim_config_root . '/lua/utils.lua'<cr>
+nno <leader>rm <cmd>execute 'e ' . nvim_config_root . '/mappings.vim'<cr>
+nno <leader>rs <cmd>execute 'e ' . nvim_config_root . '/UltiSnips/html.snippets'<cr>
 
 " Reload plugins module, save and resource vim files
 nno <leader>so <cmd>lua require("plenary.reload").reload_module("plugins")<cr>
             \<cmd>lua require("plenary.reload").reload_module("options")<cr>
             \<cmd>w<cr><cmd>so $MYVIMRC<cr><cmd>runtime mappings.vim<cr>
-
 
 " Open terminal in new window to the right
 nno <leader>to <cmd>vsplit<cr><cmd>term<cr>

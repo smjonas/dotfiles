@@ -1,7 +1,15 @@
+local actions = require('telescope.actions')
+
 require('telescope').setup {
   defaults = {
     -- sort_mru = true,
-    path_display = { "truncate" }
+    path_display = { "truncate" },
+    -- mappings = {
+    --   i = {
+    --     -- Default is actions.send_to_qflist + actions.open_qflist
+    --     ["<C-q>"] = actions.send_to_qflist
+    --   }
+    -- }
   }
 }
 -- Cyan Telescope borders

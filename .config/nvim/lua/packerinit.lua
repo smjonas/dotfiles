@@ -307,6 +307,8 @@ require('packer').startup(function(use)
     end
   }
 
+  -- Writing to-do lists, emails etc.
+
   use {
     'nvim-neorg/neorg', branch = 'unstable',
     requires = 'nvim-lua/plenary.nvim',
@@ -314,6 +316,11 @@ require('packer').startup(function(use)
     config = function()
       require('plugins.neorg')
     end
+  }
+
+  use {
+    'soywod/himalaya',
+    rtp = 'vim'
   }
 
   -- use { 'michaelb/sniprun', run = 'bash ./install.sh' }

@@ -25,6 +25,11 @@ augroup my_auto_group
   " Remove trailing whitespace on save (/e to hide errors)
   autocmd BufWritePre * %s/\s\+$//e
 
+  " Enable highlight on yank
+  if exists('##TextYankPost') && has('nvim-0.5')
+    autocmd TextYankPost * silent! lua vim.highlight.on_yank { higroup = "DiffAdd", timeout = 130 }
+  endif
+
   " Equalize splits after resizing
   autocmd VimResized * wincmd =
 
