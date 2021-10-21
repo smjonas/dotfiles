@@ -8,4 +8,3 @@ alias stox='clear && cd ~/Desktop/Inacon/Automation/stocks && \
     source ../../inacon_env/bin/activate && python3 price_scraping.py'
 
 alias v='nvim'
-alias ls='nnn -e'

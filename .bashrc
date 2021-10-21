@@ -1,7 +1,9 @@
 # nnn config
 export EDITOR=nvim
-export NNN_TRASH=1
+# x: copy file path after selecting entry with space
+export NNN_OPTS=x
 
+export NNN_TRASH=1
 export NNN_BMS="k:$HOME/Desktop/Inacon/Kurse"
 
 # ~/.bashrc: executed by bash(1) for non-login shells.
