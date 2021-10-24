@@ -10,12 +10,13 @@ endif
 
 lua << EOF
 -- Load config files from ~/.config/nvim/lua/
-require("packerinit")
 require("options")
+require("packerinit")
 EOF
+
 runtime mappings.vim
 
-colorscheme edge
+" colorscheme edge
 
 augroup my_auto_group
   autocmd!

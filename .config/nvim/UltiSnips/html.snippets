@@ -1,8 +1,46 @@
-snippet jq "Include jquery script" b
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-endsnippet
-
 snippet img "<img>"
 <img src="$1" alt="$2">
 $0
 endsnippet
+
+snippet jq "Include jquery script" b
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+endsnippet
+
+snippet css "html_docs_standard.css" b
+	<link rel="stylesheet" href="${1:../3tz9ixmacd201270/styles/html_docs_standard.css}">
+endsnippet
+
+snippet download "Download PDF" b
+<li>
+	<a class="download_pdf" download="" href="$1.pdf">
+		$2
+	</a>
+</li>
+$0
+endsnippet
+
+snippet whiteboard "Q&A and Whiteboard" b
+<li>
+	<a class="titel">Q&A + Whiteboard</a>
+		<ul>
+			<li>
+				<a href="mailto:$1">Send new question to Inacon</a>
+			</li>
+			<li>
+				<a href="Empty-Page.html" target="iframe">Whiteboard</a>
+			</li>
+		</ul>
+</li>
+$0
+endsnippet
+
+snippet recording "Video recording for a session"
+<li><a>Day $1 &gt;</a>
+	<ul>
+		<li><a href="${2:videos}/Day$1_Session1.html" target="iframe">Session 1</a></li>
+		<li><a href="$2/Day$1_Session2.html" target="iframe">Session 2</a></li>
+	</ul>
+</li>
+endsnippet
+

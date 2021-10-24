@@ -1,64 +1,51 @@
-local lsp = vim.lsp
+local lsp = require('vim.lsp')
 local handlers = lsp.handlers
 
 -- Borders around lsp windows
-local popup_opts = { border = "single", max_width = 60 }
-handlers["textDocument/hover"] = lsp.with(handlers.hover, popup_opts)
-handlers["textDocument/signatureHelp"] = lsp.with(handlers.signature_help, popup_opts)
+local popup_opts = { border = 'single', max_width = 60 }
+handlers['textDocument/hover'] = lsp.with(handlers.hover, popup_opts)
+handlers['textDocument/signatureHelp'] = lsp.with(handlers.signature_help, popup_opts)
 
-local lsp_conf = require("lspconfig")
-local lspinstall = require("lspinstall")
+local lsp_conf = require('lspconfig')
+local lspinstall = require('lspinstall')
 
 local cmp_lsp, coq
 
-local function setup_lsp(server, settings)
+local function setup_lsp(server, config)
+  config = config or {}
   -- Prefer cmp over coq if both are available
   if cmp_lsp ~= nil then
     local capabilities = cmp_lsp.update_capabilities(
       lsp.protocol.make_client_capabilities()
     )
-    lsp_conf[server].setup {
-      capabilities = capabilities, settings = settings
-    }
+    config = vim.tbl_extend('error', config, { capabilities = capabilities })
   elseif coq ~= nil then
-    lsp_conf[server].setup {
-      capabilities = coq.lsp_ensure_capabilities(), settings = settings
-    }
+    config = vim.tbl_deep_extend('error', config, { coq.lsp_ensure_capabilities() })
   end
-end
 
-local function setup_sumneko_lsp()
-  local settings = {
-    Lua = {
-      diagnostics = {
-        -- Fix global vim is undefined
-        globals = { 'vim' }
-      },
-      telemetry = {
-        enable = false
-      }
-    }
-  }
-  setup_lsp("lua", settings)
+  lsp_conf[server].setup(config)
 end
 
 local function setup_lsp_servers()
   lspinstall.setup()
   local servers = lspinstall.installed_servers()
-  local manually_installed = {"pyright", "html", "vimls", "hls"}
+  local manually_installed = {'pyright', 'html', 'vimls'}
   for _, server in ipairs(manually_installed) do
     table.insert(servers, server)
   end
+  print('Available LSP servers:', vim.inspect(servers))
 
-  if package.loaded["cmp_nvim_lsp"] then
-    cmp_lsp = require("cmp_nvim_lsp")
-  elseif package.loaded["coq"] then
-    coq = require("coq")
+  if package.loaded['cmp_nvim_lsp'] then
+    cmp_lsp = require('cmp_nvim_lsp')
+  elseif package.loaded['coq'] then
+    coq = require('coq')
   end
 
   for _, server in ipairs(servers) do
     if server == 'lua' then
-      setup_sumneko_lsp()
+      setup_lsp('lua', require('plugins/lsp/lua').config())
+    elseif server == 'haskell' then
+      setup_lsp('haskell', require('plugins/lsp/haskell').config())
     else
       setup_lsp(server)
     end
@@ -70,10 +57,10 @@ setup_lsp_servers()
 lspinstall.post_install_hook = function()
   setup_lsp_servers()
   -- Triggers the autocmd that starts the server
-  vim.cmd("bufdo e")
+  vim.cmd('bufdo e')
 end
 
-lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
+lsp.handlers['textDocument/publishDiagnostics'] = lsp.with(
   lsp.diagnostic.on_publish_diagnostics, {
     virtual_text = false
   }
@@ -83,7 +70,6 @@ local map = require('../utils').map
 map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>')
 map('n', 'gr', '<cmd>lua vim.lsp.diagnostic.goto_prev()<cr>')
 map('n', 'gh', '<cmd>lua vim.lsp.diagnostic.goto_next()<cr>')
-map('n', 'ge', '<cmd>lua vim.lsp.buf.code_action()<cr>')
 
 -- Format visual selection
 map('v', '<leader>=', '<cmd>lua vim.lsp.buf.formatting_sync()<cr>')

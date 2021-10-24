@@ -9,7 +9,7 @@ parser_configs.norg = {
 }
 
 require('nvim-treesitter.configs').setup {
-  ensure_installed = { 'css', 'html', 'java', 'latex', 'lua', 'norg', 'php', 'python', 'vim', 'yaml' },
+  ensure_installed = { 'css', 'haskell', 'html', 'java', 'latex', 'lua', 'norg', 'php', 'python', 'vim', 'yaml' },
   highlight = {
     enable = true
   },

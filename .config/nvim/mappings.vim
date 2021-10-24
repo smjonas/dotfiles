@@ -174,6 +174,11 @@ nno <leader>ru <cmd>execute 'e ' . nvim_config_root . '/lua/utils.lua'<cr>
 nno <leader>rm <cmd>execute 'e ' . nvim_config_root . '/mappings.vim'<cr>
 nno <leader>rs <cmd>execute 'e ' . nvim_config_root . '/UltiSnips/html.snippets'<cr>
 
+" Email settings
+nno <leader>re <cmd>execute 'e ' . $HOME . '/.config/himalaya/config.toml'<cr>
+" Haskell
+nno <leader>rh <cmd>execute 'e /media/jonas/Volume/KIT/ProPa/Übungsblätter/WS_2122/'<cr>
+
 " Reload plugins module, save and resource vim files
 nno <leader>so <cmd>lua require("plenary.reload").reload_module("plugins")<cr>
             \<cmd>lua require("plenary.reload").reload_module("options")<cr>

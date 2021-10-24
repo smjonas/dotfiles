@@ -6,6 +6,10 @@ end
 
 require('packer').startup(function(use)
 
+  -- Workaround for plugins with the rtp option (https://github.com/soywod/himalaya/issues/188)
+  -- local packer_compiled = vim.fn.stdpath('config') .. '/plugin/packer_compiled.lua'
+  -- vim.cmd('luafile'  .. packer_compiled)
+
   use {
     'wbthomason/packer.nvim',
     config = function()
@@ -31,7 +35,13 @@ require('packer').startup(function(use)
 
   -- Color schemes
   use {
-    { 'sainnhe/edge' },
+    { 'sainnhe/edge',
+      config = function()
+        vim.g['edge_enable_italic'] = 1
+        vim.g['edge_disable_italic_comment'] = 1
+        vim.cmd('colorscheme edge')
+      end
+    },
     {
       'sainnhe/gruvbox-material',
       setup = function()
@@ -53,7 +63,7 @@ require('packer').startup(function(use)
     -- or set the font in ~/.config/alacritty/alacritty.yml
     -- after installing by cloning git@github.com:powerline/fonts.git
     -- and running ./install.sh
-    'shadmansaleh/lualine.nvim', requires = 'kyazdani42/nvim-web-devicons',
+    'nvim-lualine/lualine.nvim', requires = 'kyazdani42/nvim-web-devicons',
     config = function() require('plugins.lualine') end
   }
 
@@ -61,10 +71,11 @@ require('packer').startup(function(use)
   use {
     {
       'neovim/nvim-lspconfig',
-      config = function() require('plugins.lsp') end,
+      config = function() require('plugins.lsp.init') end,
       after = 'nvim-cmp'
     },
     'kabouzeid/nvim-lspinstall',
+    -- 'williamboman/nvim-lsp-installer',
     {
       'tami5/lspsaga.nvim',
       commit = 'bafeddf',
@@ -74,7 +85,7 @@ require('packer').startup(function(use)
           warn_sign = '>>'
         }
         local map = require('utils').map
-        map('n', '<F1>', '<cmd>lua require("lspsaga.hover").render_hover_doc()<cr>')
+        map('n', 'K', '<cmd>lua require("lspsaga.hover").render_hover_doc()<cr>')
         map('n', '<F2>', '<cmd>lua require("lspsaga.rename").rename()<cr>')
         map('n', '<leader>ga', '<cmd>lua require("lspsaga.codeaction").code_action()<cr>')
       end
@@ -122,7 +133,9 @@ require('packer').startup(function(use)
     end,
     requires = {
       'quangnguyen30192/cmp-nvim-ultisnips',
-      'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path'
+      'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path', 'hrsh7th/cmp-nvim-lua',
+      { 'hrsh7th/cmp-nvim-lsp', config = function() require('cmp_nvim_lsp') end },
+      { 'smjonas/cmp-under-comparator', }
     },
     after = 'ultisnips'
   }
@@ -173,8 +186,11 @@ require('packer').startup(function(use)
 
   use {
     'norcalli/nvim-colorizer.lua',
-    ft = { 'css', 'html', 'lua', 'php' },
-    config = function() require('colorizer').setup() end
+    config = function()
+        require('colorizer').setup {
+            'css'; 'html'; 'lua'; 'php'
+        }
+    end
   }
 
   use {
@@ -193,8 +209,6 @@ require('packer').startup(function(use)
       map('n', '<leader>n', '<cmd>TestNearest<cr>')
     end
   }
-
-  -- Misc
 
   -- New ways to manipulate text
   use {
@@ -319,15 +333,22 @@ require('packer').startup(function(use)
   }
 
   use {
-    'soywod/himalaya',
-    rtp = 'vim'
+    -- rtp in packer has some issues, that's why I have to use the local path
+    vim.fn.stdpath('data') .. '/himalaya/vim',
+    -- rtp = 'vim',
+    -- config = function()
+    --   vim.g['himalaya_mailbox_picker'] = 'telescope'
+    -- end
   }
 
   -- use { 'michaelb/sniprun', run = 'bash ./install.sh' }
+
+  -- Misc
+
+  use 'luukvbaal/stabilize.nvim'
 
   use 'arp242/undofile_warn.vim'
 
   use 'tpope/vim-repeat'
 
 end)
-
