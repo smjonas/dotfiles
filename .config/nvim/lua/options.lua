@@ -7,7 +7,8 @@ o.background = "dark"
 -- o.clipboard = o.clipboard ^ "unnamed,unnamedplus"
 o.cmdheight = 2
 -- Autocomplete settings
-o.completeopt = "menuone,noselect,preview"
+-- o.completeopt = "menuone,noselect,preview"
+o.completeopt = "menu,menuone"
 o.cursorline = true
 o.expandtab = true
 -- Do not open folds when moving with { or }

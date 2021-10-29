@@ -1,8 +1,13 @@
+-- Better hover window colors
+local normal_float_bg = vim.fn.synIDattr(vim.fn.hlID('NormalFloat'), 'bg')
+local normal_fg = vim.fn.synIDattr(vim.fn.hlID('Normal'), 'fg')
+vim.cmd('highlight FloatBorder guifg=' .. normal_fg .. ' guibg=' .. normal_float_bg)
+
 local lsp = require('vim.lsp')
 local handlers = lsp.handlers
 
 -- Borders around lsp windows
-local popup_opts = { border = 'single', max_width = 60 }
+local popup_opts = { border = 'single', focusable = false, max_width = 60 }
 handlers['textDocument/hover'] = lsp.with(handlers.hover, popup_opts)
 handlers['textDocument/signatureHelp'] = lsp.with(handlers.signature_help, popup_opts)
 
@@ -18,7 +23,7 @@ local function setup_lsp(server, config)
     local capabilities = cmp_lsp.update_capabilities(
       lsp.protocol.make_client_capabilities()
     )
-    config = vim.tbl_extend('error', config, { capabilities = capabilities })
+    config = vim.tbl_deep_extend('error', config, { capabilities = capabilities })
   elseif coq ~= nil then
     config = vim.tbl_deep_extend('error', config, { coq.lsp_ensure_capabilities() })
   end

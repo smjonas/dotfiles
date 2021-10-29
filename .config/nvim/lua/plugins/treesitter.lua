@@ -9,7 +9,9 @@ parser_configs.norg = {
 }
 
 require('nvim-treesitter.configs').setup {
-  ensure_installed = { 'css', 'haskell', 'html', 'java', 'latex', 'lua', 'norg', 'php', 'python', 'vim', 'yaml' },
+  ensure_installed = {
+    'css', 'haskell', 'html', 'java', 'latex', 'lua', 'norg', 'php', 'python', 'vim', 'yaml'
+  },
   highlight = {
     enable = true
   },
@@ -23,9 +25,8 @@ require('nvim-treesitter.configs').setup {
         ['if'] = '@function.inner',
         ['ac'] = '@class.outer',
         ['ic'] = '@class.inner',
-        ['ia'] = {
-          html = "@custom_attribute.inner"
-        }
+        ['ia'] = '@parameter.inner',
+        ['aa'] = '@parameter.outer',
       }
     }
   }

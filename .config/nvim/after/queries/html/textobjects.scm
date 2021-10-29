@@ -1,1 +1,1 @@
- (attribute) @custom_attribute.inner
+(attribute) @parameter.inner

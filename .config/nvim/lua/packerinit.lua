@@ -78,19 +78,31 @@ require('packer').startup(function(use)
     -- 'williamboman/nvim-lsp-installer',
     {
       'tami5/lspsaga.nvim',
-      commit = 'bafeddf',
       config = function()
         require('lspsaga').init_lsp_saga {
           error_sign = '>>',
           warn_sign = '>>'
         }
         local map = require('utils').map
-        map('n', 'K', '<cmd>lua require("lspsaga.hover").render_hover_doc()<cr>')
+        map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>')
         map('n', '<F2>', '<cmd>lua require("lspsaga.rename").rename()<cr>')
-        map('n', '<leader>ga', '<cmd>lua require("lspsaga.codeaction").code_action()<cr>')
       end
     },
     'ray-x/lsp_signature.nvim',
+    {
+      'weilbith/nvim-code-action-menu',
+      config = function()
+        vim.g['code_action_menu_show_details'] = false
+        local map = require('utils').map
+        map('n', 'ge', '<cmd>CodeActionMenu<cr>')
+      end
+    },
+    {
+      'kosayoda/nvim-lightbulb',
+      config = function ()
+        vim.cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
+      end
+    },
     {
       -- Modified version of mfussenegger/nvim-lint,
       'jonasstr/nvim-lint',
@@ -135,7 +147,7 @@ require('packer').startup(function(use)
       'quangnguyen30192/cmp-nvim-ultisnips',
       'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path', 'hrsh7th/cmp-nvim-lua',
       { 'hrsh7th/cmp-nvim-lsp', config = function() require('cmp_nvim_lsp') end },
-      { 'smjonas/cmp-under-comparator', }
+      { 'lukas-reineke/cmp-under-comparator', }
     },
     after = 'ultisnips'
   }
@@ -218,12 +230,6 @@ require('packer').startup(function(use)
     { 'AndrewRadev/sideways.vim',
       config = function()
         local map = require('utils').map
-        -- Sideways text objects to select arguments
-        map('o', 'aa', '<Plug>SidewaysArgumentTextobjA')
-        map('x', 'aa', '<Plug>SidewaysArgumentTextobjA')
-        map('o', 'ia', '<Plug>SidewaysArgumentTextobjI')
-        map('x', 'ia', '<Plug>SidewaysArgumentTextobjI')
-
         -- Swap function arguments using Alt + arrow keys
         map('n', '<M-h>', '<cmd>SidewaysLeft<cr>')
         map('n', '<M-l>', '<cmd>SidewaysRight<cr>')
@@ -350,5 +356,7 @@ require('packer').startup(function(use)
   use 'arp242/undofile_warn.vim'
 
   use 'tpope/vim-repeat'
+
+  use 'github/copilot.vim'
 
 end)

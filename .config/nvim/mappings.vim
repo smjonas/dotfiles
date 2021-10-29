@@ -61,8 +61,8 @@ nno Y y$
 nno y "+y
 xno y "+y
 
-" Duplicate paragraph
-nno cp vap:copy'><cr>
+" Duplicate paragraph and insert one new line below
+nno cp vip:copy'>+1<cr>o<esc><up>
 " Duplicate tag and insert new line above
 nno cg vat:copy'><cr>vato<esc>O<esc><down>
 " Duplicate selection in visual mode
@@ -179,10 +179,10 @@ nno <leader>re <cmd>execute 'e ' . $HOME . '/.config/himalaya/config.toml'<cr>
 " Haskell
 nno <leader>rh <cmd>execute 'e /media/jonas/Volume/KIT/ProPa/Übungsblätter/WS_2122/'<cr>
 
-" Reload plugins module, save and resource vim files
+" Reload plugins module, save and resource vim files (except init.vim)
 nno <leader>so <cmd>lua require("plenary.reload").reload_module("plugins")<cr>
             \<cmd>lua require("plenary.reload").reload_module("options")<cr>
-            \<cmd>w<cr><cmd>so $MYVIMRC<cr><cmd>runtime mappings.vim<cr>
+            \<cmd>w<cr><cmd>runtime mappings.vim<cr>
 
 " Open terminal in new window to the right
 nno <leader>to <cmd>vsplit<cr><cmd>term<cr>
