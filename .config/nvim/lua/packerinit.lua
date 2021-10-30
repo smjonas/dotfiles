@@ -98,12 +98,6 @@ require('packer').startup(function(use)
       end
     },
     {
-      'kosayoda/nvim-lightbulb',
-      config = function ()
-        vim.cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
-      end
-    },
-    {
       -- Modified version of mfussenegger/nvim-lint,
       'jonasstr/nvim-lint',
       config = function()
@@ -118,14 +112,9 @@ require('packer').startup(function(use)
     config = function()
       vim.g['fern#drawer_width'] = 50
       local map = require('utils').map
-      map('n', '<C-n>', '<cmd>Fern %:h -drawer -toggle<cr>')
+      map('n', '<C-n>', '<cmd>Fern %:h -drawer -toggle -reveal=%<cr>')
       map('n', '<M-n>', '<cmd>Fern %:h<cr>')
     end
-  }
-
-  use {
-    "luukvbaal/nnn.nvim", disable = true,
-    config = function() require("nnn").setup() end
   }
 
   -- Auto-completion and snippets
@@ -330,7 +319,33 @@ require('packer').startup(function(use)
   -- Writing to-do lists, emails etc.
 
   use {
+    'vimwiki/vimwiki', branch = 'dev',
+    config = function()
+      vim.g['vimwiki_list'] = {
+        { path = '~/vimwiki/', syntax = 'markdown', ext = '.md' }
+      }
+      vim.g['vimwiki_global_ext'] = 0
+
+      local map = require('utils').map
+      map('n', '<leader>x', '<Plug>VimwikiIndex', { noremap = false })
+    end
+  }
+
+  use {
+    'iamcco/markdown-preview.nvim',
+    run = 'cd app && npm install',
+    ft = 'markdown',
+    config = function ()
+      vim.g['mkdp_auto_close'] = 0
+
+      local map = require('utils').map
+      map('n', '<leader>m', '<Plug>MarkdownPreviewToggle', { noremap = false })
+    end
+  }
+
+  use {
     'nvim-neorg/neorg', branch = 'unstable',
+    disable = true,
     requires = 'nvim-lua/plenary.nvim',
     after = 'nvim-treesitter',
     config = function()
@@ -350,6 +365,11 @@ require('packer').startup(function(use)
   -- use { 'michaelb/sniprun', run = 'bash ./install.sh' }
 
   -- Misc
+
+  use {
+    'glacambre/firenvim',
+    run = function() vim.fn['firenvim#install'](0) end
+  }
 
   use 'luukvbaal/stabilize.nvim'
 
