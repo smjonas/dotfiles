@@ -1,0 +1,3 @@
+[submodule "vimwiki"]
+	path = vimwiki
+	url = git@github.com:smjonas/vimwiki.git

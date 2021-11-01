@@ -32,7 +32,8 @@ map('n', '<leader>fg', '<cmd>Telescope live_grep<cr>')
 map('n', '<leader>fb', '<cmd>Telescope buffers<cr>')
 map('n', '<leader>h', '<cmd>Telescope help_tags<cr>')
 map('n', '<leader>s', '<cmd>Telescope colorscheme<cr>')
-map('n', '<leader>k', '<cmd>Telescope keymaps<cr>')
+-- List keybindings
+map('n', '<leader>b', '<cmd>Telescope keymaps<cr>')
 -- List projects (project.nvim)
 map('n', '<leader>P', '<cmd>Telescope projects<cr>')
 

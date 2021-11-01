@@ -9,11 +9,12 @@ parser_configs.norg = {
 }
 
 require('nvim-treesitter.configs').setup {
-  ensure_installed = {
-    'css', 'haskell', 'html', 'java', 'latex', 'lua', 'norg', 'php', 'python', 'vim', 'yaml'
-  },
+  ensure_installed = 'all',
   highlight = {
     enable = true
+  },
+  context_commentstring = {
+    enable = true,
   },
   textobjects = {
     select = {

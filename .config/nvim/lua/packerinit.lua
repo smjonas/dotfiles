@@ -253,12 +253,15 @@ require('packer').startup(function(use)
   }
 
   use {
-    'b3nj5m1n/kommentary',
+    'terrortylor/nvim-comment',
     config = function()
-      local kommentary = require('kommentary.config')
-      kommentary.configure_language('default', { prefer_single_line_comments = true })
-      kommentary.configure_language('java', { prefer_single_line_comments = false })
-    end
+      require('nvim_comment').setup({
+        hook = function()
+          require('ts_context_commentstring.internal').update_commentstring()
+        end
+      })
+    end,
+    requires = 'JoosepAlviste/nvim-ts-context-commentstring'
   }
 
   use {
@@ -320,9 +323,11 @@ require('packer').startup(function(use)
 
   use {
     'vimwiki/vimwiki', branch = 'dev',
-    config = function()
+    setup = function()
       vim.g['vimwiki_list'] = {
-        { path = '~/vimwiki/', syntax = 'markdown', ext = '.md' }
+        { template_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/vimwiki/autoload/',
+          syntax = 'markdown', ext = '.md'
+        }
       }
       vim.g['vimwiki_global_ext'] = 0
 
