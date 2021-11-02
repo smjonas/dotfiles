@@ -137,8 +137,14 @@ nno <leader>k <cmd>cnext<cr>
 " Circular window movements
 nno <tab>   <C-w>w
 nno <S-tab> <C-w>W
+
+" Easier window movements
+" nno <S-h> <C-w>h
+" nno <S-j> <C-w>j
+" nno <S-k> <C-w>k
+" nno <S-l> <C-w>l
+
 " Open new horizontal split (consistent with Ctrl-W + v)
-nno <C-w>h     <cmd>split<cr>
 nno <C-w><C-h> <cmd>split<cr>
 " Split the alternate buffer vertically; don't know if this is a Vim bug or not
 " but this is a workaround since somehow 'splitright' is not respected by Vim

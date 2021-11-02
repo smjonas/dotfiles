@@ -329,10 +329,12 @@ require('packer').startup(function(use)
           syntax = 'markdown', ext = '.md'
         }
       }
+      -- doesn't seem to work, use syntax file instead
+      -- vim.g['vimwiki_listsyms'] = '☒⊡⬕'
       vim.g['vimwiki_global_ext'] = 0
 
       local map = require('utils').map
-      map('n', '<leader>x', '<Plug>VimwikiIndex', { noremap = false })
+      map('n', '<leader>x', '<Plug>VimwikiIndex', { noremap = false, unique = false })
     end
   }
 
