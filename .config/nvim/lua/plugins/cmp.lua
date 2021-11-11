@@ -1,6 +1,6 @@
 local cmp = require('cmp')
 
-local has_any_words_before = function()
+local function has_any_words_before()
   if vim.api.nvim_buf_get_option(0, 'buftype') == 'prompt' then
     return false
   end
@@ -8,7 +8,7 @@ local has_any_words_before = function()
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
-local press = function(key)
+local function press(key)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), 'n', true)
 end
 
@@ -31,7 +31,7 @@ cmp.setup {
       ghost_text = true
   },
   mapping = {
-    ['<C-f>'] = cmp.mapping.confirm {
+    ['<cr>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Insert,
       select = true,
     },

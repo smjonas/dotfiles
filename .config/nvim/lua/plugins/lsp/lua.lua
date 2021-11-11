@@ -4,8 +4,8 @@ function M.config()
   local settings = {
     Lua = {
       diagnostics = {
-        -- Fix global vim is undefined
-        globals = { 'vim' }
+        -- Fix undefined globals warnings
+        globals = { 'vim', 'describe', 'it' }
       },
       telemetry = {
         enable = false

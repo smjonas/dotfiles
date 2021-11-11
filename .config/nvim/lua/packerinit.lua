@@ -1,8 +1,4 @@
 ---@diagnostic disable: different-requires
-function P(table)
-  print(vim.inspect(table))
-  return table
-end
 
 require('packer').startup(function(use)
 
@@ -64,7 +60,8 @@ require('packer').startup(function(use)
     -- after installing by cloning git@github.com:powerline/fonts.git
     -- and running ./install.sh
     'nvim-lualine/lualine.nvim', requires = 'kyazdani42/nvim-web-devicons',
-    config = function() require('plugins.lualine') end
+    config = function() require('plugins.lualine') end,
+    after = 'edge'
   }
 
   -- LSP
@@ -133,7 +130,8 @@ require('packer').startup(function(use)
       require('plugins.cmp')
     end,
     requires = {
-      'quangnguyen30192/cmp-nvim-ultisnips',
+      -- 'quangnguyen30192/cmp-nvim-ultisnips',
+      '~/Desktop/cmp-nvim-ultisnips',
       'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path', 'hrsh7th/cmp-nvim-lua',
       { 'hrsh7th/cmp-nvim-lsp', config = function() require('cmp_nvim_lsp') end },
       { 'lukas-reineke/cmp-under-comparator', }
@@ -152,7 +150,8 @@ require('packer').startup(function(use)
   use {
     {
       'nvim-telescope/telescope.nvim', requires = 'nvim-lua/plenary.nvim',
-      config = function() require('plugins.telescope') end
+      config = function() require('plugins.telescope') end,
+      after = 'edge'
     },
     {
       'nvim-telescope/telescope-fzf-native.nvim', run = 'make',
@@ -225,19 +224,7 @@ require('packer').startup(function(use)
       end
     },
     { 'machakann/vim-sandwich',
-      config = function()
-        -- Use vim surround-like keybindings
-        vim.api.nvim_command('runtime macros/sandwich/keymap/surround.vim')
-        -- '{' will insert space, '}' will not
-        vim.g['sandwich#recipes'] = vim.list_extend(vim.g['sandwich#recipes'], {
-          { buns = { '{ ', ' }' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '{' } },
-          { buns = { '[ ', ' ]' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '[' } },
-          { buns = { '( ', ' )' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '(' } },
-          { buns = { '{\\s*', '\\s*}' },     nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '{' } },
-          { buns = { '\\[\\s*', '\\s*\\]' }, nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '[' } },
-          { buns = { '(\\s*', '\\s*)' },     nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '(' } },
-        })
-      end
+      config = function() require('plugins.vim-sandwich') end
     },
     {
       -- 'Schlepp' text around while respecting existing text
@@ -255,11 +242,12 @@ require('packer').startup(function(use)
   use {
     'terrortylor/nvim-comment',
     config = function()
-      require('nvim_comment').setup({
+      require('nvim_comment').setup {
+        comment_empty = false,
         hook = function()
           require('ts_context_commentstring.internal').update_commentstring()
         end
-      })
+      }
     end,
     requires = 'JoosepAlviste/nvim-ts-context-commentstring'
   }
@@ -268,7 +256,7 @@ require('packer').startup(function(use)
     'windwp/nvim-autopairs',
     config = function()
       require('nvim-autopairs').setup {
-        disable_filetype = { 'TelescopePrompt' , 'vim', 'tex' }
+        disable_filetype = { 'TelescopePrompt', 'vim', 'tex' }
       }
     end
   }
@@ -301,13 +289,7 @@ require('packer').startup(function(use)
 
   use {
     'tpope/vim-fugitive',
-    config = function()
-      local map = require('utils').map
-      map('n', '<leader>gs', '<cmd>Git<cr>')
-      -- Simpler git commit than vim-fugitive
-      map('n', '<leader>gc', ':Git commit -m')
-      map('n', '<leader>gp', '<cmd>Git push<cr>')
-    end
+    config = function() require('plugins.fugitive') end
   }
 
   use {
@@ -378,12 +360,18 @@ require('packer').startup(function(use)
     run = function() vim.fn['firenvim#install'](0) end
   }
 
-  use 'luukvbaal/stabilize.nvim'
+  use {
+    'luukvbaal/stabilize.nvim',
+    config = function() require("stabilize").setup() end
+  }
 
   use 'arp242/undofile_warn.vim'
 
   use 'tpope/vim-repeat'
 
-  use 'github/copilot.vim'
+  use {
+    'github/copilot.vim', disable = true,
+    config = function() require('plugins.copilot') end
+  }
 
 end)

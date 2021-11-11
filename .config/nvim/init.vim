@@ -2,7 +2,7 @@ let $INACON_DIR = $HOME . "/Desktop/Inacon/"
 let $INACON_VENV_ACTIVATE = $INACON_DIR . "inacon_env/bin/activate"
 let $INACON_VENV_PYTHON = $INACON_DIR . "inacon_env/bin"
 
-" Fixes wrong colors in Vim when using tmux
+" Fixes wrong terminal colors when using tmux
 if exists('+termguicolors')
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
@@ -10,6 +10,7 @@ endif
 
 lua << EOF
 -- Load config files from ~/.config/nvim/lua/
+require("utils") -- load global util functions
 require("options")
 require("packerinit")
 EOF
@@ -54,6 +55,6 @@ augroup end
 
 augroup packer_user_config
   autocmd!
-  autocmd BufWritePost packerinit.lua PackerCompile
+  autocmd BufWritePost */nvim/*.lua PackerCompile
 augroup end
 

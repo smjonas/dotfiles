@@ -23,14 +23,18 @@ nno H ^
 nno L $
 
 " Indenting lines
-nno <silent> <C-k> :move-2<cr>==
-nno <silent> <C-j> :move+<cr>==
+nno <silent> <C-k> <cmd>move-2<cr>==
+nno <silent> <C-j> <cmd>move+<cr>==
 nno <silent> <C-l> >>
 nno <silent> <C-h> <<
 xno <silent> <C-k> :move-2<cr>gv
 xno <silent> <C-j> :move'>+<cr>gv
 xno <silent> <C-h> <gv
 xno <silent> <C-l> >gv
+" ino <silent> <C-k> <cmd>move-2<cr>
+" ino <silent> <C-j> <cmd>move+<cr>
+" ino <silent> <C-h> <cmd>norm<<cr>
+" ino <silent> <C-l> <cmd>norm>><cr>
 
 " Managing tabs
 nno <C-left>  <cmd>tabprev<cr>
@@ -47,7 +51,6 @@ nno <cr> myi<cr><Esc>g`y
 
 " Use black hole register
 nno <leader>d "_d
-nno <leader>dd "_dd
 nno <leader>D "_D
 nno c "_c
 nno C "_C
@@ -57,9 +60,11 @@ nno J J$
 nno Y y$
 
 " Enable copying to system clipboard; simply changing vim.o.clipboard to include
-" unnamedplus would paste from system clipboard with p which I want to use Shift-v for instead
+" unnamedplus would paste from system clipboard with p which I want to use Alt-v for instead
 nno y "+y
 xno y "+y
+nno Y "+Y
+xno Y "+Y
 
 " Duplicate paragraph and insert one new line below
 nno cp vip:copy'>+1<cr>o<esc><up>
@@ -137,12 +142,6 @@ nno <leader>k <cmd>cnext<cr>
 " Circular window movements
 nno <tab>   <C-w>w
 nno <S-tab> <C-w>W
-
-" Easier window movements
-" nno <S-h> <C-w>h
-" nno <S-j> <C-w>j
-" nno <S-k> <C-w>k
-" nno <S-l> <C-w>l
 
 " Open new horizontal split (consistent with Ctrl-W + v)
 nno <C-w><C-h> <cmd>split<cr>

@@ -9,3 +9,10 @@ alias stox='clear && cd ~/Desktop/Inacon/Automation/stocks && \
     source ../../inacon_env/bin/activate && python3 price_scraping.py'
 
 alias vpn='sudo openvpn --config /media/jonas/Volume/KIT/kit.ovpn'
+
+# git
+alias g='git'
+alias gs='git status'
+alias ga='git add -A'
+alias gc='git commit -m'
+alias gp='git push'

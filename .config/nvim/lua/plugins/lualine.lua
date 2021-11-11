@@ -1,9 +1,9 @@
 local function line_percentage()
-  return math.floor((fn.line(".") * 100 / fn.line("$")) + 0.5) .. "%%"
+  return math.floor((vim.fn.line(".") * 100 / vim.fn.line("$")) + 0.5) .. "%%"
 end
 
 local cur_scheme = vim.api.nvim_exec("colorscheme", true)
-local statusline_theme = "auto"
+local statusline_theme = cur_scheme
 
 if cur_scheme == "tokyonight" then
   statusline_theme = "nightfly"
