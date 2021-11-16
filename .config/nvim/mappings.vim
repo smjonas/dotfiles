@@ -23,18 +23,18 @@ nno H ^
 nno L $
 
 " Indenting lines
-nno <silent> <C-k> <cmd>move-2<cr>==
-nno <silent> <C-j> <cmd>move+<cr>==
-nno <silent> <C-l> >>
-nno <silent> <C-h> <<
-xno <silent> <C-k> :move-2<cr>gv
-xno <silent> <C-j> :move'>+<cr>gv
-xno <silent> <C-h> <gv
-xno <silent> <C-l> >gv
-" ino <silent> <C-k> <cmd>move-2<cr>
-" ino <silent> <C-j> <cmd>move+<cr>
-" ino <silent> <C-h> <cmd>norm<<cr>
-" ino <silent> <C-l> <cmd>norm>><cr>
+nno <silent> <A-k> <cmd>move-2<cr>==
+nno <silent> <A-j> <cmd>move+<cr>==
+nno <silent> <A-l> >>
+nno <silent> <A-h> <<
+xno <silent> <A-k> :move-2<cr>gv
+xno <silent> <A-j> :move'>+<cr>gv
+xno <silent> <A-h> <gv
+xno <silent> <A-l> >gv
+ino <silent> <A-k> <cmd>move-2<cr>==
+ino <silent> <A-j> <cmd>move+<cr>==
+ino <silent> <A-h> <cmd>norm<<<cr>
+ino <silent> <A-l> <cmd>norm>><cr>
 
 " Managing tabs
 nno <C-left>  <cmd>tabprev<cr>
@@ -66,19 +66,19 @@ nno Y "+Y
 xno Y "+Y
 
 " Yank entire buffer
-nmap <leader>Y mxggyG`x
+nmap <leader>Y mxggyG`xzz
 
+" Insert from clipboard in paste mode
+nno <leader>p <cmd>set paste<cr>a<C-r>+<Esc><cmd>set nopaste<cr>
+" ino <A-p> <cmd>set paste<cr><C-r>+<cmd>set nopaste<cr>
+xno <leader>p <cmd>set paste<cr>"+p<cmd>set nopaste<cr>
+
+" Duplicate selection in visual mode
+xmap <leader>p y'>p
 " Duplicate paragraph and insert one new line below
 nno cp vip:copy'>+1<cr>o<esc><up>
 " Duplicate tag and insert new line above
 nno cg vat:copy'><cr>vato<esc>O<esc><down>
-" Duplicate selection in visual mode
-xmap <leader>p y'>p
-
-" Insert from clipboard in paste mode
-nno <A-v> <cmd>set paste<cr>a<C-r>+<Esc><cmd>set nopaste<cr>
-ino <A-v> <cmd>set paste<cr><C-r>+<cmd>set nopaste<cr>
-xno <A-v> <cmd>set paste<cr>"+p<cmd>set nopaste<cr>
 
 " Avoids accidentally recording a macro
 nno q <nop>

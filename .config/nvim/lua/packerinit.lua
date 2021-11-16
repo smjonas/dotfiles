@@ -155,6 +155,12 @@ require('packer').startup(function(use)
   use {
     {
       'nvim-telescope/telescope.nvim', requires = 'nvim-lua/plenary.nvim',
+      setup = function()
+        -- Cyan Telescope borders
+        vim.cmd('highlight TelescopeResultsBorder guifg=#56a5e5')
+        vim.cmd('highlight TelescopePreviewBorder guifg=#56a5e5')
+        vim.cmd('highlight TelescopePromptBorder guifg=#56a5e5')
+      end,
       config = function() require('plugins.telescope') end,
       after = 'edge'
     },
@@ -164,7 +170,8 @@ require('packer').startup(function(use)
       after = 'telescope.nvim'
     },
     {
-      'nvim-telescope/telescope-frecency.nvim', requires = 'tami5/sqlite.lua',
+      'nvim-telescope/telescope-frecency.nvim', disable = true,
+      requires = 'tami5/sqlite.lua',
       config = function() require('telescope').load_extension('frecency') end,
       after = 'telescope.nvim'
     },
@@ -339,8 +346,7 @@ require('packer').startup(function(use)
   }
 
   use {
-    'nvim-neorg/neorg', branch = 'unstable',
-    disable = true,
+    'nvim-neorg/neorg', disable = true, branch = 'unstable',
     requires = 'nvim-lua/plenary.nvim',
     after = 'nvim-treesitter',
     config = function()

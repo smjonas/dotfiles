@@ -1,8 +1,35 @@
+local telescope_theme = 'dropdown'
 
 require('telescope').setup {
   defaults = {
     -- sort_mru = true,
-    path_display = { "truncate" }
+    path_display = { 'truncate' },
+  },
+  pickers = {
+    live_grep = {
+      theme = telescope_theme,
+      additional_args = function(opts)
+        if opts.search_all == true then
+          return {}
+        end
+        -- only show results from files of the same filetype as the
+        -- buffer where live_grep was opened from
+        local args_for_ext = {
+          ['lua'] = '-tlua',
+          ['python'] = '-tpy'
+        }
+        return { args_for_ext[vim.bo.filetype] }
+      end
+    },
+    find_files = {
+      theme = telescope_theme
+    },
+    oldfiles = {
+      theme = telescope_theme
+    },
+    buffers = {
+      theme = telescope_theme
+    }
   }
 }
 
@@ -24,7 +51,7 @@ map('n', '<leader>fc', '<cmd>lua require("plugins.telescope").find_config()<cr>'
 -- map('n', '<leader>vg', '<cmd>lua require("plugins.telescope").grep_plugins()<cr>')
 
 -- Find old
-map('n', '<leader>fo', '<cmd>Telescope frecency<cr>')
+map('n', '<leader>fo', '<cmd>Telescope oldfiles<cr>')
 -- Requires ripgrep to be installed (sudo apt install ripgrep)
 map('n', '<leader>fg', '<cmd>Telescope live_grep<cr>')
 -- nno <leader>fo <cmd>Telescope oldfiles<cr>
@@ -43,8 +70,7 @@ local builtin = require('telescope.builtin')
 local M = {}
 function M.find_files()
   builtin.find_files {
-    cwd = '~',
-    hidden = false
+    cwd = '~'
   }
 end
 
