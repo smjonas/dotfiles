@@ -25,7 +25,8 @@ cmp.setup {
     -- { name = 'luasnip' },
     { name = 'path' },
     { name = 'ultisnips' },
-    { name = 'buffer', keyword_length = 4 },
+    { name = 'buffer' }
+    -- , keyword_length = 4 }
   },
   experimental = {
       ghost_text = true

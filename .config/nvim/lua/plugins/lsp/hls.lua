@@ -1,6 +1,6 @@
 local M = {}
 
-M.config = function()
+function M.get_opts()
   local util = require('lspconfig/util')
   local root_dir = util.root_pattern(
     '.git', -- also start language server in git project

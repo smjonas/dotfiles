@@ -44,7 +44,7 @@ local M = {}
 function M.find_files()
   builtin.find_files {
     cwd = '~',
-    hidden = true
+    hidden = false
   }
 end
 
@@ -86,10 +86,4 @@ function M.find_config()
   }
 end
 
--- function M.grep_plugins()
---   builtin.live_grep {
---     prompt_title = "Grep Vim Plugins",
---     search_dirs = { vim.fn.stdpath('data') }
---   }
--- end
 return M

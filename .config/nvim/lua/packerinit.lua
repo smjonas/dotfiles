@@ -1,5 +1,11 @@
 ---@diagnostic disable: different-requires
 
+local fn = vim.fn
+local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+if fn.empty(fn.glob(install_path)) > 0 then
+  PackerBootstrap = fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+end
+
 require('packer').startup(function(use)
 
   -- Workaround for plugins with the rtp option (https://github.com/soywod/himalaya/issues/188)
@@ -71,8 +77,7 @@ require('packer').startup(function(use)
       config = function() require('plugins.lsp.init') end,
       after = 'nvim-cmp'
     },
-    'kabouzeid/nvim-lspinstall',
-    -- 'williamboman/nvim-lsp-installer',
+    'williamboman/nvim-lsp-installer',
     {
       'tami5/lspsaga.nvim',
       config = function()
@@ -176,7 +181,7 @@ require('packer').startup(function(use)
   -- Filetype specific plugins
   use {
     'mattn/emmet-vim',
-    ft = { 'html', 'php' },
+    keys = { {'x', '<C-q>' } },
     setup = function() vim.g.user_emmet_expandabbr_key = '<C-q>' end
   }
 
@@ -272,7 +277,7 @@ require('packer').startup(function(use)
   }
 
   use {
-    'beauwilliams/focus.nvim',
+    'beauwilliams/focus.nvim', disable = true,
     config = function()
       require('focus').setup { hybridnumber = true }
       require('utils').map('n', '<C-a>', '<cmd>FocusSplitNicely<cr>')
@@ -289,6 +294,7 @@ require('packer').startup(function(use)
 
   use {
     'tpope/vim-fugitive',
+    keys = { '<leader>gs', '<leader>ys' },
     config = function() require('plugins.fugitive') end
   }
 
@@ -374,4 +380,7 @@ require('packer').startup(function(use)
     config = function() require('plugins.copilot') end
   }
 
+  if PackerBootstrap then
+    require('packer').sync()
+  end
 end)

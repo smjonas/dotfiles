@@ -39,15 +39,15 @@ xno <silent> <C-l> >gv
 " Managing tabs
 nno <C-left>  <cmd>tabprev<cr>
 nno <C-right> <cmd>tabnext<cr>
-nno <C-up> <cmd>tabnew<cr>
-nno <C-down> <cmd>tabclose<cr>
+nno <C-up>    <cmd>tabnew<cr>
+nno <C-down>  <cmd>tabclose<cr>
 
 " Insert new line below and above without entering insert mode
 nno <leader>o o<Esc>0"_D
 nno <leader>O O<Esc>0"_D
 
 " Line break in normal mode
-nno <cr> myi<cr><Esc>g`y
+nno <cr> mxi<cr><Esc>g`x
 
 " Use black hole register
 nno <leader>d "_d
@@ -57,7 +57,6 @@ nno C "_C
 nno x "_x
 
 nno J J$
-nno Y y$
 
 " Enable copying to system clipboard; simply changing vim.o.clipboard to include
 " unnamedplus would paste from system clipboard with p which I want to use Alt-v for instead
@@ -65,6 +64,9 @@ nno y "+y
 xno y "+y
 nno Y "+Y
 xno Y "+Y
+
+" Yank entire buffer
+nmap <leader>Y mxggyG`x
 
 " Duplicate paragraph and insert one new line below
 nno cp vip:copy'>+1<cr>o<esc><up>
@@ -85,10 +87,6 @@ nno Q q
 " Do not move by accident
 nno <space> <nop>
 
-" Keep it centered (zv to open folds if necessary)
-nno n nzzzv
-nno N Nzzzv
-
 " Go to previous / next buffers
 nno gn <cmd>bp<cr>zz
 nno gm <cmd>bn<cr>zz
@@ -96,11 +94,18 @@ nno gm <cmd>bn<cr>zz
 nno <C-^> <C-^>zz
 nno <bs>  <C-^>
 
+" Keep it centered (zv to open folds if necessary)
+nno n nzzzv
+nno N Nzzzv
+
 " More centering
 nno g; g;zz
 nno g, g,zz
 nno { {zz
 nno } }zz
+
+nno <C-u> <C-u>zz
+nno <C-d> <C-d>zz
 
 " Easier incrementing / decrementing
 nno + g<C-a>
