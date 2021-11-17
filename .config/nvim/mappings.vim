@@ -25,8 +25,8 @@ nno L $
 " Indenting lines
 nno <silent> <A-k> <cmd>move-2<cr>==
 nno <silent> <A-j> <cmd>move+<cr>==
-nno <silent> <A-l> >>
 nno <silent> <A-h> <<
+nno <silent> <A-l> >>
 xno <silent> <A-k> :move-2<cr>gv
 xno <silent> <A-j> :move'>+<cr>gv
 xno <silent> <A-h> <gv
@@ -70,7 +70,7 @@ nmap <leader>Y mxggyG`xzz
 
 " Insert from clipboard in paste mode
 nno <leader>p <cmd>set paste<cr>a<C-r>+<Esc><cmd>set nopaste<cr>
-" ino <A-p> <cmd>set paste<cr><C-r>+<cmd>set nopaste<cr>
+ino <A-b> <cmd>set paste<cr><C-r>+<cmd>set nopaste<cr>
 xno <leader>p <cmd>set paste<cr>"+p<cmd>set nopaste<cr>
 
 " Duplicate selection in visual mode
@@ -124,7 +124,7 @@ ino , ,<C-g>u
 ino . .<C-g>u
 ino _ _<C-g>u
 
-" Jumplist mutations (O works as expected)
+" Jumplist mutations
 nno <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k'
 nno <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j'
 
@@ -175,14 +175,12 @@ endfun
 
 " Open vim.init
 nno <leader>rc <cmd>e $MYVIMRC<cr>
-nno <leader>RC <cmd>e! $MYVIMRC<cr>
 " Open lua config files
 let nvim_config_root = stdpath('config')
 nno <leader>rp <cmd>execute 'e ' . nvim_config_root . '/lua/packerinit.lua'<cr>
 nno <leader>ro <cmd>execute 'e ' . nvim_config_root . '/lua/options.lua'<cr>
 nno <leader>ru <cmd>execute 'e ' . nvim_config_root . '/lua/utils.lua'<cr>
 nno <leader>rm <cmd>execute 'e ' . nvim_config_root . '/mappings.vim'<cr>
-nno <leader>rs <cmd>execute 'e ' . nvim_config_root . '/UltiSnips/html.snippets'<cr>
 
 " Email settings
 nno <leader>re <cmd>execute 'e ' . $HOME . '/.config/himalaya/config.toml'<cr>

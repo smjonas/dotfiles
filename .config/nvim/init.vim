@@ -1,6 +1,6 @@
-let $INACON_DIR = $HOME . "/Desktop/Inacon/"
-let $INACON_VENV_ACTIVATE = $INACON_DIR . "inacon_env/bin/activate"
-let $INACON_VENV_PYTHON = $INACON_DIR . "inacon_env/bin"
+let $INACON_DIR = $HOME . '/Desktop/Inacon/'
+let $INACON_VENV_ACTIVATE = $INACON_DIR . 'inacon_env/bin/activate'
+let $INACON_VENV_PYTHON = $INACON_DIR . 'inacon_env/bin'
 
 " Fixes wrong terminal colors when using tmux
 if exists('+termguicolors')
@@ -22,7 +22,7 @@ runtime mappings.vim
 augroup my_auto_group
   autocmd!
   " Run on startup for faster keyboard movement
-  autocmd VimEnter * silent !xset r rate 210 33
+  autocmd VimEnter * silent !xset r rate 215 33
 
   " Remove trailing whitespace on save (/e to hide errors)
   autocmd BufWritePre * %s/\s\+$//e

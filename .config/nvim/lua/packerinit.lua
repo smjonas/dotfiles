@@ -6,8 +6,10 @@ if fn.empty(fn.glob(install_path)) > 0 then
   PackerBootstrap = fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
 end
 
-require('packer').startup(function(use)
+-- global settings
+vim.g['snippet_engine'] = 'luasnip'
 
+require('packer').startup(function(use)
   -- Workaround for plugins with the rtp option (https://github.com/soywod/himalaya/issues/188)
   -- local packer_compiled = vim.fn.stdpath('config') .. '/plugin/packer_compiled.lua'
   -- vim.cmd('luafile'  .. packer_compiled)
@@ -38,11 +40,11 @@ require('packer').startup(function(use)
   -- Color schemes
   use {
     { 'sainnhe/edge',
-      config = function()
-        vim.g['edge_enable_italic'] = 1
-        vim.g['edge_disable_italic_comment'] = 1
-        vim.cmd('colorscheme edge')
-      end
+    config = function()
+      vim.g['edge_enable_italic'] = 1
+      vim.g['edge_disable_italic_comment'] = 1
+      vim.cmd('colorscheme edge')
+    end
     },
     {
       'sainnhe/gruvbox-material',
@@ -110,9 +112,9 @@ require('packer').startup(function(use)
 
   -- Tree viewer / file browser
   use {
-    'lambdalisue/fern.vim', requires = 'antoinemadec/FixCursorHold.nvim',
+    'lambdalisue/fern.vim',
     config = function()
-      vim.g['fern#drawer_width'] = 50
+      vim.g['fern#drawer_width'] = 30
       local map = require('utils').map
       map('n', '<C-n>', '<cmd>Fern %:h -drawer -toggle -reveal=%<cr>')
       map('n', '<M-n>', '<cmd>Fern %:h<cr>')
@@ -130,25 +132,32 @@ require('packer').startup(function(use)
   }
 
   use {
-    'hrsh7th/nvim-cmp',
-    config = function()
-      require('plugins.cmp')
-    end,
+    'hrsh7th/nvim-cmp', config = function() require('plugins.cmp') end,
     requires = {
-      -- 'quangnguyen30192/cmp-nvim-ultisnips',
-      '~/Desktop/cmp-nvim-ultisnips',
+      {
+        '~/Desktop/cmp-nvim-ultisnips',
+        disable = vim.g['snippet_engine'] ~= 'ultisnips',
+        after = 'ultisnips'
+      },
+      {
+        'saadparwaiz1/cmp_luasnip',
+        disable = vim.g['snippet_engine'] ~= 'luasnip',
+        after = 'LuaSnip'
+      },
       'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path', 'hrsh7th/cmp-nvim-lua',
       { 'hrsh7th/cmp-nvim-lsp', config = function() require('cmp_nvim_lsp') end },
-      { 'lukas-reineke/cmp-under-comparator', }
+      'lukas-reineke/cmp-under-comparator'
     },
-    after = 'ultisnips'
+  }
+
+  use {
+    'L3MON4D3/LuaSnip',
+    config = function() require('plugins.luasnip') end,
   }
 
   use {
     'SirVer/ultisnips',
-    setup = function()
-      vim.g.UltiSnipsRemoveSelectModeMappings = 0
-    end
+    setup = function() vim.g.UltiSnipsRemoveSelectModeMappings = 0 end
   }
 
   -- Telescope
@@ -188,20 +197,18 @@ require('packer').startup(function(use)
   -- Filetype specific plugins
   use {
     'mattn/emmet-vim',
-    keys = { {'x', '<C-q>' } },
+    keys = { {'x', '<C-q>' }, {'i', '<C-q>' } },
     setup = function() vim.g.user_emmet_expandabbr_key = '<C-q>' end
   }
-
   use { 'alvan/vim-closetag', ft = { 'html', 'php' } }
-
   use { 'lervag/vimtex', ft = 'tex' }
-
   use {
     'norcalli/nvim-colorizer.lua',
     config = function()
-        require('colorizer').setup {
-            'css'; 'html'; 'lua'; 'php'
-        }
+      require('colorizer').setup {
+        'css'; 'html'; 'lua'; 'php';
+        -- names = false
+      }
     end
   }
 
@@ -222,7 +229,7 @@ require('packer').startup(function(use)
     end
   }
 
-  -- New ways to manipulate text
+-- New ways to manipulate text
   use {
     'wellle/targets.vim',
     -- E.g. dav to delete b from a_b_c => a_c
@@ -231,13 +238,11 @@ require('packer').startup(function(use)
       config = function()
         local map = require('utils').map
         -- Swap function arguments using Alt + arrow keys
-        map('n', '<M-h>', '<cmd>SidewaysLeft<cr>')
-        map('n', '<M-l>', '<cmd>SidewaysRight<cr>')
+        map('n', '<A-left>', '<cmd>SidewaysLeft<cr>')
+        map('n', '<A-right>', '<cmd>SidewaysRight<cr>')
       end
     },
-    { 'machakann/vim-sandwich',
-      config = function() require('plugins.vim-sandwich') end
-    },
+    { 'machakann/vim-sandwich', config = function() require('plugins.vim-sandwich') end },
     {
       -- 'Schlepp' text around while respecting existing text
       'zirrostig/vim-schlepp',
@@ -320,7 +325,8 @@ require('packer').startup(function(use)
     'vimwiki/vimwiki', branch = 'dev',
     setup = function()
       vim.g['vimwiki_list'] = {
-        { template_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/vimwiki/autoload/',
+        {
+          template_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/vimwiki/autoload/',
           syntax = 'markdown', ext = '.md'
         }
       }
@@ -359,8 +365,8 @@ require('packer').startup(function(use)
     vim.fn.stdpath('data') .. '/himalaya/vim',
     -- rtp = 'vim',
     -- config = function()
-    --   vim.g['himalaya_mailbox_picker'] = 'telescope'
-    -- end
+      --   vim.g['himalaya_mailbox_picker'] = 'telescope'
+      -- end
   }
 
   -- use { 'michaelb/sniprun', run = 'bash ./install.sh' }
