@@ -26,6 +26,22 @@ local function expand_for(snippet_engine, args)
   end
 end
 
+local function ctrl_n(fallback)
+  if luasnip.choice_active() then
+    luasnip.change_choice(1)
+  elseif cmp.visible() then
+    cmp.select_next_item()
+  else fallback() end
+end
+
+local function ctrl_p(fallback)
+  if luasnip.choice_active() then
+    luasnip.change_choice(-1)
+  elseif cmp.visible() then
+    cmp.select_prev_item()
+  else fallback() end
+end
+
 local function tab_for(snippet_engine, fallback)
   if snippet_engine == 'luasnip' then
     if luasnip.expand_or_jumpable() then
@@ -94,6 +110,16 @@ cmp.setup {
     ['<Shift-Tab>'] = cmp.mapping(function(fallback)
       shift_tab_for(cur_snippet_engine, fallback)
     end, { 'i', 's' }),
+    ['<C-n>'] = cmp.mapping(function(fallback)
+      if cur_snippet_engine == 'luasnip' then
+        ctrl_n(fallback)
+      else fallback() end
+    end),
+    ['<C-p>'] = cmp.mapping(function(fallback)
+      if cur_snippet_engine == 'luasnip' then
+        ctrl_p(fallback)
+      else fallback() end
+    end)
   },
   sorting = {
     comparators = {

@@ -17,8 +17,6 @@ EOF
 
 runtime mappings.vim
 
-" colorscheme edge
-
 augroup my_auto_group
   autocmd!
   " Run on startup for faster keyboard movement
@@ -39,18 +37,10 @@ augroup my_auto_group
   " as a global option (see https://vi.stackexchange.com/a/9367/37072)
   autocmd FileType * set formatoptions-=t
 
-  " nvim-lint
-  autocmd BufEnter,BufWritePost * lua require("lint").try_lint()
-  " vimtex
-  autocmd User VimtexEventInitPost VimtexCompile
-
-  " autocmdtomatically enter insert mode when in terminal mode
+  " automatically enter insert mode when in terminal mode
   " and change to current directory
   autocmd TermOpen * silent !lcd %:p:h
   autocmd TermOpen * startinsert
-
-  " 2 spaces per tab for php files
-  " autocmd FileType php setlocal filetype=html shiftwidth=2 tabstop=2
 augroup end
 
 augroup packer_user_config

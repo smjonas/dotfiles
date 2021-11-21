@@ -11,11 +11,14 @@ local function setup_lsp_servers()
 
   local lsp_installer = require('nvim-lsp-installer')
   lsp_installer.on_server_ready(function(server)
+    print(server.name)
     local opts = {}
-    if server.name == 'sumneko_lua' then
-      opts = require('plugins/lsp/sumneko_lua').get_opts()
-    elseif server.name == 'hls' then
-      opts = require('plugins/lsp/hls').get_opts()
+    local customized_servers = { 'hls', 'pyright', 'sumneko_lua' }
+    for _, customized_server in pairs(customized_servers) do
+      print(customized_server)
+      if server.name == customized_server then
+        opts = require('plugins/lsp/' .. customized_server)
+      end
     end
 
     -- Prefer cmp over coq if both are available

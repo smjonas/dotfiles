@@ -1,3 +1,5 @@
+require('utils').map('n', '<leader>s', '<cmd>e ' .. vim.fn.stdpath('config') .. '/lua/plugins/luasnip.lua<cr>')
+
 local ls = require('luasnip')
 local prs = ls.parser.parse_snippet
 local s = ls.snippet
@@ -9,10 +11,6 @@ local f = ls.function_node
 local c = ls.choice_node
 local d = ls.dynamic_node
 local events = require('luasnip.util.events')
-
--- local html = {
---   s({trig = 'img', name = ''}, )
--- }
 
 -- snippet img "<img>"
 -- <img src="$1" alt="$2">
@@ -60,12 +58,20 @@ local events = require('luasnip.util.events')
 -- </li>
 -- endsnippet
 
+-- 'normal' snippet definition
+local function n(trig, text)
+  return s(trig, { t(text) })
+end
 
--- extends tex
+local html = {
+  -- TODO: change to utf8? using regex trigger
+  n('utf', '<meta charset="utf-8"/>')
+}
 
-local md = {
-  s('rightarrow', c(1, { t('🠂'), t('⇨') })),
-  s('leftrightarrow', t('🡘')),
+local vimwiki = {
+  s('arrow', c(1, { t('🠂'), t('⇨') })),
+  n('leftrightarrow', '🡘'),
+  prs('bf', '**$1**')
 }
 
 local tex = {
@@ -74,11 +80,16 @@ local tex = {
   prs('sqrt', '\\sum_{$1}'),
 }
 
-ls.snippets = {
-  md = md,
-  all = tex
+local all = {
+  prs('neq', '≠'),
 }
 
-ls.filetype_set('md', { 'tex' })
+ls.snippets = {
+  html = html,
+  vimwiki = vimwiki,
+  tex = tex,
+  all = all
+}
 
+ls.filetype_extend('vimwiki', { 'tex' })
 

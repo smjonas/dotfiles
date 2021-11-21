@@ -1,18 +1,13 @@
-local M = {}
-
-function M.get_opts()
-  local settings = {
-    Lua = {
-      diagnostics = {
-        -- Fix undefined globals warnings
-        globals = { 'vim', 'describe', 'it' }
-      },
-      telemetry = {
-        enable = false
-      }
+local settings = {
+  Lua = {
+    diagnostics = {
+      -- Fix undefined globals warnings
+      globals = { 'vim', 'describe', 'it' }
+    },
+    telemetry = {
+      enable = false
     }
   }
-  return { settings = settings }
-end
+}
 
-return M
+return { settings = settings }

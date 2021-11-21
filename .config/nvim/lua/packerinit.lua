@@ -43,7 +43,7 @@ require('packer').startup(function(use)
     config = function()
       vim.g['edge_enable_italic'] = 1
       vim.g['edge_disable_italic_comment'] = 1
-      vim.cmd('colorscheme edge')
+      vim.cmd[[colorscheme edge]]
     end
     },
     {
@@ -106,6 +106,7 @@ require('packer').startup(function(use)
       'jonasstr/nvim-lint',
       config = function()
         require('lint').linters_by_ft = { python = {'flake8'} }
+        vim.cmd[[autocmd BufEnter,BufWritePost * lua require("lint").try_lint()]]
       end
     }
   }
@@ -166,9 +167,9 @@ require('packer').startup(function(use)
       'nvim-telescope/telescope.nvim', requires = 'nvim-lua/plenary.nvim',
       setup = function()
         -- Cyan Telescope borders
-        vim.cmd('highlight TelescopeResultsBorder guifg=#56a5e5')
-        vim.cmd('highlight TelescopePreviewBorder guifg=#56a5e5')
-        vim.cmd('highlight TelescopePromptBorder guifg=#56a5e5')
+        vim.cmd[[highlight TelescopeResultsBorder guifg=#56a5e5]]
+        vim.cmd[[highlight TelescopePreviewBorder guifg=#56a5e5]]
+        vim.cmd[[highlight TelescopePromptBorder guifg=#56a5e5]]
       end,
       config = function() require('plugins.telescope') end,
       after = 'edge'
@@ -201,7 +202,11 @@ require('packer').startup(function(use)
     setup = function() vim.g.user_emmet_expandabbr_key = '<C-q>' end
   }
   use { 'alvan/vim-closetag', ft = { 'html', 'php' } }
-  use { 'lervag/vimtex', ft = 'tex' }
+  use { 'lervag/vimtex', ft = 'tex',
+    config = function()
+      vim.cmd[[autocmd User VimtexEventInitPost VimtexCompile]]
+    end
+  }
   use {
     'norcalli/nvim-colorizer.lua',
     config = function()
@@ -380,7 +385,16 @@ require('packer').startup(function(use)
 
   use {
     'luukvbaal/stabilize.nvim',
-    config = function() require("stabilize").setup() end
+    config = function()
+      -- Workaround for error that occurs when using vim-fugitive and stabililize.nvim.
+      -- See https://github.com/luukvbaal/stabilize.nvim/issues/6.
+      vim.cmd[[
+        autocmd WinNew * lua win=vim.api.nvim_get_current_win() vim.defer_fn(
+          \function() vim.api.nvim_set_current_win(win) end, 50
+        \)
+      ]]
+      require("stabilize").setup()
+    end
   }
 
   use 'arp242/undofile_warn.vim'
