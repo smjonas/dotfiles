@@ -12,15 +12,6 @@ local c = ls.choice_node
 local d = ls.dynamic_node
 local events = require('luasnip.util.events')
 
--- snippet img "<img>"
--- <img src="$1" alt="$2">
--- $0
--- endsnippet
-
--- snippet jq "Include jquery script" b
--- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
--- endsnippet
-
 -- snippet css "html_docs_standard.css" b
 -- 	<link rel="stylesheet" href="${1:../3tz9ixmacd201270/styles/html_docs_standard.css}">
 -- endsnippet
@@ -58,20 +49,36 @@ local events = require('luasnip.util.events')
 -- </li>
 -- endsnippet
 
--- 'normal' snippet definition
+-- 'normal' snippets without extra parameters
 local function n(trig, text)
   return s(trig, { t(text) })
 end
 
+-- text node with description
+local function td(trig, name, text)
+  return s({ trig = trig, name = name }, t(text))
+end
+
+-- <img src="$1" alt="$2">
 local html = {
   -- TODO: change to utf8? using regex trigger
-  n('utf', '<meta charset="utf-8"/>')
+  n('utf', '<meta charset="utf-8"/>'),
+  td('jq', 'jquery', '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>'),
+  prs({ trig = 'img', name = '<img> tag' }, '<img src="$1" alt="$2">'),
+  -- TODO: alternative triggers? i.e. dl and pdf
+  prs({ trig = 'dl', name = 'Download PDF'}, '<a class="download_pdf" download="" href="$1.pdf">\n$2\n<\a>'),
 }
 
 local vimwiki = {
   s('arrow', c(1, { t('🠂'), t('⇨') })),
   n('leftrightarrow', '🡘'),
-  prs('bf', '**$1**')
+  prs('bf', '**$1**'),
+  n('alpha', 'α'),
+  n('beta', 'β'),
+  n('Gamma', 'Γ'),
+  n('lambda', 'λ'),
+  n('tau', 'τ'),
+  n('all', '∀'),
 }
 
 local tex = {
@@ -80,16 +87,22 @@ local tex = {
   prs('sqrt', '\\sum_{$1}'),
 }
 
+local python = {
+  s({ trig = 'deb', name = 'debug variable' },  { t('print(f"{'), i(1), t({'=}")', ''}) })
+}
+
 local all = {
   prs('neq', '≠'),
 }
 
 ls.snippets = {
+  all = all,
   html = html,
-  vimwiki = vimwiki,
+  python = python,
   tex = tex,
-  all = all
+  vimwiki = vimwiki,
 }
 
 ls.filetype_extend('vimwiki', { 'tex' })
+ls.filetype_extend('text', { 'vimwiki' })
 

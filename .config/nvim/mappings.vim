@@ -54,6 +54,8 @@ nno <leader>d "_d
 nno <leader>D "_D
 nno c "_c
 nno C "_C
+" Use default behavior of x
+nno <leader>z x
 nno x "_x
 
 nno J J$
@@ -145,8 +147,8 @@ nno <leader>j <cmd>cprev<cr>
 nno <leader>k <cmd>cnext<cr>
 
 " Circular window movements
-nno <tab>   <C-w>w
-nno <S-tab> <C-w>W
+nno <Tab>   <C-w>w
+nno <S-Tab> <C-w>W
 
 " Open new horizontal split (consistent with Ctrl-W + v)
 nno <C-w><C-h> <cmd>split<cr>

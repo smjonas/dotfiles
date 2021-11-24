@@ -7,6 +7,7 @@ require('telescope').setup {
   },
   pickers = {
     live_grep = {
+      cwd = require('telescope.utils').buffer_dir(),
       theme = telescope_theme,
       additional_args = function(opts)
         if opts.search_all == true then
@@ -61,8 +62,6 @@ map('n', '<leader>h', '<cmd>Telescope help_tags<cr>')
 -- map('n', '<leader>s', '<cmd>Telescope colorscheme<cr>')
 -- List keybindings
 map('n', '<leader>b', '<cmd>Telescope keymaps<cr>')
--- List projects (project.nvim)
-map('n', '<leader>P', '<cmd>Telescope projects<cr>')
 
 local env = vim.env
 local builtin = require('telescope.builtin')
@@ -76,9 +75,7 @@ end
 
 function M.project_search()
   builtin.find_files {
-    previewer = false,
     prompt_title = 'Project Search',
-    layout_strategy = 'vertical',
     cwd = require('lspconfig/util').root_pattern '.git'(vim.fn.expand "%:p"),
   }
 end

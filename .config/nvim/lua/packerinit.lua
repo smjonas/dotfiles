@@ -7,7 +7,8 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- global settings
-vim.g['snippet_engine'] = 'luasnip'
+vim.g['snippet_engine'] = 'ultisnips'
+vim.g['completion_plugin'] = 'cmp'
 
 require('packer').startup(function(use)
   -- Workaround for plugins with the rtp option (https://github.com/soywod/himalaya/issues/188)
@@ -113,32 +114,67 @@ require('packer').startup(function(use)
 
   -- Tree viewer / file browser
   use {
-    'lambdalisue/fern.vim',
+    'lambdalisue/fern.vim', disable = false,
+    config = function() require('plugins.fern') end
+  }
+
+  use {
+    'kyazdani42/nvim-tree.lua', requires = 'kyazdani42/nvim-web-devicons', disable = true,
     config = function()
-      vim.g['fern#drawer_width'] = 30
+      vim.g['nvim_tree_group_empty'] = 1
+      vim.g['nvim_tree_respect_buf_cwd'] = 1
+      vim.g['nvim_tree_root_folder_modifier'] = ':t:r'
+
+      local tree_cb = require('nvim-tree.config').nvim_tree_callback
+      local mappings = {
+        { key = { 'h' }, cb = tree_cb('close_node') },
+        { key = { 'l' }, cb = tree_cb('edit') },
+      }
+      require('nvim-tree').setup {
+        update_cwd = true,
+        update_focused_file = {
+          enable = true,
+          update_cwd = true,
+        },
+        view = {
+          mappings = {
+            list = mappings
+          }
+        },
+      }
+
       local map = require('utils').map
-      map('n', '<C-n>', '<cmd>Fern %:h -drawer -toggle -reveal=%<cr>')
-      map('n', '<M-n>', '<cmd>Fern %:h<cr>')
+      map('n', '<C-n>', '<cmd>NvimTreeToggle<cr>')
     end
   }
 
   -- Auto-completion and snippets
-  local disable_coq = true
   use {
     {
-      'ms-jpq/coq_nvim', disable = disable_coq, branch = 'coq',
+      'ms-jpq/coq_nvim', disable = vim.g['completion_plugin'] ~= 'coq', branch = 'coq',
       setup = function() require('plugins.coq') end
     },
-    { 'ms-jpq/coq.artifacts', disable = disable_coq, branch = 'artifacts', after = 'coq_nvim' }
+    {
+      'ms-jpq/coq.artifacts', disable = vim.g['completion_plugin'] ~= 'coq',
+      branch = 'artifacts', after = 'coq_nvim'
+    }
   }
 
   use {
     'hrsh7th/nvim-cmp', config = function() require('plugins.cmp') end,
     requires = {
       {
-        '~/Desktop/cmp-nvim-ultisnips',
+        -- '~/Desktop/cmp-nvim-ultisnips', branch = 'main',
+        -- 'smjonas/cmp-nvim-ultisnips', branch = 'the_great_refactor',
+        'quangnguyen30192/cmp-nvim-ultisnips',
+        config = function()
+          -- require('cmp_nvim_ultisnips').setup {
+            -- documentation = 'test'
+          -- }
+        end,
         disable = vim.g['snippet_engine'] ~= 'ultisnips',
-        after = 'ultisnips'
+        after = 'ultisnips',
+        requires = 'honza/vim-snippets'
       },
       {
         'saadparwaiz1/cmp_luasnip',
@@ -158,20 +194,26 @@ require('packer').startup(function(use)
 
   use {
     'SirVer/ultisnips',
-    setup = function() vim.g.UltiSnipsRemoveSelectModeMappings = 0 end
+    requires = { 'honza/vim-snippets', rtp = '.' },
+    config = function()
+      vim.g.UltiSnipsRemoveSelectModeMappings = 0
+      vim.g.UltiSnipsEnableSnipMate = 1
+      -- vim.opt.rtp:append({vim.fn.stdpath('data') .. "/site/pack/packer/start/vim-snippets"})
+    end
   }
 
   -- Telescope
   use {
     {
       'nvim-telescope/telescope.nvim', requires = 'nvim-lua/plenary.nvim',
-      setup = function()
+      -- '~/Desktop/NeovimPlugins/telescope.nvim', requires = 'nvim-lua/plenary.nvim',
+      config = function()
+        require('plugins.telescope')
         -- Cyan Telescope borders
         vim.cmd[[highlight TelescopeResultsBorder guifg=#56a5e5]]
         vim.cmd[[highlight TelescopePreviewBorder guifg=#56a5e5]]
         vim.cmd[[highlight TelescopePromptBorder guifg=#56a5e5]]
       end,
-      config = function() require('plugins.telescope') end,
       after = 'edge'
     },
     {
@@ -186,7 +228,7 @@ require('packer').startup(function(use)
       after = 'telescope.nvim'
     },
     {
-      'ahmedkhalf/project.nvim',
+      'ahmedkhalf/project.nvim', disable = true,
       config = function()
         require('project_nvim').setup { silent_chdir = false }
         require('telescope').load_extension('projects')
@@ -212,7 +254,7 @@ require('packer').startup(function(use)
     config = function()
       require('colorizer').setup {
         'css'; 'html'; 'lua'; 'php';
-        -- names = false
+        -- { default_options = { names = false } }
       }
     end
   }
@@ -277,10 +319,16 @@ require('packer').startup(function(use)
   use {
     'windwp/nvim-autopairs',
     config = function()
+      local cmp_autopairs = require('nvim-autopairs.completion.cmp')
       require('nvim-autopairs').setup {
-        disable_filetype = { 'TelescopePrompt', 'vim', 'tex' }
+        disable_filetype = { 'TelescopePrompt', 'vim', 'tex' };
+        -- Insert brackets after selecting function from cmp
+        require('cmp').event:on('confirm_done', cmp_autopairs.on_confirm_done {
+           map_char = { tex = '' }
+        });
       }
-    end
+    end,
+    after = 'nvim-cmp'
   }
 
   use {
@@ -312,6 +360,7 @@ require('packer').startup(function(use)
   use {
     'tpope/vim-fugitive',
     keys = { '<leader>gs', '<leader>ys' },
+    cmd = { 'Git', 'Yadm' },
     config = function() require('plugins.fugitive') end
   }
 
@@ -328,19 +377,19 @@ require('packer').startup(function(use)
 
   use {
     'vimwiki/vimwiki', branch = 'dev',
-    setup = function()
+    -- keys = { '<leader>x' },
+    config = function()
       vim.g['vimwiki_list'] = {
         {
           template_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/vimwiki/autoload/',
           syntax = 'markdown', ext = '.md'
         }
       }
-      -- doesn't seem to work, use syntax file instead
-      -- vim.g['vimwiki_listsyms'] = '☒⊡⬕'
       vim.g['vimwiki_global_ext'] = 0
-
       local map = require('utils').map
       map('n', '<leader>x', '<Plug>VimwikiIndex', { noremap = false, unique = false })
+      -- doesn't seem to work, use syntax file instead
+      -- vim.g['vimwiki_listsyms'] = '☒⊡⬕'
     end
   }
 
@@ -385,9 +434,10 @@ require('packer').startup(function(use)
 
   use {
     'luukvbaal/stabilize.nvim',
+    disable = vim.bo.ft ~= 'vimwiki',
     config = function()
-      -- Workaround for error that occurs when using vim-fugitive and stabililize.nvim.
-      -- See https://github.com/luukvbaal/stabilize.nvim/issues/6.
+      -- Workaround for error that occurs when using vim-fugitive and stabililize.nvim
+      -- at the same time. See https://github.com/luukvbaal/stabilize.nvim/issues/6.
       vim.cmd[[
         autocmd WinNew * lua win=vim.api.nvim_get_current_win() vim.defer_fn(
           \function() vim.api.nvim_set_current_win(win) end, 50

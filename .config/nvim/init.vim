@@ -41,6 +41,8 @@ augroup my_auto_group
   " and change to current directory
   autocmd TermOpen * silent !lcd %:p:h
   autocmd TermOpen * startinsert
+
+  autocmd BufWritePost *.snippets :CmpUltisnipsReloadSnippets
 augroup end
 
 augroup packer_user_config

@@ -27,7 +27,7 @@ local function expand_for(snippet_engine, args)
 end
 
 local function ctrl_n(fallback)
-  if luasnip.choice_active() then
+  if luasnip.choice_active() and luasnip.expand_or_locally_jumpable() then
     luasnip.change_choice(1)
   elseif cmp.visible() then
     cmp.select_next_item()
@@ -35,7 +35,7 @@ local function ctrl_n(fallback)
 end
 
 local function ctrl_p(fallback)
-  if luasnip.choice_active() then
+  if luasnip.choice_active() and luasnip.expand_or_locally_jumpable() then
     luasnip.change_choice(-1)
   elseif cmp.visible() then
     cmp.select_prev_item()
@@ -44,7 +44,7 @@ end
 
 local function tab_for(snippet_engine, fallback)
   if snippet_engine == 'luasnip' then
-    if luasnip.expand_or_jumpable() then
+    if luasnip.expand_or_locally_jumpable() then
       luasnip.expand_or_jump()
     elseif has_any_words_before() then
       cmp.complete()
@@ -107,6 +107,7 @@ cmp.setup {
     ['<Tab>'] = cmp.mapping(function(fallback)
       tab_for(cur_snippet_engine, fallback)
     end, { 'i', 's' }),
+    ['<C-Space>'] = cmp.mapping(cmp.mapping.complete()),
     ['<Shift-Tab>'] = cmp.mapping(function(fallback)
       shift_tab_for(cur_snippet_engine, fallback)
     end, { 'i', 's' }),
@@ -123,10 +124,11 @@ cmp.setup {
   },
   sorting = {
     comparators = {
+      function(...) return require('cmp_buffer'):compare_locality(...) end,
       cmp.config.compare.offset,
       cmp.config.compare.exact,
       cmp.config.compare.score,
-      require 'cmp-under-comparator'.under,
+      require('cmp-under-comparator').under,
       cmp.config.compare.kind,
       cmp.config.compare.sort_text,
       cmp.config.compare.length,

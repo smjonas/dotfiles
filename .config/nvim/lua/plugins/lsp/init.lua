@@ -2,33 +2,23 @@
 local lsp = require('vim.lsp')
 
 local function setup_lsp_servers()
-  local cmp_lsp, coq
-  if package.loaded['cmp_nvim_lsp'] then
-    cmp_lsp = require('cmp_nvim_lsp')
-  elseif package.loaded['coq'] then
-    coq = require('coq')
-  end
-
   local lsp_installer = require('nvim-lsp-installer')
   lsp_installer.on_server_ready(function(server)
-    print(server.name)
     local opts = {}
     local customized_servers = { 'hls', 'pyright', 'sumneko_lua' }
     for _, customized_server in pairs(customized_servers) do
-      print(customized_server)
       if server.name == customized_server then
         opts = require('plugins/lsp/' .. customized_server)
       end
     end
 
-    -- Prefer cmp over coq if both are available
-    if cmp_lsp ~= nil then
-      local capabilities = cmp_lsp.update_capabilities(
+    if vim.g['completion_plugin'] == 'cmp' then
+      local capabilities = require('cmp_nvim_lsp').update_capabilities(
         lsp.protocol.make_client_capabilities()
       )
       opts = vim.tbl_deep_extend('error', opts, { capabilities = capabilities })
-    elseif coq ~= nil then
-      opts = vim.tbl_deep_extend('error', opts, { coq.lsp_ensure_capabilities() })
+    elseif vim.g['completion_plugin'] == 'coq' then
+      opts = vim.tbl_deep_extend('error', opts, { require('coq').lsp_ensure_capabilities() })
     end
     server:setup(opts)
   end)
