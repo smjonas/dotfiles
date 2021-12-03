@@ -2,7 +2,6 @@ local o = vim.opt
 
 -- Auto-save when switching to different buffer using ctrl-6
 o.autowriteall = true
-o.background = "dark"
 -- Use system clipboard
 -- o.clipboard = o.clipboard ^ "unnamed,unnamedplus"
 o.cmdheight = 2
@@ -13,15 +12,12 @@ o.cursorline = true
 o.expandtab = true
 -- Do not open folds when moving with { or }
 o.foldopen = o.foldopen - "block"
-o.hidden = true
 o.ignorecase = true
 -- Show replacement results while typing command
 o.inccommand = "nosplit"
-o.incsearch = true
 -- Drag window with mouse
 o.mouse = "a"
 o.hlsearch = false
-o.joinspaces = false
 o.number = true
 o.relativenumber = true
 o.scrolloff = 9
@@ -47,7 +43,6 @@ o.tabstop = 4
 o.termguicolors = true
 o.textwidth = 90
 o.timeoutlen = 250
-o.undodir = vim.env.HOME .. vim.fn.stdpath("data") .. "/undo"
 o.undofile = true
 -- Enables selecting a block of text across line boundaries
 o.virtualedit = o.virtualedit + "block"

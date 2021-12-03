@@ -64,8 +64,8 @@ nno J J$
 " unnamedplus would paste from system clipboard with p which I want to use Alt-v for instead
 nno y "+y
 xno y "+y
-nno Y "+Y
-xno Y "+Y
+nno Y "+y$
+xno Y "+y$
 
 " Yank entire buffer
 nmap <leader>Y mxggyG`xzz
@@ -116,7 +116,7 @@ xno + g<C-a>
 xno - g<C-x>
 
 " Format whole file
-nno <leader>= gg=G''
+nno <leader>= gg=G""
 
 " Repeat last command in visual mode
 xno . :norm .<cr>

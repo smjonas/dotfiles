@@ -2,7 +2,7 @@ local settings = {
   Lua = {
     diagnostics = {
       -- Fix undefined globals warnings
-      globals = { 'vim', 'describe', 'it' }
+      globals = { "vim", "describe", "it" }
     },
     telemetry = {
       enable = false

@@ -1,15 +1,15 @@
-local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
+local parser_configs = require("nvim-treesitter.parsers").get_parser_configs()
 
 parser_configs.norg = {
   install_info = {
-    url = 'https://github.com/nvim-neorg/tree-sitter-norg',
-    files = { 'src/parser.c', 'src/scanner.cc' },
-    branch = 'main'
+    url = "https://github.com/nvim-neorg/tree-sitter-norg",
+    files = { "src/parser.c", "src/scanner.cc" },
+    branch = "main"
   }
 }
 
-require('nvim-treesitter.configs').setup {
-  ensure_installed = 'all',
+require("nvim-treesitter.configs").setup {
+  ensure_installed = "all",
   highlight = {
     enable = true
   },
@@ -22,12 +22,12 @@ require('nvim-treesitter.configs').setup {
       -- Automatically jump forward to textobj, similar to targets.vim
       lookahead = true,
       keymaps = {
-        ['af'] = '@function.outer',
-        ['if'] = '@function.inner',
-        ['ac'] = '@class.outer',
-        ['ic'] = '@class.inner',
-        ['ia'] = '@parameter.inner',
-        ['aa'] = '@parameter.outer',
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        ["ic"] = "@class.inner",
+        ["ia"] = "@parameter.inner",
+        ["aa"] = "@parameter.outer",
       }
     }
   }

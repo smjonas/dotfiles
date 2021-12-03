@@ -19,9 +19,9 @@ function M.yadm_command(cmd)
   endfunction
   ]])
 
-  vim.g['fugitive_git_executable'] = 'yadm'
-  vim.cmd('Git ' .. (cmd or ''))
-  vim.g['fugitive_git_executable'] = 'git'
+  vim.g["fugitive_git_executable"] = "yadm"
+  vim.cmd("Git " .. (cmd or ""))
+  vim.g["fugitive_git_executable"] = "git"
 
   vim.cmd([[
   if exists('+shellslash')
@@ -69,8 +69,8 @@ function M.yadm_command(cmd)
 end
 
 -- Defines custom Yadm command
-vim.cmd('command! -nargs=? -complete=customlist,fugitive#Complete Yadm lua require("plugins.fugitive").yadm_command(<f-args>)')
-map('n', '<leader>ys', '<cmd>lua require("plugins.fugitive").yadm_command("")<cr>')
-map('n', '<leader>yp', '<cmd>lua require("plugins.fugitive").yadm_command("push")<cr>')
+vim.cmd("command! -nargs=? -complete=customlist,fugitive#Complete Yadm lua require('plugins.fugitive').yadm_command(<f-args>)")
+map("n", "<leader>ys", "<cmd>lua require('plugins.fugitive').yadm_command('')<cr>")
+map("n", "<leader>yp", "<cmd>lua require('plugins.fugitive').yadm_command('push')<cr>")
 
 return M

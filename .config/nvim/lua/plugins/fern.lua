@@ -1,7 +1,7 @@
-vim.g['fern#drawer_width'] = 30
-local map = require('utils').map
-map('n', '<C-n>', '<cmd>Fern %:h -drawer -toggle -reveal=%<cr>')
-map('n', '<M-n>', '<cmd>Fern %:h<cr>')
+vim.g["fern#drawer_width"] = 30
+local map = require("utils").map
+map("n", "<C-n>", "<cmd>Fern %:h -drawer -toggle -reveal=%<cr>")
+map("n", "<M-n>", "<cmd>Fern %:h<cr>")
 
 vim.cmd[[
   function! s:init_fern() abort
