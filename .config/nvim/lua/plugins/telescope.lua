@@ -7,7 +7,6 @@ require("telescope").setup {
   },
   pickers = {
     live_grep = {
-      cwd = require("lspconfig/util").root_pattern".git"(vim.fn.expand "%:p"),
       theme = telescope_theme,
       additional_args = function(opts)
         if opts.search_all == true then
@@ -54,7 +53,7 @@ map("n", "<leader>fc", "<cmd>lua require('plugins.telescope').find_config()<cr>"
 -- Find old
 map("n", "<leader>fo", "<cmd>Telescope oldfiles<cr>")
 -- Requires ripgrep to be installed (sudo apt install ripgrep)
-map("n", "<leader>fg", "<cmd>Telescope live_grep<cr>")
+map("n", "<leader>fg", "<cmd>lua require('plugins.telescope').live_grep_git_root()<cr>")
 -- nno <leader>fo <cmd>Telescope oldfiles<cr>
 
 map("n", "<leader>fb", "<cmd>Telescope buffers<cr>")
@@ -69,7 +68,7 @@ local builtin = require("telescope.builtin")
 local M = {}
 function M.find_files()
   builtin.find_files {
-    cwd = "~"
+    cwd = "~",
   }
 end
 
@@ -105,6 +104,12 @@ function M.find_config()
   builtin.find_files {
     prompt_title = "Find Config Files",
     search_dirs = { vim.fn.stdpath("config") },
+  }
+end
+
+function M.live_grep_git_root()
+  builtin.live_grep {
+    cwd = require("lspconfig/util").root_pattern".git"(vim.fn.expand "%:p"),
   }
 end
 

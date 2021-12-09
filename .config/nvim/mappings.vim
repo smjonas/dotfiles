@@ -54,7 +54,7 @@ nno <leader>d "_d
 nno <leader>D "_D
 nno c "_c
 nno C "_C
-" Use default behavior of x
+" To use default behavior of x
 nno <leader>z x
 nno x "_x
 
@@ -74,9 +74,10 @@ nmap <leader>Y mxggyG`xzz
 nno <leader>p <cmd>set paste<cr>a<C-r>+<Esc><cmd>set nopaste<cr>
 ino <A-b> <cmd>set paste<cr><C-r>+<cmd>set nopaste<cr>
 xno <leader>p <cmd>set paste<cr>"+p<cmd>set nopaste<cr>
+vno <leader>p <cmd>set paste<cr>"+p<cmd>set nopaste<cr>
 
 " Duplicate selection in visual mode
-xmap <leader>p y'>p
+xmap cv y'>p
 " Duplicate paragraph and insert one new line below
 nno cp vip:copy'>+1<cr>o<esc><up>
 " Duplicate tag and insert new line above
@@ -129,6 +130,10 @@ ino _ _<C-g>u
 " Jumplist mutations
 nno <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k'
 nno <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j'
+
+" Better mappings to go back to a mark
+nno ' `
+nno ` '
 
 " Search and replace
 nno <leader><F2> :%s///gc<left><left><left><left>

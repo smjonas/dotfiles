@@ -6,10 +6,6 @@ local function has_any_words_before()
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
-local function press(key)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), "n", true)
-end
-
 local cmp = require("cmp")
 local cur_snippet_engine = vim.g["snippet_engine"]
 
@@ -26,16 +22,22 @@ local function expand_for(snippet_engine, args)
   end
 end
 
-local function ctrl_n(fallback)
-  if luasnip.choice_active() and luasnip.expand_or_locally_jumpable() then
+local function ctrl_n(snippet_engine, fallback)
+  if snippet_engine == "luasnip"
+    and luasnip.choice_active()
+    and luasnip.expand_or_locally_jumpable() then
+
     luasnip.change_choice(1)
   elseif cmp.visible() then
     cmp.select_next_item()
   else fallback() end
 end
 
-local function ctrl_p(fallback)
-  if luasnip.choice_active() and luasnip.expand_or_locally_jumpable() then
+local function ctrl_p(snippet_engine, fallback)
+  if snippet_engine == "luasnip"
+    and luasnip.choice_active()
+    and luasnip.expand_or_locally_jumpable() then
+
     luasnip.change_choice(-1)
   elseif cmp.visible() then
     cmp.select_prev_item()
@@ -52,15 +54,7 @@ local function tab_for(snippet_engine, fallback)
       fallback()
     end
   elseif snippet_engine == "ultisnips" then
-    if cmp.get_selected_entry() == nil and vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
-      press("<C-R>=UltiSnips#ExpandSnippet()<CR>")
-    elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-      press("<ESC>:call UltiSnips#JumpForwards()<CR>")
-    elseif has_any_words_before() then
-      press("<Tab>")
-    else
-      fallback()
-    end
+    require("cmp_nvim_ultisnips.mappings").expand_or_jump_forwards(fallback)
   end
 end
 
@@ -72,11 +66,7 @@ local function shift_tab_for(snippet_engine, fallback)
       fallback()
     end
   elseif snippet_engine == "ultisnips" then
-    if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-      press("<ESC>:call UltiSnips#JumpBackwards()<CR>")
-    else
-      fallback()
-    end
+    require("cmp_nvim_ultisnips.mappings").jump_backwards(fallback)
   end
 end
 
@@ -89,7 +79,7 @@ cmp.setup {
   sources = {
     { name = "nvim_lua" },
     { name = "nvim_lsp" },
-    -- { name = "vsnip" },
+    { name = "vsnip" },
     { name = "path" },
     { name = cur_snippet_engine, priority = 10 },
     { name = "buffer", keyword_length = 3 },
@@ -107,19 +97,15 @@ cmp.setup {
     ["<Tab>"] = cmp.mapping(function(fallback)
       tab_for(cur_snippet_engine, fallback)
     end, { "i", "s" }),
-    ["<C-Space>"] = cmp.mapping(cmp.mapping.complete()),
-    ["<Shift-Tab>"] = cmp.mapping(function(fallback)
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
       shift_tab_for(cur_snippet_engine, fallback)
     end, { "i", "s" }),
+    ["<C-Space>"] = cmp.mapping(cmp.mapping.complete()),
     ["<C-n>"] = cmp.mapping(function(fallback)
-      if cur_snippet_engine == "luasnip" then
-        ctrl_n(fallback)
-      else fallback() end
+      ctrl_n(cur_snippet_engine, fallback)
     end),
     ["<C-p>"] = cmp.mapping(function(fallback)
-      if cur_snippet_engine == "luasnip" then
-        ctrl_p(fallback)
-      else fallback() end
+      ctrl_p(cur_snippet_engine, fallback)
     end)
   },
   sorting = {
@@ -136,3 +122,5 @@ cmp.setup {
     },
   }
 }
+
+

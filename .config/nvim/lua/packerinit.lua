@@ -164,14 +164,9 @@ require("packer").startup(function(use)
     "hrsh7th/nvim-cmp", config = function() require("plugins.cmp") end,
     requires = {
       {
-        "~/Desktop/cmp-nvim-ultisnips", branch = "expandable_snippets",
-        -- "smjonas/cmp-nvim-ultisnips", branch = "the_great_refactor",
-        -- "quangnguyen30192/cmp-nvim-ultisnips",
-        config = function()
-          -- require("cmp_nvim_ultisnips").setup {
-            -- documentation = "test"
-          -- }
-        end,
+        -- "~/Desktop/cmp-nvim-ultisnips", branch = "add_expand_mapping",
+          -- "smjonas/cmp-nvim-ultisnips", branch = "add_expand_mapping",
+        "quangnguyen30192/cmp-nvim-ultisnips",
         disable = vim.g["snippet_engine"] ~= "ultisnips",
         after = "ultisnips",
         requires = "honza/vim-snippets"
@@ -195,6 +190,11 @@ require("packer").startup(function(use)
   use {
     "SirVer/ultisnips",
     requires = { "honza/vim-snippets", rtp = "." },
+    setup = function()
+      vim.g.UltiSnipsRemoveSelectModeMappings = 0
+      vim.g.UltiSnipsEnableSnipMate = 1
+      -- vim.opt.rtp:append({vim.fn.stdpath("data") .. "/site/pack/packer/start/vim-snippets"})
+    end,
     config = function()
       vim.g.UltiSnipsRemoveSelectModeMappings = 0
       vim.g.UltiSnipsEnableSnipMate = 1
@@ -396,9 +396,10 @@ require("packer").startup(function(use)
   use {
     "iamcco/markdown-preview.nvim",
     run = "cd app && npm install",
-    ft = "markdown",
+    ft = { "markdown", "text" },
     config = function ()
       vim.g["mkdp_auto_close"] = 0
+      vim.g["mkdp_filetypes"] = { "markdown", "text" }
 
       local map = require("utils").map
       map("n", "<leader>m", "<Plug>MarkdownPreviewToggle", { noremap = false })

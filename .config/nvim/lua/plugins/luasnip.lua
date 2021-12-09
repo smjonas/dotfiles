@@ -75,9 +75,11 @@ local vimwiki = {
   prs('bf', '**$1**'),
   n('alpha', 'α'),
   n('beta', 'β'),
+  n('eps', 'ε'),
   n('Gamma', 'Γ'),
   n('lambda', 'λ'),
   n('tau', 'τ'),
+  n('vdash', '$\\vdash$'),
   n('all', '∀'),
 }
 
@@ -105,4 +107,5 @@ ls.snippets = {
 
 ls.filetype_extend('vimwiki', { 'tex' })
 ls.filetype_extend('text', { 'vimwiki' })
+ls.filetype_extend('prolog', { 'vimwiki' })
 
