@@ -99,14 +99,14 @@ require("packer").startup(function(use)
       config = function()
         vim.g["code_action_menu_show_details"] = false
         local map = require("utils").map
-        map("n", "ge", "<cmd>CodeActionMenu<cr>")
+        map("n", "ga", "<cmd>CodeActionMenu<cr>")
       end
     },
     {
       -- Modified version of mfussenegger/nvim-lint,
       "jonasstr/nvim-lint",
       config = function()
-        require("lint").linters_by_ft = { python = {"flake8"} }
+        require("lint").linters_by_ft = { python = { "flake8" } }
         vim.cmd[[autocmd BufEnter,BufWritePost * lua require("lint").try_lint()]]
       end
     }
@@ -164,12 +164,17 @@ require("packer").startup(function(use)
     "hrsh7th/nvim-cmp", config = function() require("plugins.cmp") end,
     requires = {
       {
-        -- "~/Desktop/cmp-nvim-ultisnips", branch = "add_expand_mapping",
+        "~/Desktop/cmp-nvim-ultisnips", branch = "treesitter_integration",
           -- "smjonas/cmp-nvim-ultisnips", branch = "add_expand_mapping",
-        "quangnguyen30192/cmp-nvim-ultisnips",
+        -- "quangnguyen30192/cmp-nvim-ultisnips",
         disable = vim.g["snippet_engine"] ~= "ultisnips",
         after = "ultisnips",
-        requires = "honza/vim-snippets"
+        requires = "honza/vim-snippets",
+        config = function()
+          require("cmp_nvim_ultisnips").setup {
+            filetype_source = "treesitter"
+          }
+        end
       },
       {
         "saadparwaiz1/cmp_luasnip",

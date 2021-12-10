@@ -26,30 +26,25 @@ end
 
 setup_lsp_servers()
 
----
-
-local handlers = lsp.handlers
-
-lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
-  lsp.diagnostic.on_publish_diagnostics, {
-    virtual_text = false
-  }
-)
-
 -- Better hover window colors
 local normal_float_bg = vim.fn.synIDattr(vim.fn.hlID("NormalFloat"), "bg")
 local normal_fg = vim.fn.synIDattr(vim.fn.hlID("Normal"), "fg")
 vim.cmd("highlight FloatBorder guifg=" .. normal_fg .. " guibg=" .. normal_float_bg)
 
+vim.diagnostic.config {
+  virtual_text = false
+}
+
 -- Borders around lsp windows
 local popup_opts = { border = "single", focusable = false, max_width = 60 }
-handlers["textDocument/hover"] = lsp.with(handlers.hover, popup_opts)
-handlers["textDocument/signatureHelp"] = lsp.with(handlers.signature_help, popup_opts)
+lsp.handlers["textDocument/hover"] = lsp.with(lsp.handlers.hover, popup_opts)
+lsp.handlers["textDocument/signatureHelp"] = lsp.with(lsp.handlers.signature_help, popup_opts)
 
 local map = require("../utils").map
 map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>")
-map("n", "gr", "<cmd>lua vim.lsp.diagnostic.goto_prev()<cr>")
-map("n", "gh", "<cmd>lua vim.lsp.diagnostic.goto_next()<cr>")
+map("n", "ge", "<cmd>lua vim.diagnostic.goto_prev()<cr>")
+map("n", "gr", "<cmd>lua vim.diagnostic.open_float()<cr>")
+map("n", "gh", "<cmd>lua vim.diagnostic.goto_next()<cr>")
 
 -- Format visual selection
 map("v", "<leader>=", "<cmd>lua vim.lsp.buf.formatting_sync()<cr>")
