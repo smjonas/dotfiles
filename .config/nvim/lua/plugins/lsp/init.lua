@@ -4,8 +4,10 @@ local lsp = require("vim.lsp")
 local function setup_lsp_servers()
   local lsp_installer = require("nvim-lsp-installer")
   lsp_installer.on_server_ready(function(server)
-    local opts = {}
-    local customized_servers = { "hls", "pyright", "sumneko_lua" }
+    local opts = {
+      single_file_support = true
+    }
+    local customized_servers = { "pyright", "sumneko_lua" }
     for _, customized_server in pairs(customized_servers) do
       if server.name == customized_server then
         opts = require("plugins/lsp/" .. customized_server)

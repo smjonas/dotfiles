@@ -164,12 +164,11 @@ require("packer").startup(function(use)
     "hrsh7th/nvim-cmp", config = function() require("plugins.cmp") end,
     requires = {
       {
-        "~/Desktop/cmp-nvim-ultisnips", branch = "treesitter_integration",
-          -- "smjonas/cmp-nvim-ultisnips", branch = "add_expand_mapping",
-        -- "quangnguyen30192/cmp-nvim-ultisnips",
+        -- "~/Desktop/cmp-nvim-ultisnips", branch = "refactor",
+          -- "smjonas/cmp-nvim-ultisnips", branch = "fix_49",
+        "quangnguyen30192/cmp-nvim-ultisnips",
         disable = vim.g["snippet_engine"] ~= "ultisnips",
         after = "ultisnips",
-        requires = "honza/vim-snippets",
         config = function()
           require("cmp_nvim_ultisnips").setup {
             filetype_source = "treesitter"
@@ -194,16 +193,10 @@ require("packer").startup(function(use)
 
   use {
     "SirVer/ultisnips",
-    requires = { "honza/vim-snippets", rtp = "." },
-    setup = function()
-      vim.g.UltiSnipsRemoveSelectModeMappings = 0
-      vim.g.UltiSnipsEnableSnipMate = 1
-      -- vim.opt.rtp:append({vim.fn.stdpath("data") .. "/site/pack/packer/start/vim-snippets"})
-    end,
+    requires = { "honza/vim-snippets" },
     config = function()
       vim.g.UltiSnipsRemoveSelectModeMappings = 0
       vim.g.UltiSnipsEnableSnipMate = 1
-      -- vim.opt.rtp:append({vim.fn.stdpath("data") .. "/site/pack/packer/start/vim-snippets"})
     end
   }
 

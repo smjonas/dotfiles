@@ -61,7 +61,7 @@ nno x "_x
 nno J J$
 
 " Enable copying to system clipboard; simply changing vim.o.clipboard to include
-" unnamedplus would paste from system clipboard with p which I want to use Alt-v for instead
+" unnamedplus would paste from system clipboard with p which I want to use <leader>p for instead
 nno y "+y
 xno y "+y
 nno Y "+y$
@@ -84,18 +84,18 @@ nno cp vip:copy'>+1<cr>o<esc><up>
 nno cg vat:copy'><cr>vato<esc>O<esc><down>
 
 " Avoids accidentally recording a macro
-nno q <nop>
 nno Q q
+nno q nop
+" Go to previous / next buffers
+nno qj <cmd>bp<cr>zz
+nno qk <cmd>bn<cr>zz
 
 " Do not move by accident
 nno <space> <nop>
 
-" Go to previous / next buffers
-nno gn <cmd>bp<cr>zz
-nno gm <cmd>bn<cr>zz
 " Go to previous file and center
-nno <C-^> <C-^>zz
-nno <bs>  <C-^>
+nno  <C-^> <C-^>zz
+nmap <bs>  <C-^>
 
 " Keep it centered (zv to open folds if necessary)
 nno n nzzzv
@@ -131,6 +131,9 @@ ino _ _<C-g>u
 nno <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k'
 nno <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j'
 
+" Copy word from line above (word-wise <C-y>)
+inoremap <expr> <C-z> pumvisible() ? "\<C-y>" : matchstr(getline(line('.')-1), '\%' . virtcol('.') . 'v\%(\k\+\\|.\)')
+
 " Better mappings to go back to a mark
 nno ' `
 nno ` '
@@ -141,11 +144,11 @@ xno <F2> :s/\%V//g<left><left><left>
 
 " Quickfix list mappings
 function! ToggleQfList()
-    if empty(filter(getwininfo(), 'v:val.quickfix'))
-        copen
-    else
-        cclose
-    endif
+  if empty(filter(getwininfo(), 'v:val.quickfix'))
+    copen
+  else
+    cclose
+  endif
 endfunction
 nno <silent> <C-q> <cmd>call ToggleQfList()<cr>
 nno <leader>j <cmd>cprev<cr>
@@ -174,8 +177,8 @@ nno <leader>q <cmd>q<cr>
 nno <F3> <cmd>exe ':silent !sensible-browser %'<cr>
 
 function! SynGroup()
-    let l:s = synID(line('.'), col('.'), -1)
-    echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
+  let l:s = synID(line('.'), col('.'), -1)
+  echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
 endfun
 " Print highlight group under cursor
 " nno <leader>sg <cmd>call SynGroup()<cr>
@@ -189,15 +192,11 @@ nno <leader>ro <cmd>execute 'e ' . nvim_config_root . '/lua/options.lua'<cr>
 nno <leader>ru <cmd>execute 'e ' . nvim_config_root . '/lua/utils.lua'<cr>
 nno <leader>rm <cmd>execute 'e ' . nvim_config_root . '/mappings.vim'<cr>
 
-" Email settings
-nno <leader>re <cmd>execute 'e ' . $HOME . '/.config/himalaya/config.toml'<cr>
-" Haskell
-nno <leader>rh <cmd>execute 'e /media/jonas/Volume/KIT/ProPa/Übungsblätter/WS_2122/'<cr>
-
 " Reload plugins module, save and resource vim files (except init.vim)
 nno <leader>so <cmd>lua require("plenary.reload").reload_module("plugins")<cr>
-            \<cmd>lua require("plenary.reload").reload_module("options")<cr>
-            \<cmd>w<cr><cmd>runtime mappings.vim<cr>
+      \<cmd>lua require("plenary.reload").reload_module("options")<cr>
+      \<cmd>w<cr><cmd>runtime mappings.vim<cr>
+      \<cmd>PackerCompile<cr>
 
 " Open terminal in new window to the right
 nno <leader>to <cmd>vsplit<cr><cmd>term<cr>

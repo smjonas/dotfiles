@@ -1,6 +1,10 @@
-require('utils').map('n', '<leader>s', '<cmd>e ' .. vim.fn.stdpath('config') .. '/lua/plugins/luasnip.lua<cr>')
+require("utils").map("n", "<leader>s", "<cmd>e " .. vim.fn.stdpath("config") .. "/lua/plugins/luasnip.lua<cr>")
 
-local ls = require('luasnip')
+local ls = require("luasnip")
+require("luasnip.config").setup {
+  ft_func = require("luasnip.extras.filetype_functions").from_pos_or_filetype
+}
+
 local prs = ls.parser.parse_snippet
 local s = ls.snippet
 local sn = ls.snippet_node
@@ -10,7 +14,7 @@ local i = ls.insert_node
 local f = ls.function_node
 local c = ls.choice_node
 local d = ls.dynamic_node
-local events = require('luasnip.util.events')
+local events = require("luasnip.util.events")
 
 -- snippet css "html_docs_standard.css" b
 -- 	<link rel="stylesheet" href="${1:../3tz9ixmacd201270/styles/html_docs_standard.css}">
@@ -49,7 +53,7 @@ local events = require('luasnip.util.events')
 -- </li>
 -- endsnippet
 
--- 'normal' snippets without extra parameters
+-- "normal" snippets without extra parameters
 local function n(trig, text)
   return s(trig, { t(text) })
 end
@@ -62,39 +66,39 @@ end
 -- <img src="$1" alt="$2">
 local html = {
   -- TODO: change to utf8? using regex trigger
-  n('utf', '<meta charset="utf-8"/>'),
-  td('jq', 'jquery', '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>'),
-  prs({ trig = 'img', name = '<img> tag' }, '<img src="$1" alt="$2">'),
+  n("utf", '<meta charset="utf-8"/>'),
+  td("jq", "jquery", '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>'),
+  prs({ trig = "img", name = "<img> tag" }, '<img src="$1" alt="$2">'),
   -- TODO: alternative triggers? i.e. dl and pdf
-  prs({ trig = 'dl', name = 'Download PDF'}, '<a class="download_pdf" download="" href="$1.pdf">\n$2\n<\a>'),
+  prs({ trig = "dl", name = "Download PDF"}, '<a class="download_pdf" download="" href="$1.pdf">\n$2\n<\a>'),
 }
 
 local vimwiki = {
-  s('arrow', c(1, { t('🠂'), t('⇨') })),
-  n('leftrightarrow', '🡘'),
-  prs('bf', '**$1**'),
-  n('alpha', 'α'),
-  n('beta', 'β'),
-  n('eps', 'ε'),
-  n('Gamma', 'Γ'),
-  n('lambda', 'λ'),
-  n('tau', 'τ'),
-  n('vdash', '$\\vdash$'),
-  n('all', '∀'),
+  s("arrow", c(1, { t("🠂"), t("⇨") })),
+  n("leftrightarrow", "🡘"),
+  prs("bf", "**$1**"),
+  n("alpha", "α"),
+  n("beta", "β"),
+  n("eps", "ε"),
+  n("Gamma", "Γ"),
+  n("lambda", "λ"),
+  n("tau", "τ"),
+  n("vdash", "$\\vdash$"),
+  n("all", "∀"),
 }
 
 local tex = {
-  prs('frac', '\\frac{$1}{$2}'),
-  prs('sum', '\\sum_{$1}^{$2}'),
-  prs('sqrt', '\\sum_{$1}'),
+  prs("frac", "\\frac{$1}{$2}"),
+  prs("sum", "\\sum_{$1}^{$2}"),
+  prs("sqrt", "\\sum_{$1}"),
 }
 
 local python = {
-  s({ trig = 'deb', name = 'debug variable' },  { t('print(f"{'), i(1), t({'=}")', ''}) })
+  s({ trig = "deb", name = "debug variable" },  { t('print(f"{'), i(1), t({'=}")', ""}) })
 }
 
 local all = {
-  prs('neq', '≠'),
+  prs("neq", "≠"),
 }
 
 ls.snippets = {
@@ -105,7 +109,7 @@ ls.snippets = {
   vimwiki = vimwiki,
 }
 
-ls.filetype_extend('vimwiki', { 'tex' })
-ls.filetype_extend('text', { 'vimwiki' })
-ls.filetype_extend('prolog', { 'vimwiki' })
+ls.filetype_extend("vimwiki", { "tex" })
+ls.filetype_extend("text", { "vimwiki" })
+ls.filetype_extend("prolog", { "vimwiki" })
 
