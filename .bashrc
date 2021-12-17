@@ -1,3 +1,6 @@
+# Set neovim as manpager
+export MANPAGER='nvim --appimage-extract-and-run -c "set ft=man"'
+
 # nnn config
 export EDITOR=nvim
 # x: copy file path after selecting entry with space
