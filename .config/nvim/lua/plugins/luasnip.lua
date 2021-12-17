@@ -16,6 +16,7 @@ local c = ls.choice_node
 local d = ls.dynamic_node
 local events = require("luasnip.util.events")
 
+
 -- snippet css "html_docs_standard.css" b
 -- 	<link rel="stylesheet" href="${1:../3tz9ixmacd201270/styles/html_docs_standard.css}">
 -- endsnippet
@@ -82,6 +83,8 @@ local vimwiki = {
   n("eps", "ε"),
   n("Gamma", "Γ"),
   n("lambda", "λ"),
+  n("mu", "μ"),
+  n("sigma", "σ"),
   n("tau", "τ"),
   n("vdash", "$\\vdash$"),
   n("all", "∀"),

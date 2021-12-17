@@ -7,7 +7,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- global settings
-vim.g["snippet_engine"] = "ultisnips"
+vim.g["snippet_engine"] = "luasnip"
 vim.g["completion_plugin"] = "cmp"
 
 require("packer").startup(function(use)
@@ -40,12 +40,16 @@ require("packer").startup(function(use)
 
   -- Color schemes
   use {
-    { "sainnhe/edge",
-    config = function()
-      vim.g["edge_enable_italic"] = 1
-      vim.g["edge_disable_italic_comment"] = 1
-      vim.cmd[[colorscheme edge]]
-    end
+    {
+      "joshdick/onedark.vim"
+    },
+    {
+      "sainnhe/edge",
+      config = function()
+        vim.g["edge_enable_italic"] = 1
+        vim.g["edge_disable_italic_comment"] = 1
+        vim.cmd[[colorscheme edge]]
+      end
     },
     {
       "sainnhe/gruvbox-material",
@@ -164,11 +168,10 @@ require("packer").startup(function(use)
     "hrsh7th/nvim-cmp", config = function() require("plugins.cmp") end,
     requires = {
       {
-        -- "~/Desktop/cmp-nvim-ultisnips", branch = "refactor",
+        "~/Desktop/cmp-nvim-ultisnips", branch = "improve_select_mode_mappings",
           -- "smjonas/cmp-nvim-ultisnips", branch = "fix_49",
-        "quangnguyen30192/cmp-nvim-ultisnips",
+        -- "quangnguyen30192/cmp-nvim-ultisnips",
         disable = vim.g["snippet_engine"] ~= "ultisnips",
-        after = "ultisnips",
         config = function()
           require("cmp_nvim_ultisnips").setup {
             filetype_source = "treesitter"
@@ -176,7 +179,8 @@ require("packer").startup(function(use)
         end
       },
       {
-        "saadparwaiz1/cmp_luasnip",
+        -- "saadparwaiz1/cmp_luasnip",
+        "~/Desktop/NeovimPlugins/cmp_luasnip",
         disable = vim.g["snippet_engine"] ~= "luasnip",
         after = "LuaSnip"
       },
@@ -193,9 +197,8 @@ require("packer").startup(function(use)
 
   use {
     "SirVer/ultisnips",
-    requires = { "honza/vim-snippets" },
+    requires = "honza/vim-snippets",
     config = function()
-      vim.g.UltiSnipsRemoveSelectModeMappings = 0
       vim.g.UltiSnipsEnableSnipMate = 1
     end
   }
@@ -357,8 +360,6 @@ require("packer").startup(function(use)
 
   use {
     "tpope/vim-fugitive",
-    keys = { "<leader>gs", "<leader>ys" },
-    cmd = { "Git", "Yadm" },
     config = function() require("plugins.fugitive") end
   }
 
@@ -407,7 +408,7 @@ require("packer").startup(function(use)
   use {
     "nvim-neorg/neorg", disable = true, branch = "unstable",
     requires = "nvim-lua/plenary.nvim",
-    after = "nvim-treesitter",
+    -- after = "nvim-treesitter",
     config = function()
       require("plugins.neorg")
     end

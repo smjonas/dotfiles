@@ -58,7 +58,6 @@ map("n", "<leader>fg", "<cmd>lua require('plugins.telescope').live_grep_git_root
 
 map("n", "<leader>fb", "<cmd>Telescope buffers<cr>")
 map("n", "<leader>h", "<cmd>Telescope help_tags<cr>")
--- map("n", "<leader>s", '<cmd>Telescope colorscheme<cr>')
 -- List keybindings
 map("n", "<leader>b", "<cmd>Telescope keymaps<cr>")
 

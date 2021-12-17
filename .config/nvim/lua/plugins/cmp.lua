@@ -82,10 +82,16 @@ cmp.setup {
     { name = "vsnip" },
     { name = "path" },
     { name = cur_snippet_engine, priority = 10 },
-    { name = "buffer", keyword_length = 3 },
+    {
+      name = "buffer",
+      option = {
+        keyword_pattern = [[\k\+]],
+      },
+      keyword_length = 3,
+    },
   },
   experimental = {
-    ghost_text = true
+    ghost_text = true,
   },
   mapping = {
     -- mostly keep defaults except use <C-f> instead <C-y>
