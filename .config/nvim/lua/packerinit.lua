@@ -7,7 +7,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- global settings
-vim.g["snippet_engine"] = "luasnip"
+vim.g["snippet_engine"] = "ultisnips"
 vim.g["completion_plugin"] = "cmp"
 
 require("packer").startup(function(use)
@@ -97,9 +97,16 @@ require("packer").startup(function(use)
         map("n", "<F2>", "<cmd>lua require('lspsaga.rename').rename()<cr>")
       end
     },
-    "ray-x/lsp_signature.nvim",
     {
-      "weilbith/nvim-code-action-menu",
+      "ray-x/lsp_signature.nvim", disable = true,
+      config = function()
+        require("lsp_signature").setup {
+          floating_window = true,
+        }
+      end
+    },
+    {
+      "weilbith/nvim-code-action-menu", disable = true,
       config = function()
         vim.g["code_action_menu_show_details"] = false
         local map = require("utils").map
@@ -168,8 +175,8 @@ require("packer").startup(function(use)
     "hrsh7th/nvim-cmp", config = function() require("plugins.cmp") end,
     requires = {
       {
-        "~/Desktop/cmp-nvim-ultisnips", branch = "improve_select_mode_mappings",
-          -- "smjonas/cmp-nvim-ultisnips", branch = "fix_49",
+        "~/Desktop/cmp-nvim-ultisnips", branch = "regex_snippets",
+        -- "smjonas/cmp-nvim-ultisnips", branch = "refactor",
         -- "quangnguyen30192/cmp-nvim-ultisnips",
         disable = vim.g["snippet_engine"] ~= "ultisnips",
         config = function()
@@ -179,14 +186,13 @@ require("packer").startup(function(use)
         end
       },
       {
-        -- "saadparwaiz1/cmp_luasnip",
-        "~/Desktop/NeovimPlugins/cmp_luasnip",
+        "saadparwaiz1/cmp_luasnip",
         disable = vim.g["snippet_engine"] ~= "luasnip",
         after = "LuaSnip"
       },
       "hrsh7th/cmp-buffer", "hrsh7th/cmp-path", "hrsh7th/cmp-nvim-lua",
       { "hrsh7th/cmp-nvim-lsp", config = function() require("cmp_nvim_lsp") end },
-      "lukas-reineke/cmp-under-comparator"
+      "lukas-reineke/cmp-under-comparator",
     },
   }
 
@@ -196,7 +202,8 @@ require("packer").startup(function(use)
   }
 
   use {
-    "SirVer/ultisnips",
+    "~/Desktop/NeovimPlugins/UltiSnips",
+    -- "SirVer/ultisnips",
     requires = "honza/vim-snippets",
     config = function()
       vim.g.UltiSnipsEnableSnipMate = 1

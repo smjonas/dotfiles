@@ -70,6 +70,30 @@ local function shift_tab_for(snippet_engine, fallback)
   end
 end
 
+local lsp_icons = {
+  Class = " ",
+  Color = " ",
+  Constant = " ",
+  Constructor = " ",
+  Enum = "了 ",
+  EnumMember = " ",
+  Field = " ",
+  File = " ",
+  Folder = " ",
+  Function = " ",
+  Interface = "ﰮ ",
+  Keyword = " ",
+  Method = "ƒ ",
+  Module = " ",
+  Property = " ",
+  Snippet = "﬌ ",
+  Struct = " ",
+  Text = " ",
+  Unit = " ",
+  Value = " ",
+  Variable = " ",
+}
+
 cmp.setup {
   snippet = {
     expand = function(args)
@@ -126,5 +150,11 @@ cmp.setup {
       cmp.config.compare.length,
       cmp.config.compare.order,
     },
+  },
+  formatting = {
+    format = function (_, vim_item)
+      vim_item.kind = string.format("%s %s", lsp_icons[vim_item.kind], vim_item.kind)
+      return vim_item
+    end
   }
 }

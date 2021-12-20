@@ -44,9 +44,9 @@ lsp.handlers["textDocument/signatureHelp"] = lsp.with(lsp.handlers.signature_hel
 
 local map = require("../utils").map
 map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>")
-map("n", "ge", "<cmd>lua vim.diagnostic.goto_prev()<cr>")
-map("n", "gr", "<cmd>lua vim.diagnostic.open_float()<cr>")
-map("n", "gh", "<cmd>lua vim.diagnostic.goto_next()<cr>")
+map("n", "<C-j>", "<cmd>lua vim.diagnostic.goto_prev()<cr>")
+map("n", "<leader>gd", "<cmd>lua vim.diagnostic.open_float()<cr>")
+map("n", "<C-k>", "<cmd>lua vim.diagnostic.goto_next()<cr>")
 
 -- Format visual selection
 map("v", "<leader>=", "<cmd>lua vim.lsp.buf.formatting_sync()<cr>")

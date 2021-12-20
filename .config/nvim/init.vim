@@ -33,7 +33,7 @@ augroup my_auto_group
   " Equalize splits after resizing
   autocmd VimResized * wincmd =
 
-  " Do not autocmdto-wrap text, only comments. This somehow does not work when set
+  " Do not wrap text, only comments. This somehow does not work when set
   " as a global option (see https://vi.stackexchange.com/a/9367/37072)
   autocmd FileType * set formatoptions-=t
 
