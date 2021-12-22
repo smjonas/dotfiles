@@ -6,11 +6,12 @@ if fn.empty(fn.glob(install_path)) > 0 then
   PackerBootstrap = fn.system({"git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path})
 end
 
--- global settings
+-- Global settings
 vim.g["snippet_engine"] = "ultisnips"
 vim.g["completion_plugin"] = "cmp"
+vim.g["colorscheme"] = "kanagawa"
 
-require("packer").startup(function(use)
+require("packer").startup({function(use)
   -- Workaround for plugins with the rtp option (https://github.com/soywod/himalaya/issues/188)
   -- local packer_compiled = vim.fn.stdpath("config") .. "/plugin/packer_compiled.lua"
   -- vim.cmd("luafile"  .. packer_compiled)
@@ -20,7 +21,7 @@ require("packer").startup(function(use)
     config = function()
       local map = require("utils").map
       map("n", "<leader>c", "<cmd>PackerClean<cr>")
-      map("n", "<leader>u", "<cmd>PackerUpdate<cr>")
+      map("n", "<leader>u", "<cmd>PackerSync<cr>")
       map("n", "<leader>i", "<cmd>PackerInstall<cr>")
     end
   }
@@ -39,32 +40,7 @@ require("packer").startup(function(use)
   }
 
   -- Color schemes
-  use {
-    {
-      "joshdick/onedark.vim"
-    },
-    {
-      "sainnhe/edge",
-      config = function()
-        vim.g["edge_enable_italic"] = 1
-        vim.g["edge_disable_italic_comment"] = 1
-        vim.cmd[[colorscheme edge]]
-      end
-    },
-    {
-      "sainnhe/gruvbox-material",
-      setup = function()
-        vim.g.gruvbox_material_palette = "mix"
-        vim.g.gruvbox_material_background = "medium"
-        vim.g.gruvbox_material_transparent_background = 0
-      end
-    },
-    { "ghifarit53/tokyonight-vim" },
-    {
-      "navarasu/onedark.nvim",
-      setup = function() vim.g.onedark_style = "warmer" end
-    }
-  }
+  require("colorschemes").init(use)
 
   -- Status bar
   use {
@@ -115,7 +91,7 @@ require("packer").startup(function(use)
     },
     {
       -- Modified version of mfussenegger/nvim-lint,
-      "jonasstr/nvim-lint",
+      "smjonas/nvim-lint",
       config = function()
         require("lint").linters_by_ft = { python = { "flake8" } }
         vim.cmd[[autocmd BufEnter,BufWritePost * lua require("lint").try_lint()]]
@@ -175,13 +151,13 @@ require("packer").startup(function(use)
     "hrsh7th/nvim-cmp", config = function() require("plugins.cmp") end,
     requires = {
       {
-        "~/Desktop/cmp-nvim-ultisnips", branch = "regex_snippets",
+        "~/Desktop/cmp-nvim-ultisnips", branch = "fix_cache",
         -- "smjonas/cmp-nvim-ultisnips", branch = "refactor",
         -- "quangnguyen30192/cmp-nvim-ultisnips",
         disable = vim.g["snippet_engine"] ~= "ultisnips",
         config = function()
           require("cmp_nvim_ultisnips").setup {
-            filetype_source = "treesitter"
+            filetype_source = "treesitter",
           }
         end
       },
@@ -360,8 +336,9 @@ require("packer").startup(function(use)
   use {
     "ggandor/lightspeed.nvim",
     config = function()
-      -- Remap to Alt + s to preserve default behaviour of S
-      require("utils").map("n", "<M-s>", "<Plug>Lightspeed_S", { noremap = false })
+      require("lightspeed").setup {
+        ignore_case = true,
+      }
     end
   }
 
@@ -371,7 +348,7 @@ require("packer").startup(function(use)
   }
 
   use {
-    "max397574/better-escape.nvim",
+    "max397574/better-escape.nvim", disable = true,
     config = function()
       require("better_escape").setup {
         mapping = { "ii" },
@@ -466,4 +443,13 @@ require("packer").startup(function(use)
   if PackerBootstrap then
     require("packer").sync()
   end
-end)
+end,
+config = {
+  display = {
+    open_fn = function()
+      return require("packer.util").float({
+        border = "single",
+      })
+    end
+  }
+}})

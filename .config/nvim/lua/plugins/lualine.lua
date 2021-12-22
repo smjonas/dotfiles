@@ -3,10 +3,12 @@ local function line_percentage()
 end
 
 local cur_scheme = vim.api.nvim_exec("colorscheme", true)
-local statusline_theme = cur_scheme
+local statusline_theme = "auto"
 
 if cur_scheme == "tokyonight" then
   statusline_theme = "nightfly"
+elseif cur_scheme == "edge" then
+  statusline_theme = "edge"
 end
 
 require("lualine").setup {

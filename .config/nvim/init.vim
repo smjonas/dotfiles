@@ -27,7 +27,7 @@ augroup my_auto_group
 
   " Enable highlight on yank
   if exists('##TextYankPost') && has('nvim-0.5')
-    autocmd TextYankPost * silent! lua vim.highlight.on_yank { higroup = "DiffAdd", timeout = 130 }
+    autocmd TextYankPost * silent! lua vim.highlight.on_yank { timeout = 130 } " higroup = "DiffAdd",
   endif
 
   " Equalize splits after resizing
