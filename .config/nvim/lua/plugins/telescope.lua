@@ -34,9 +34,9 @@ require("telescope").setup {
 }
 
 -- Cyan Telescope borders
-vim.cmd [[highlight TelescopeResultsBorder guifg=#56a5e5]]
-vim.cmd [[highlight TelescopePreviewBorder guifg=#56a5e5]]
-vim.cmd [[highlight TelescopePromptBorder guifg=#56a5e5]]
+-- vim.cmd [[highlight TelescopeResultsBorder guifg=#56a5e5]]
+-- vim.cmd [[highlight TelescopePreviewBorder guifg=#56a5e5]]
+-- vim.cmd [[highlight TelescopePromptBorder guifg=#56a5e5]]
 
 local map = require("../utils").map
 
@@ -72,10 +72,14 @@ function M.find_files()
 end
 
 function M.project_search()
-  builtin.find_files {
-    prompt_title = "Project Search",
-    cwd = require("lspconfig/util").root_pattern ".git"(vim.fn.expand "%:p"),
+  local args = {
+    -- git_files by default does not search from the current directory of the opened buffer
+    cwd = require("lspconfig/util").root_pattern".git"(vim.fn.expand "%:p"),
+    prompt_title = "Project search",
   }
+  if not pcall(builtin.git_files, args) then
+    builtin.find_files(args)
+  end
 end
 
 function M.find_inacon()
@@ -109,6 +113,7 @@ end
 function M.live_grep_git_root()
   builtin.live_grep {
     cwd = require("lspconfig/util").root_pattern".git"(vim.fn.expand "%:p"),
+    disable_coordinates = true,
   }
 end
 

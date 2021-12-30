@@ -31,7 +31,7 @@ setup_lsp_servers()
 -- Better hover window colors
 local normal_float_bg = vim.fn.synIDattr(vim.fn.hlID("NormalFloat"), "bg")
 local normal_fg = vim.fn.synIDattr(vim.fn.hlID("Normal"), "fg")
-vim.cmd("highlight FloatBorder guifg=" .. normal_fg .. " guibg=" .. normal_float_bg)
+vim.cmd("highlight FloatBorder guifg=" .. normal_fg .. " guibg=NONE") --.. normal_float_bg)
 
 vim.diagnostic.config {
   virtual_text = false

@@ -1,10 +1,11 @@
 let mapleader = " "
 
-nno ii <Esc>
-xno ii <Esc>gV
-ono ii <Esc>
-ino ii <Esc>`^
-cno ii <C-C><Esc>
+" I use better-escape.nvim instead
+" nno ii <Esc>
+" xno ii <Esc>gV
+" ono ii <Esc>
+" ino ii <Esc>`^
+" cno ii <C-C><Esc>
 " Remap exiting terminal mode
 tno ii <C-\><C-n>
 
@@ -174,7 +175,7 @@ nno <leader>q <cmd>q<cr>
 " ino <expr><S-tab> pumvisible() ? "<C-p>" : "<S-tab>"
 
 " Open current file in browser
-nno <F3> <cmd>exe ':silent !sensible-browser %'<cr>
+nno <F3> <silent> <cmd>!sensible-browser %<cr>
 
 function! SynGroup()
   let l:s = synID(line('.'), col('.'), -1)
