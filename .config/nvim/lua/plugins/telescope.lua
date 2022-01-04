@@ -1,6 +1,6 @@
 local telescope_theme = "dropdown"
 
-require("telescope").setup {
+require("telescope").setup({
   defaults = {
     -- sort_mru = true,
     path_display = { "truncate" },
@@ -16,22 +16,22 @@ require("telescope").setup {
         -- buffer where live_grep was opened from
         local args_for_ext = {
           ["lua"] = "-tlua",
-          ["python"] = "-tpy"
+          ["python"] = "-tpy",
         }
         return { args_for_ext[vim.bo.filetype] }
-      end
+      end,
     },
     find_files = {
-      theme = telescope_theme
+      theme = telescope_theme,
     },
     oldfiles = {
-      theme = telescope_theme
+      theme = telescope_theme,
     },
     buffers = {
-      theme = telescope_theme
-    }
-  }
-}
+      theme = telescope_theme,
+    },
+  },
+})
 
 -- Cyan Telescope borders
 -- vim.cmd [[highlight TelescopeResultsBorder guifg=#56a5e5]]
@@ -66,15 +66,15 @@ local builtin = require("telescope.builtin")
 
 local M = {}
 function M.find_files()
-  builtin.find_files {
+  builtin.find_files({
     cwd = "~",
-  }
+  })
 end
 
 function M.project_search()
   local args = {
     -- git_files by default does not search from the current directory of the opened buffer
-    cwd = require("lspconfig/util").root_pattern".git"(vim.fn.expand "%:p"),
+    cwd = require("lspconfig/util").root_pattern(".git")(vim.fn.expand("%:p")),
     prompt_title = "Project search",
   }
   if not pcall(builtin.git_files, args) then
@@ -83,38 +83,38 @@ function M.project_search()
 end
 
 function M.find_inacon()
-  builtin.find_files {
+  builtin.find_files({
     prompt_title = "Find Inacon Files",
-    search_dirs = { env.INACON_DIR .. "/Kurse", env.INACON_DIR .. "/Automation" }
-  }
+    search_dirs = { env.INACON_DIR .. "/Kurse", env.INACON_DIR .. "/Automation" },
+  })
 end
 
 function M.find_old_inacon()
-  builtin.oldfiles {
+  builtin.oldfiles({
     prompt_title = "Find Old Inacon Files",
-    search_dirs = { env.INACON_DIR .. "/Kurse", env.INACON_DIR .. "/Automation" }
-  }
+    search_dirs = { env.INACON_DIR .. "/Kurse", env.INACON_DIR .. "/Automation" },
+  })
 end
 
 function M.find_plugins()
-  builtin.find_files {
+  builtin.find_files({
     prompt_title = "Find Vim Plugins",
     search_dirs = { vim.fn.stdpath("data") },
-  }
+  })
 end
 
 function M.find_config()
-  builtin.find_files {
+  builtin.find_files({
     prompt_title = "Find Config Files",
     search_dirs = { vim.fn.stdpath("config") },
-  }
+  })
 end
 
 function M.live_grep_git_root()
-  builtin.live_grep {
-    cwd = require("lspconfig/util").root_pattern".git"(vim.fn.expand "%:p"),
+  builtin.live_grep({
+    cwd = require("lspconfig/util").root_pattern(".git")(vim.fn.expand("%:p")),
     disable_coordinates = true,
-  }
+  })
 end
 
 return M

@@ -11,22 +11,22 @@ elseif cur_scheme == "edge" then
   statusline_theme = "edge"
 end
 
-require("lualine").setup {
+require("lualine").setup({
   options = {
     icons_enabled = true,
     theme = statusline_theme,
     component_separators = { left = "", right = "" },
     section_separators = { left = "", right = "" },
-    disabled_filetypes = {}
+    disabled_filetypes = {},
   },
   sections = {
-    lualine_a = {"mode"},
-    lualine_b = {"branch"},
+    lualine_a = { "mode" },
+    lualine_b = { "branch" },
     -- 1 = show relative path
-    lualine_x = {"filetype"},
+    lualine_x = { "filetype" },
     lualine_c = { { "filename", path = 1, symbols = { modified = "[*]" } } },
-    lualine_y = {"location", line_percentage},
-    lualine_z = {}
+    lualine_y = { "location", line_percentage },
+    lualine_z = {},
   },
   inactive_sections = {
     lualine_a = {},
@@ -34,8 +34,8 @@ require("lualine").setup {
     lualine_c = { { "filename", symbols = { modified = "[*]" } } },
     lualine_x = { "location", line_percentage },
     lualine_y = {},
-    lualine_z = {}
+    lualine_z = {},
   },
   tabline = {},
-  extensions = {}
-}
+  extensions = {},
+})

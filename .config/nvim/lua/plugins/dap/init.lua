@@ -16,7 +16,7 @@ local dap = require("dap")
 
 -- samuraiRed from kanagawa theme
 vim.cmd("highlight _Red guifg=#E82424")
-vim.fn.sign_define('DapBreakpoint', { text='', texthl='_Red', linehl='', numhl='' })
+vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "_Red", linehl = "", numhl = "" })
 dap.configurations.lua = {
   {
     type = "nlua",
@@ -34,7 +34,7 @@ dap.configurations.lua = {
       assert(val, "Please provide a port number")
       return val
     end,
-  }
+  },
 }
 
 dap.adapters.nlua = function(callback, config)

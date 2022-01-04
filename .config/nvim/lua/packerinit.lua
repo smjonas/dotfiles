@@ -53,7 +53,7 @@ require("packer").startup({
               ":lua require('telescope.builtin').find_files({cwd='~/Desktop/NeovimPlugins/snippet-converter.nvim'})",
               1,
             },
-          }
+          },
         }
         local map = require("utils").map
         map("n", "<leader>l", "<cmd>Telescope command_palette<cr>")
@@ -115,7 +115,7 @@ require("packer").startup({
         "jose-elias-alvarez/null-ls.nvim",
         config = function()
           require("plugins.lsp.null_ls")
-        end
+        end,
       },
       "williamboman/nvim-lsp-installer",
       {
@@ -159,13 +159,13 @@ require("packer").startup({
     })
 
     -- Debugging
-    use {
+    use({
       "mfussenegger/nvim-dap",
       config = function()
         require("plugins.dap")
       end,
       requires = "jbyuki/one-small-step-for-vimkind",
-    }
+    })
 
     -- Tree viewer / file browser
     use({
@@ -421,10 +421,10 @@ require("packer").startup({
           disable_filetype = { "TelescopePrompt", "vim", "tex" },
           -- Insert brackets after selecting function from cmp
           require("cmp").event:on(
-          "confirm_done",
-          cmp_autopairs.on_confirm_done({
-            map_char = { tex = "" },
-          })
+            "confirm_done",
+            cmp_autopairs.on_confirm_done({
+              map_char = { tex = "" },
+            })
           ),
         })
       end,
@@ -451,7 +451,7 @@ require("packer").startup({
     })
 
     use({
-      "ggandor/lightspeed.nvim", disable = true,
+      "ggandor/lightspeed.nvim",
       config = function()
         require("lightspeed").setup({
           ignore_case = true,
@@ -526,59 +526,59 @@ require("packer").startup({
       vim.fn.stdpath("data") .. "/himalaya/vim",
       -- rtp = "vim",
       -- config = function()
-        --   vim.g["himalaya_mailbox_picker"] = "telescope"
-        -- end
-      })
+      --   vim.g["himalaya_mailbox_picker"] = "telescope"
+      -- end
+    })
 
-      -- use { "michaelb/sniprun", run = "bash ./install.sh" }
+    -- use { "michaelb/sniprun", run = "bash ./install.sh" }
 
-      -- Misc
+    -- Misc
 
-      use({
-        "glacambre/firenvim",
-        run = function()
-          vim.fn["firenvim#install"](0)
-        end,
-      })
+    use({
+      "glacambre/firenvim",
+      run = function()
+        vim.fn["firenvim#install"](0)
+      end,
+    })
 
-      use({
-        "luukvbaal/stabilize.nvim",
-        disable = vim.bo.ft ~= "vimwiki",
-        config = function()
-          -- Workaround for error that occurs when using vim-fugitive and stabililize.nvim
-          -- at the same time. See https://github.com/luukvbaal/stabilize.nvim/issues/6.
-          vim.cmd([[
+    use({
+      "luukvbaal/stabilize.nvim",
+      disable = vim.bo.ft ~= "vimwiki",
+      config = function()
+        -- Workaround for error that occurs when using vim-fugitive and stabililize.nvim
+        -- at the same time. See https://github.com/luukvbaal/stabilize.nvim/issues/6.
+        vim.cmd([[
           autocmd WinNew * lua win=vim.api.nvim_get_current_win() vim.defer_fn(
           \function() vim.api.nvim_set_current_win(win) end, 50
           \)
           ]])
-          require("stabilize").setup()
-        end,
-      })
+        require("stabilize").setup()
+      end,
+    })
 
-      use("arp242/undofile_warn.vim")
+    use("arp242/undofile_warn.vim")
 
-      use("tpope/vim-repeat")
+    use("tpope/vim-repeat")
 
-      use({
-        "github/copilot.vim",
-        disable = true,
-        config = function()
-          require("plugins.copilot")
-        end,
-      })
+    use({
+      "github/copilot.vim",
+      disable = true,
+      config = function()
+        require("plugins.copilot")
+      end,
+    })
 
-      if PackerBootstrap then
-        require("packer").sync()
-      end
-    end,
-    config = {
-      display = {
-        open_fn = function()
-          return require("packer.util").float({
-            border = "single",
-          })
-        end,
-      },
+    if PackerBootstrap then
+      require("packer").sync()
+    end
+  end,
+  config = {
+    display = {
+      open_fn = function()
+        return require("packer.util").float({
+          border = "single",
+        })
+      end,
     },
-  })
+  },
+})

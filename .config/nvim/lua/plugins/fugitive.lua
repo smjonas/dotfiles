@@ -1,7 +1,6 @@
-
-local map = require('utils').map
-map('n', '<leader>gs', '<cmd>Git<cr>')
-map('n', '<leader>gp', '<cmd>Git push<cr>')
+local map = require("utils").map
+map("n", "<leader>gs", "<cmd>Git<cr>")
+map("n", "<leader>gp", "<cmd>Git push<cr>")
 
 local M = {}
 
@@ -12,7 +11,6 @@ local M = {}
 -- This avoids "file does not belong to a Git repository" messages.
 -- After running the yadm command, switch back to the original implementation again.
 function M.yadm_command(cmd)
-
   vim.cmd([[
   function! FugitiveGitDir(...) abort
     return $HOME . "/.config/yadm/repo.git"
@@ -69,7 +67,9 @@ function M.yadm_command(cmd)
 end
 
 -- Defines custom Yadm command
-vim.cmd("command! -nargs=? -complete=customlist,fugitive#Complete Yadm lua require('plugins.fugitive').yadm_command(<f-args>)")
+vim.cmd(
+  "command! -nargs=? -complete=customlist,fugitive#Complete Yadm lua require('plugins.fugitive').yadm_command(<f-args>)"
+)
 map("n", "<leader>ys", "<cmd>lua require('plugins.fugitive').yadm_command('')<cr>")
 map("n", "<leader>yp", "<cmd>lua require('plugins.fugitive').yadm_command('push')<cr>")
 

@@ -1,4 +1,4 @@
-require("neorg").setup {
+require("neorg").setup({
   -- Tell Neorg what modules to load
   load = {
     ["core.defaults"] = {}, -- Load all the default modules
@@ -7,9 +7,9 @@ require("neorg").setup {
       -- Manage your directories with Neorg
       config = {
         workspaces = {
-          work = "~/Desktop/neorg_todos"
-        }
-      }
-    }
-  }
-}
+          work = "~/Desktop/neorg_todos",
+        },
+      },
+    },
+  },
+})

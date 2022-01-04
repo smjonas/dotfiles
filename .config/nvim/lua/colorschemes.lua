@@ -1,16 +1,16 @@
 local M = {}
 
 function M.init(use)
-  use {
+  use({
     {
       "sainnhe/edge",
       config = function()
         vim.g["edge_enable_italic"] = 1
         vim.g["edge_disable_italic_comment"] = 1
-      end
+      end,
     },
     {
-      "rebelot/kanagawa.nvim"
+      "rebelot/kanagawa.nvim",
     },
     {
       "sainnhe/gruvbox-material",
@@ -18,14 +18,16 @@ function M.init(use)
         vim.g.gruvbox_material_palette = "mix"
         vim.g.gruvbox_material_background = "medium"
         vim.g.gruvbox_material_transparent_background = 0
-      end
+      end,
     },
     { "ghifarit53/tokyonight-vim" },
     {
       "navarasu/onedark.nvim",
-      setup = function() vim.g.onedark_style = "warmer" end
-    }
-  }
+      setup = function()
+        vim.g.onedark_style = "warmer"
+      end,
+    },
+  })
   vim.cmd("colorscheme " .. vim.g.colorscheme)
   -- vim.cmd("colorscheme edge")
   -- Better floating window colors

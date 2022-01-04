@@ -1,9 +1,13 @@
-require("utils").map("n", "<leader>s", "<cmd>e " .. vim.fn.stdpath("config") .. "/lua/plugins/luasnip.lua<cr>")
+require("utils").map(
+  "n",
+  "<leader>s",
+  "<cmd>e " .. vim.fn.stdpath("config") .. "/lua/plugins/luasnip.lua<cr>"
+)
 
 local ls = require("luasnip")
-require("luasnip.config").setup {
-  ft_func = require("luasnip.extras.filetype_functions").from_pos_or_filetype
-}
+require("luasnip.config").setup({
+  ft_func = require("luasnip.extras.filetype_functions").from_pos_or_filetype,
+})
 
 local prs = ls.parser.parse_snippet
 local s = ls.snippet
@@ -15,7 +19,6 @@ local f = ls.function_node
 local c = ls.choice_node
 local d = ls.dynamic_node
 local events = require("luasnip.util.events")
-
 
 -- snippet css "html_docs_standard.css" b
 -- 	<link rel="stylesheet" href="${1:../3tz9ixmacd201270/styles/html_docs_standard.css}">
@@ -68,10 +71,17 @@ end
 local html = {
   -- TODO: change to utf8? using regex trigger
   n("utf", '<meta charset="utf-8"/>'),
-  td("jq", "jquery", '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>'),
+  td(
+    "jq",
+    "jquery",
+    '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>'
+  ),
   prs({ trig = "img", name = "<img> tag" }, '<img src="$1" alt="$2">'),
   -- TODO: alternative triggers? i.e. dl and pdf
-  prs({ trig = "dl", name = "Download PDF"}, '<a class="download_pdf" download="" href="$1.pdf">\n$2\n<\a>'),
+  prs(
+    { trig = "dl", name = "Download PDF" },
+    '<a class="download_pdf" download="" href="$1.pdf">\n$2\n<\a>'
+  ),
 }
 
 local vimwiki = {
@@ -97,7 +107,7 @@ local tex = {
 }
 
 local python = {
-  s({ trig = "deb", name = "debug variable" },  { t('print(f"{'), i(1), t({'=}")', ""}) })
+  s({ trig = "deb", name = "debug variable" }, { t('print(f"{'), i(1), t({ '=}")', "" }) }),
 }
 
 local all = {
@@ -115,4 +125,3 @@ ls.snippets = {
 ls.filetype_extend("vimwiki", { "tex" })
 ls.filetype_extend("text", { "vimwiki" })
 ls.filetype_extend("prolog", { "vimwiki" })
-

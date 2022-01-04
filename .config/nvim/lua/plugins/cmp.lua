@@ -3,7 +3,8 @@ local function has_any_words_before()
     return false
   end
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+  return col ~= 0
+    and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
 local cmp = require("cmp")
@@ -23,25 +24,31 @@ local function expand_for(snippet_engine, args)
 end
 
 local function ctrl_n(snippet_engine, fallback)
-  if snippet_engine == "luasnip"
+  if
+    snippet_engine == "luasnip"
     and luasnip.choice_active()
-    and luasnip.expand_or_locally_jumpable() then
-
+    and luasnip.expand_or_locally_jumpable()
+  then
     luasnip.change_choice(1)
   elseif cmp.visible() then
     cmp.select_next_item()
-  else fallback() end
+  else
+    fallback()
+  end
 end
 
 local function ctrl_p(snippet_engine, fallback)
-  if snippet_engine == "luasnip"
+  if
+    snippet_engine == "luasnip"
     and luasnip.choice_active()
-    and luasnip.expand_or_locally_jumpable() then
-
+    and luasnip.expand_or_locally_jumpable()
+  then
     luasnip.change_choice(-1)
   elseif cmp.visible() then
     cmp.select_prev_item()
-  else fallback() end
+  else
+    fallback()
+  end
 end
 
 local function tab_for(snippet_engine, fallback)
@@ -50,7 +57,7 @@ local function tab_for(snippet_engine, fallback)
       luasnip.expand_or_jump()
     elseif has_any_words_before() then
       cmp.complete()
-     else
+    else
       fallback()
     end
   elseif snippet_engine == "ultisnips" then
@@ -94,7 +101,7 @@ local lsp_icons = {
   Variable = " ",
 }
 
-cmp.setup {
+cmp.setup({
   snippet = {
     expand = function(args)
       expand_for(cur_snippet_engine, args)
@@ -120,27 +127,38 @@ cmp.setup {
   mapping = {
     -- mostly keep defaults except use <C-f> instead <C-y>
     -- and overload tab keys for snippet plugins
-    ["<C-f>"] = cmp.mapping(cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Insert,
-      select = true,
-    }, { "i", "c" }),
+    ["<C-f>"] = cmp.mapping(
+      cmp.mapping.confirm({
+        behavior = cmp.ConfirmBehavior.Insert,
+        select = true,
+      }),
+      { "i", "c" }
+    ),
     ["<Tab>"] = cmp.mapping(function(fallback)
       tab_for(cur_snippet_engine, fallback)
-    end, { "i", "s" }),
+    end, {
+      "i",
+      "s",
+    }),
     ["<S-Tab>"] = cmp.mapping(function(fallback)
       shift_tab_for(cur_snippet_engine, fallback)
-    end, { "i", "s" }),
+    end, {
+      "i",
+      "s",
+    }),
     ["<C-Space>"] = cmp.mapping(cmp.mapping.complete()),
     ["<C-n>"] = cmp.mapping(function(fallback)
       ctrl_n(cur_snippet_engine, fallback)
     end),
     ["<C-p>"] = cmp.mapping(function(fallback)
       ctrl_p(cur_snippet_engine, fallback)
-    end)
+    end),
   },
   sorting = {
     comparators = {
-      function(...) return require("cmp_buffer"):compare_locality(...) end,
+      function(...)
+        return require("cmp_buffer"):compare_locality(...)
+      end,
       cmp.config.compare.offset,
       cmp.config.compare.exact,
       cmp.config.compare.score,
@@ -152,9 +170,9 @@ cmp.setup {
     },
   },
   formatting = {
-    format = function (_, vim_item)
+    format = function(_, vim_item)
       vim_item.kind = string.format("%s %s", lsp_icons[vim_item.kind], vim_item.kind)
       return vim_item
-    end
-  }
-}
+    end,
+  },
+})

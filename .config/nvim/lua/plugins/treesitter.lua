@@ -4,15 +4,15 @@ parser_configs.norg = {
   install_info = {
     url = "https://github.com/nvim-neorg/tree-sitter-norg",
     files = { "src/parser.c", "src/scanner.cc" },
-    branch = "main"
-  }
+    branch = "main",
+  },
 }
 
-require("nvim-treesitter.configs").setup {
+require("nvim-treesitter.configs").setup({
   ensure_installed = "all",
   sync_install = true,
   highlight = {
-    enable = false
+    enable = false,
   },
   context_commentstring = {
     enable = true,
@@ -29,7 +29,7 @@ require("nvim-treesitter.configs").setup {
         ["ic"] = "@class.inner",
         ["ia"] = "@parameter.inner",
         ["aa"] = "@parameter.outer",
-      }
-    }
-  }
-}
+      },
+    },
+  },
+})

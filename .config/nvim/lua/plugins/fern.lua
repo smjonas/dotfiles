@@ -3,7 +3,7 @@ local map = require("utils").map
 map("n", "<C-n>", "<cmd>Fern %:h -drawer -toggle -reveal=%<cr>")
 map("n", "<M-n>", "<cmd>Fern %:h<cr>")
 
-vim.cmd[[
+vim.cmd([[
   function! s:init_fern() abort
     nmap <buffer> d <Plug>(fern-action-trash)
     nmap <buffer> . <Plug>(fern-action-hidden-toggle)
@@ -15,4 +15,4 @@ vim.cmd[[
     autocmd!
     autocmd FileType fern call s:init_fern()
   augroup end
-]]
+]])
