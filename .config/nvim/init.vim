@@ -26,10 +26,9 @@ augroup my_auto_group
   autocmd BufWritePre * %s/\s\+$//e
 
   " Enable highlight on yank
-  if exists('##TextYankPost') && has('nvim-0.5')
-    " higroup = "DiffAdd",
-    autocmd TextYankPost * silent! lua vim.highlight.on_yank { timeout = 130 }
-  endif
+  autocmd TextYankPost * silent! lua vim.highlight.on_yank { timeout = 130 }
+
+  autocmd BufWritePost */nvim
 
   " Equalize splits after resizing
   autocmd VimResized * wincmd =
@@ -46,8 +45,15 @@ augroup my_auto_group
   autocmd BufWritePost *.snippets :CmpUltisnipsReloadSnippets
 augroup end
 
+function ReloadConfig()
+  :luafile ~/.config/nvim/lua/packerinit.lua
+  :luafile ~/.config/nvim/lua/options.lua
+  :runtime mappings.vim
+  :PackerCompile
+endfunction
+
 augroup packer_user_config
   autocmd!
-  autocmd BufWritePost */nvim/*.lua PackerCompile
+  autocmd BufWritePost */nvim/*.lua call ReloadConfig()
 augroup end
 

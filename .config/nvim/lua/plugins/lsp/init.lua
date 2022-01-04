@@ -48,6 +48,6 @@ map("n", "<C-j>", "<cmd>lua vim.diagnostic.goto_prev()<cr>")
 map("n", "<leader>gd", "<cmd>lua vim.diagnostic.open_float()<cr>")
 map("n", "<C-k>", "<cmd>lua vim.diagnostic.goto_next()<cr>")
 
--- Format visual selection
-map("v", "<leader>=", "<cmd>lua vim.lsp.buf.formatting_sync()<cr>")
-
+-- Formatting; not all LSP servers support range formatting
+map("n", "<C-f>", "<cmd>lua vim.lsp.buf.formatting_sync()<cr>")
+map("v", "<C-f>", "<cmd>lua vim.lsp.buf.range_formatting()<cr>")

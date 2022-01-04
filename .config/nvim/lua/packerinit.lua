@@ -111,6 +111,12 @@ require("packer").startup({
         end,
         after = "nvim-cmp",
       },
+      {
+        "jose-elias-alvarez/null-ls.nvim",
+        config = function()
+          require("plugins.lsp.null_ls")
+        end
+      },
       "williamboman/nvim-lsp-installer",
       {
         "tami5/lspsaga.nvim",
@@ -151,6 +157,15 @@ require("packer").startup({
         end,
       },
     })
+
+    -- Debugging
+    use {
+      "mfussenegger/nvim-dap",
+      config = function()
+        require("plugins.dap")
+      end,
+      requires = "jbyuki/one-small-step-for-vimkind",
+    }
 
     -- Tree viewer / file browser
     use({
@@ -219,7 +234,7 @@ require("packer").startup({
       requires = {
         {
           "~/Desktop/cmp-nvim-ultisnips",
-          branch = "fix_cache",
+          branch = "description",
           -- "smjonas/cmp-nvim-ultisnips", branch = "refactor",
           -- "quangnguyen30192/cmp-nvim-ultisnips",
           disable = vim.g["snippet_engine"] ~= "ultisnips",
@@ -369,7 +384,7 @@ require("packer").startup({
       {
         "machakann/vim-sandwich",
         config = function()
-          require("plugins.vim-sandwich")
+          require("plugins.vim_sandwich")
         end,
       },
       {
@@ -436,7 +451,7 @@ require("packer").startup({
     })
 
     use({
-      "ggandor/lightspeed.nvim",
+      "ggandor/lightspeed.nvim", disable = true,
       config = function()
         require("lightspeed").setup({
           ignore_case = true,

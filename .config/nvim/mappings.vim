@@ -193,9 +193,10 @@ nno <leader>ro <cmd>execute 'e ' . nvim_config_root . '/lua/options.lua'<cr>
 nno <leader>ru <cmd>execute 'e ' . nvim_config_root . '/lua/utils.lua'<cr>
 nno <leader>rm <cmd>execute 'e ' . nvim_config_root . '/mappings.vim'<cr>
 
-" Reload plugins module, save and resource vim files (except init.vim)
-nno <leader>so <cmd>lua require("plenary.reload").reload_module("plugins")<cr>
-      \<cmd>lua require("plenary.reload").reload_module("options")<cr>
+" Reload packerinit file, save and resource vim files (except init.vim)
+" This is used in .vimrc to reload the config when a file in the config folder was saved.
+nno <Plug>reload_my_config <cmd>luafile ~/.config/nvim/lua/packerinit.lua<cr>
+      \<cmd>luafile ~/.config/nvim/lua/options.lua<cr>
       \<cmd>w<cr><cmd>runtime mappings.vim<cr>
       \<cmd>PackerCompile<cr>
 
