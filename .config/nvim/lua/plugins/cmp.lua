@@ -124,12 +124,20 @@ cmp.setup({
   experimental = {
     ghost_text = true,
   },
+  completion = {
+    border = "rounded",
+    scrollbar = "║",
+  },
+  documentation = {
+    border = nil,
+    scrollbar = "",
+  },
   mapping = {
     -- mostly keep defaults except use <C-f> instead <C-y>
     -- and overload tab keys for snippet plugins
     ["<C-f>"] = cmp.mapping(
       cmp.mapping.confirm({
-        behavior = cmp.ConfirmBehavior.Insert,
+        behavior = cmp.ConfirmBehavior.Replace,
         select = true,
       }),
       { "i", "c" }

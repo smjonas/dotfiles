@@ -47,6 +47,7 @@ augroup end
 
 function ReloadConfig()
   :luafile ~/.config/nvim/lua/packerinit.lua
+  :luafile ~/.config/nvim/lua/colorschemes.lua
   :luafile ~/.config/nvim/lua/options.lua
   :runtime mappings.vim
   :PackerCompile

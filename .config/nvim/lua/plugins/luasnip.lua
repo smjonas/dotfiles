@@ -104,6 +104,7 @@ local tex = {
   prs("frac", "\\frac{$1}{$2}"),
   prs("sum", "\\sum_{$1}^{$2}"),
   prs("sqrt", "\\sum_{$1}"),
+  prs("equiv", "\\Leftrightarrow"),
 }
 
 local python = {

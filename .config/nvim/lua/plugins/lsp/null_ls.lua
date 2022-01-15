@@ -1,7 +1,12 @@
+local null_ls = require("null-ls")
+local formatting = null_ls.builtins.formatting
+
 require("null-ls").setup({
   sources = {
-    require("null-ls").builtins.formatting.stylua,
-    require("null-ls").builtins.diagnostics.eslint,
-    require("null-ls").builtins.completion.spell,
+    formatting.stylua,
+    formatting.prettier.with({ extra_args = { "--tab-width 4", "--tab-size 4" } }),
+    formatting.black.with({ extra_args = { "--line-length 100" } }),
+    -- formatting.isort.with({ extra_args = { "--profile black" } }),
+    formatting.isort,
   },
 })

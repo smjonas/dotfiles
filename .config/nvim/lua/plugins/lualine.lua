@@ -2,7 +2,7 @@ local function line_percentage()
   return math.floor((vim.fn.line(".") * 100 / vim.fn.line("$")) + 0.5) .. "%%"
 end
 
-local statusline_theme = "auto"
+local statusline_theme = vim.g.colorscheme
 
 local cur_scheme = vim.api.nvim_exec("colorscheme", true)
 if cur_scheme == "tokyonight" then
@@ -15,8 +15,8 @@ require("lualine").setup({
   options = {
     icons_enabled = true,
     theme = statusline_theme,
-    component_separators = { left = "", right = "" },
-    section_separators = { left = "", right = "" },
+    -- component_separators = { left = "", right = "" },
+    -- section_separators = { left = "", right = "" },
     disabled_filetypes = {},
   },
   sections = {

@@ -175,7 +175,7 @@ nno <leader>q <cmd>q<cr>
 " ino <expr><S-tab> pumvisible() ? "<C-p>" : "<S-tab>"
 
 " Open current file in browser
-nno <F3> <silent> <cmd>!sensible-browser %<cr>
+nno <silent> <F3> <cmd>!sensible-browser %<cr>
 
 function! SynGroup()
   let l:s = synID(line('.'), col('.'), -1)

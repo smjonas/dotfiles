@@ -14,7 +14,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- Global settings
-vim.g["snippet_engine"] = "ultisnips"
+vim.g["snippet_engine"] = "luasnip"
 vim.g["completion_plugin"] = "cmp"
 vim.g["colorscheme"] = "kanagawa"
 
@@ -27,34 +27,43 @@ require("packer").startup({
     use({
       "~/Desktop/NeovimPlugins/snippet-converter.nvim",
       config = function()
-        -- require("snippet_converter").setup({
-        --   sources = {
-        --     vscode = {
-        --       "/home/jonas/.config/nvim/test_snippets/test.json",
-        --     },
-        --   },
-        --   output = {
-        --     path = "/somewhere",
-        --     format = "vscode",
-        --   },
-        -- })
+        require("snippet_converter").setup({
+          sources = {
+            ultisnips = {
+              vim.fn.stdpath("config") .. "/UltiSnips/",
+            },
+          },
+          output = {
+            path = "/somewhere",
+            format = "vscode",
+          },
+        })
       end,
     })
 
     use({
       "LinArcX/telescope-command-palette.nvim",
       config = function()
-        require("telescope").load_extension("command_palette")
-        CpMenu = {
-          {
-            "Projects",
-            {
-              "snippet-converter.nvim",
-              ":lua require('telescope.builtin').find_files({cwd='~/Desktop/NeovimPlugins/snippet-converter.nvim'})",
-              1,
+        require("telescope").setup({
+          extensions = {
+            command_palette = {
+              {
+                "Projects",
+                {
+                  "snippet-converter.nvim",
+                  ":lua require('telescope.builtin').find_files({cwd='~/Desktop/NeovimPlugins/snippet-converter.nvim'})",
+                  1,
+                },
+                {
+                  "Elasticsearch client",
+                  ":e ~/Desktop/Inacon/elasticsearch/client/index.html",
+                  1,
+                },
+              },
             },
           },
-        }
+        })
+        require("telescope").load_extension("command_palette")
         local map = require("utils").map
         map("n", "<leader>l", "<cmd>Telescope command_palette<cr>")
       end,
@@ -86,7 +95,7 @@ require("packer").startup({
     })
 
     -- Color schemes
-    require("colorschemes").init(use)
+    use(require("colorschemes"))
 
     -- Status bar
     use({
@@ -98,8 +107,11 @@ require("packer").startup({
       requires = "kyazdani42/nvim-web-devicons",
       config = function()
         require("plugins.lualine")
+        -- Better floating window colors
+        local normal_float_bg = vim.fn.synIDattr(vim.fn.hlID("NormalFloat"), "bg")
+        local normal_fg = vim.fn.synIDattr(vim.fn.hlID("Normal"), "fg")
+        vim.cmd("highlight FloatBorder guifg=" .. normal_fg .. " guibg=" .. normal_float_bg)
       end,
-      after = "edge",
     })
 
     -- LSP
@@ -177,6 +189,16 @@ require("packer").startup({
     })
 
     use({
+      "nvim-neo-tree/neo-tree.nvim",
+      config = function()
+        require("neo-tree").setup({})
+      end,
+      requires = {
+        "MunifTanjim/nui.nvim",
+      },
+    })
+
+    use({
       "kyazdani42/nvim-tree.lua",
       requires = "kyazdani42/nvim-web-devicons",
       disable = true,
@@ -233,9 +255,10 @@ require("packer").startup({
       end,
       requires = {
         {
-          "~/Desktop/cmp-nvim-ultisnips",
-          branch = "description",
-          -- "smjonas/cmp-nvim-ultisnips", branch = "refactor",
+          -- "~/Desktop/cmp-nvim-ultisnips",
+          -- branch = "main",
+          "smjonas/cmp-nvim-ultisnips",
+          branch = "main",
           -- "quangnguyen30192/cmp-nvim-ultisnips",
           disable = vim.g["snippet_engine"] ~= "ultisnips",
           config = function()
@@ -291,7 +314,7 @@ require("packer").startup({
           -- vim.cmd([[highlight TelescopePreviewBorder guifg=#56a5e5]])
           -- vim.cmd([[highlight TelescopePromptBorder guifg=#56a5e5]])
         end,
-        after = "edge",
+        -- after = "edge",
       },
       {
         "nvim-telescope/telescope-fzf-native.nvim",
@@ -307,15 +330,6 @@ require("packer").startup({
         requires = "tami5/sqlite.lua",
         config = function()
           require("telescope").load_extension("frecency")
-        end,
-        after = "telescope.nvim",
-      },
-      {
-        "ahmedkhalf/project.nvim",
-        disable = true,
-        config = function()
-          require("project_nvim").setup({ silent_chdir = false })
-          require("telescope").load_extension("projects")
         end,
         after = "telescope.nvim",
       },
@@ -372,6 +386,8 @@ require("packer").startup({
       "wellle/targets.vim",
       -- E.g. dav to delete b from a_b_c => a_c
       { "Julian/vim-textobj-variable-segment", requires = "kana/vim-textobj-user" },
+      -- gr textobject
+      { "inkarkat/vim-ReplaceWithRegister" },
       {
         "AndrewRadev/sideways.vim",
         config = function()
@@ -455,9 +471,12 @@ require("packer").startup({
       config = function()
         require("lightspeed").setup({
           ignore_case = true,
+          repeat_ft_with_target_char = true,
         })
       end,
     })
+
+    -- Git
 
     use({
       "tpope/vim-fugitive",
