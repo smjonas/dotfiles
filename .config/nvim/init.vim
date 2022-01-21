@@ -20,7 +20,7 @@ runtime mappings.vim
 augroup my_auto_group
   autocmd!
   " Run on startup for faster keyboard movement
-  autocmd VimEnter * silent !xset r rate 215 33
+  autocmd VimEnter * silent !xset r rate 205 35
 
   " Remove trailing whitespace on save (/e to hide errors)
   autocmd BufWritePre * %s/\s\+$//e
@@ -28,21 +28,20 @@ augroup my_auto_group
   " Enable highlight on yank
   autocmd TextYankPost * silent! lua vim.highlight.on_yank { timeout = 130 }
 
-  autocmd BufWritePost */nvim
-
   " Equalize splits after resizing
   autocmd VimResized * wincmd =
+
+  " Open help files in a vertical split
+  autocmd FileType help wincmd L
 
   " Do not wrap text, only comments. This somehow does not work when set
   " as a global option (see https://vi.stackexchange.com/a/9367/37072)
   autocmd FileType * set formatoptions-=t
 
-  " automatically enter insert mode when in terminal mode
+  " Automatically enter insert mode when in terminal mode
   " and change to current directory
   autocmd TermOpen * silent !lcd %:p:h
   autocmd TermOpen * startinsert
-
-  autocmd BufWritePost *.snippets :CmpUltisnipsReloadSnippets
 augroup end
 
 function ReloadConfig()

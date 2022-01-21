@@ -118,7 +118,7 @@ cmp.setup({
       option = {
         keyword_pattern = [[\k\+]],
       },
-      keyword_length = 3,
+      keyword_length = 1,
     },
   },
   experimental = {

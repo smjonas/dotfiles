@@ -1,5 +1,4 @@
 ---@diagnostic disable: different-requires
-
 local fn = vim.fn
 local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
 if fn.empty(fn.glob(install_path)) > 0 then
@@ -30,12 +29,14 @@ require("packer").startup({
         require("snippet_converter").setup({
           sources = {
             ultisnips = {
-              vim.fn.stdpath("config") .. "/UltiSnips/",
+              --[[vim.fn.stdpath("config")]]
+              "/UltiSnips/lua.snippets",
             },
           },
           output = {
-            path = "/somewhere",
-            format = "vscode",
+            ultisnips = {
+              "/home/jonas/.config/nvim/sc_output",
+            },
           },
         })
       end,
@@ -189,44 +190,9 @@ require("packer").startup({
     })
 
     use({
-      "nvim-neo-tree/neo-tree.nvim",
+      "elihunter173/dirbuf.nvim",
       config = function()
-        require("neo-tree").setup({})
-      end,
-      requires = {
-        "MunifTanjim/nui.nvim",
-      },
-    })
-
-    use({
-      "kyazdani42/nvim-tree.lua",
-      requires = "kyazdani42/nvim-web-devicons",
-      disable = true,
-      config = function()
-        vim.g["nvim_tree_group_empty"] = 1
-        vim.g["nvim_tree_respect_buf_cwd"] = 1
-        vim.g["nvim_tree_root_folder_modifier"] = ":t:r"
-
-        local tree_cb = require("nvim-tree.config").nvim_tree_callback
-        local mappings = {
-          { key = { "h" }, cb = tree_cb("close_node") },
-          { key = { "l" }, cb = tree_cb("edit") },
-        }
-        require("nvim-tree").setup({
-          update_cwd = true,
-          update_focused_file = {
-            enable = true,
-            update_cwd = true,
-          },
-          view = {
-            mappings = {
-              list = mappings,
-            },
-          },
-        })
-
-        local map = require("utils").map
-        map("n", "<C-n>", "<cmd>NvimTreeToggle<cr>")
+        vim.g.netrw_liststyle = 3
       end,
     })
 

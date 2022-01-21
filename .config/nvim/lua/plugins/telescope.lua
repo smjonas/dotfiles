@@ -75,7 +75,7 @@ function M.project_search()
   local args = {
     -- git_files by default does not search from the current directory of the opened buffer
     cwd = require("lspconfig/util").root_pattern(".git")(vim.fn.expand("%:p")),
-    prompt_title = "Project search",
+    prompt_title = "Git Files",
   }
   if not pcall(builtin.git_files, args) then
     builtin.find_files(args)
