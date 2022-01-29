@@ -7,7 +7,7 @@ require("telescope").setup({
   },
   pickers = {
     live_grep = {
-      theme = telescope_theme,
+      -- theme = telescope_theme,
       additional_args = function(opts)
         if opts.search_all == true then
           return {}

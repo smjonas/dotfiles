@@ -1,11 +1,12 @@
 let mapleader = " "
 
-" I use better-escape.nvim instead
+" Using better-escape.nvim instead
 " nno ii <Esc>
 " xno ii <Esc>gV
 " ono ii <Esc>
 " ino ii <Esc>`^
 " cno ii <C-C><Esc>
+
 " Remap exiting terminal mode
 tno ii <C-\><C-n>
 
@@ -55,9 +56,9 @@ nno <leader>d "_d
 nno <leader>D "_D
 nno c "_c
 nno C "_C
+nno x "_x
 " To use default behavior of x
 nno <leader>z x
-nno x "_x
 
 nno J J$
 
@@ -83,6 +84,12 @@ xmap cv y'>p
 nno cp vip:copy'>+1<cr>o<esc><up>
 " Duplicate tag and insert new line above
 nno cg vat:copy'><cr>vato<esc>O<esc><down>
+
+" Visually select last pasted text
+nno gp `[v`]
+
+" For usage with vim-ReplaceWithRegister: replace from clipboard
+nmap gR "+gr
 
 " Avoids accidentally recording a macro
 nno Q q
@@ -169,20 +176,8 @@ nno <C-w><C-^> <C-w><C-^><C-w>t<C-w>H
 nno <leader>w <cmd>w<cr>
 nno <leader>q <cmd>q<cr>
 
-" Tab completion in autocomplete (for default completion and coq)
-" ino <expr><tab>   pumvisible() ? "<C-n>" : "<tab>"
-" Go back using Shift+Tab instead of Ctrl+p
-" ino <expr><S-tab> pumvisible() ? "<C-p>" : "<S-tab>"
-
 " Open current file in browser
 nno <silent> <F3> <cmd>!sensible-browser %<cr>
-
-function! SynGroup()
-  let l:s = synID(line('.'), col('.'), -1)
-  echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
-endfun
-" Print highlight group under cursor
-" nno <leader>sg <cmd>call SynGroup()<cr>
 
 " Open vim.init
 nno <leader>rc <cmd>e $MYVIMRC<cr>

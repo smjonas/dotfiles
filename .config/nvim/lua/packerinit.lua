@@ -13,8 +13,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- Global settings
-vim.g["snippet_engine"] = "luasnip"
-vim.g["completion_plugin"] = "cmp"
+vim.g["snippet_engine"] = "ultisnips"
 vim.g["colorscheme"] = "kanagawa"
 
 require("packer").startup({
@@ -34,8 +33,8 @@ require("packer").startup({
             },
           },
           output = {
-            ultisnips = {
-              "/home/jonas/.config/nvim/sc_output",
+            vscode = {
+              "/home/jonas/.config/nvim/test_snippets/",
             },
           },
         })
@@ -132,41 +131,25 @@ require("packer").startup({
       },
       "williamboman/nvim-lsp-installer",
       {
-        "tami5/lspsaga.nvim",
-        config = function()
-          require("lspsaga").init_lsp_saga({
-            error_sign = ">>",
-            warn_sign = ">>",
-          })
-          local map = require("utils").map
-          map("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>")
-          map("n", "<F2>", "<cmd>lua require('lspsaga.rename').rename()<cr>")
-        end,
-      },
-      {
-        "ray-x/lsp_signature.nvim",
-        disable = true,
-        config = function()
-          require("lsp_signature").setup({
-            floating_window = true,
-          })
-        end,
-      },
-      {
-        "weilbith/nvim-code-action-menu",
-        disable = true,
-        config = function()
-          vim.g["code_action_menu_show_details"] = false
-          local map = require("utils").map
-          map("n", "ga", "<cmd>CodeActionMenu<cr>")
-        end,
-      },
-      {
         -- Modified version of mfussenegger/nvim-lint,
         "smjonas/nvim-lint",
         config = function()
           require("lint").linters_by_ft = { python = { "flake8" } }
           vim.cmd([[autocmd BufEnter,BufWritePost * lua require("lint").try_lint()]])
+        end,
+      },
+      {
+        "j-hui/fidget.nvim",
+        config = function()
+          require("fidget").setup({
+            text = {
+              spinner = "dots",
+            },
+            timer = {
+              fidget_decay = 0,
+              task_decay = 0,
+            },
+          })
         end,
       },
     })
@@ -189,31 +172,7 @@ require("packer").startup({
       end,
     })
 
-    use({
-      "elihunter173/dirbuf.nvim",
-      config = function()
-        vim.g.netrw_liststyle = 3
-      end,
-    })
-
     -- Auto-completion and snippets
-    use({
-      {
-        "ms-jpq/coq_nvim",
-        disable = vim.g["completion_plugin"] ~= "coq",
-        branch = "coq",
-        setup = function()
-          require("plugins.coq")
-        end,
-      },
-      {
-        "ms-jpq/coq.artifacts",
-        disable = vim.g["completion_plugin"] ~= "coq",
-        branch = "artifacts",
-        after = "coq_nvim",
-      },
-    })
-
     use({
       "hrsh7th/nvim-cmp",
       config = function()
@@ -259,8 +218,7 @@ require("packer").startup({
     })
 
     use({
-      "~/Desktop/NeovimPlugins/UltiSnips",
-      -- "SirVer/ultisnips",
+      "SirVer/ultisnips",
       requires = "honza/vim-snippets",
       config = function()
         vim.g.UltiSnipsEnableSnipMate = 1
@@ -287,15 +245,6 @@ require("packer").startup({
         run = "make",
         config = function()
           require("telescope").load_extension("fzf")
-        end,
-        after = "telescope.nvim",
-      },
-      {
-        "nvim-telescope/telescope-frecency.nvim",
-        disable = true,
-        requires = "tami5/sqlite.lua",
-        config = function()
-          require("telescope").load_extension("frecency")
         end,
         after = "telescope.nvim",
       },
