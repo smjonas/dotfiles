@@ -42,35 +42,6 @@ require("packer").startup({
     })
 
     use({
-      "LinArcX/telescope-command-palette.nvim",
-      config = function()
-        require("telescope").setup({
-          extensions = {
-            command_palette = {
-              {
-                "Projects",
-                {
-                  "snippet-converter.nvim",
-                  ":lua require('telescope.builtin').find_files({cwd='~/Desktop/NeovimPlugins/snippet-converter.nvim'})",
-                  1,
-                },
-                {
-                  "Elasticsearch client",
-                  ":e ~/Desktop/Inacon/elasticsearch/client/index.html",
-                  1,
-                },
-              },
-            },
-          },
-        })
-        require("telescope").load_extension("command_palette")
-        local map = require("utils").map
-        map("n", "<leader>l", "<cmd>Telescope command_palette<cr>")
-      end,
-      after = "telescope.nvim",
-    })
-
-    use({
       "wbthomason/packer.nvim",
       config = function()
         local map = require("utils").map
