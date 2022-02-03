@@ -2,30 +2,34 @@
 local fn = vim.fn
 local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
 if fn.empty(fn.glob(install_path)) > 0 then
-  PackerBootstrap = fn.system({
+  PackerBootstrap = fn.system {
     "git",
     "clone",
     "--depth",
     "1",
     "https://github.com/wbthomason/packer.nvim",
     install_path,
-  })
+  }
 end
 
 -- Global settings
-vim.g["snippet_engine"] = "ultisnips"
+vim.g["snippet_engine"] = "luasnip"
 vim.g["colorscheme"] = "kanagawa"
 
-require("packer").startup({
+require("packer").startup {
   function(use)
     -- Workaround for plugins with the rtp option (https://github.com/soywod/himalaya/issues/188)
     -- local packer_compiled = vim.fn.stdpath("config") .. "/plugin/packer_compiled.lua"
     -- vim.cmd("luafile"  .. packer_compiled)
 
-    use({
+    use {
       "~/Desktop/NeovimPlugins/snippet-converter.nvim",
       config = function()
-        require("snippet_converter").setup({
+        local snippet_converter = require("snippet_converter")
+        snippet_converter.setup {
+          use_nerd_font_icons = true,
+        }
+        snippet_converter.set_pipeline {
           sources = {
             ultisnips = {
               --[[vim.fn.stdpath("config")]]
@@ -37,11 +41,11 @@ require("packer").startup({
               "/home/jonas/.config/nvim/test_snippets/",
             },
           },
-        })
+        }
       end,
-    })
+    }
 
-    use({
+    use {
       "wbthomason/packer.nvim",
       config = function()
         local map = require("utils").map
@@ -49,10 +53,10 @@ require("packer").startup({
         map("n", "<leader>u", "<cmd>PackerSync<cr>")
         map("n", "<leader>i", "<cmd>PackerInstall<cr>")
       end,
-    })
+    }
 
     -- Treesitter
-    use({
+    use {
       "nvim-treesitter/nvim-treesitter",
       run = ":TSUpdate",
       requires = {
@@ -63,13 +67,30 @@ require("packer").startup({
       config = function()
         require("plugins.treesitter")
       end,
-    })
+    }
+
+    -- Function annotation generator
+    use {
+      "danymat/neogen",
+      cmd = "Neogen",
+      config = function()
+        require("neogen").setup {
+          enabled = true,
+        }
+        vim.keymap.set(
+          "n",
+          "<leader>nf",
+          "<cmd>lua require('neogen').generate()<cr>",
+          { silent = true }
+        )
+      end,
+    }
 
     -- Color schemes
     use(require("colorschemes"))
 
     -- Status bar
-    use({
+    use {
       -- Change font to Powerline compatible font in Edit > Preferences (bash)
       -- or set the font in ~/.config/alacritty/alacritty.yml
       -- after installing by cloning git@github.com:powerline/fonts.git
@@ -83,10 +104,10 @@ require("packer").startup({
         local normal_fg = vim.fn.synIDattr(vim.fn.hlID("Normal"), "fg")
         vim.cmd("highlight FloatBorder guifg=" .. normal_fg .. " guibg=" .. normal_float_bg)
       end,
-    })
+    }
 
     -- LSP
-    use({
+    use {
       {
         "neovim/nvim-lspconfig",
         config = function()
@@ -112,7 +133,7 @@ require("packer").startup({
       {
         "j-hui/fidget.nvim",
         config = function()
-          require("fidget").setup({
+          require("fidget").setup {
             text = {
               spinner = "dots",
             },
@@ -120,31 +141,31 @@ require("packer").startup({
               fidget_decay = 0,
               task_decay = 0,
             },
-          })
+          }
         end,
       },
-    })
+    }
 
     -- Debugging
-    use({
+    use {
       "mfussenegger/nvim-dap",
       config = function()
         require("plugins.dap")
       end,
       requires = "jbyuki/one-small-step-for-vimkind",
-    })
+    }
 
     -- Tree viewer / file browser
-    use({
+    use {
       "lambdalisue/fern.vim",
       disable = false,
       config = function()
         require("plugins.fern")
       end,
-    })
+    }
 
     -- Auto-completion and snippets
-    use({
+    use {
       "hrsh7th/nvim-cmp",
       config = function()
         require("plugins.cmp")
@@ -158,9 +179,9 @@ require("packer").startup({
           -- "quangnguyen30192/cmp-nvim-ultisnips",
           disable = vim.g["snippet_engine"] ~= "ultisnips",
           config = function()
-            require("cmp_nvim_ultisnips").setup({
+            require("cmp_nvim_ultisnips").setup {
               filetype_source = "treesitter",
-            })
+            }
           end,
         },
         {
@@ -177,27 +198,26 @@ require("packer").startup({
             require("cmp_nvim_lsp")
           end,
         },
-        "lukas-reineke/cmp-under-comparator",
       },
-    })
+    }
 
-    use({
+    use {
       "L3MON4D3/LuaSnip",
       config = function()
         require("plugins.luasnip")
       end,
-    })
+    }
 
-    use({
+    use {
       "SirVer/ultisnips",
       requires = "honza/vim-snippets",
       config = function()
         vim.g.UltiSnipsEnableSnipMate = 1
       end,
-    })
+    }
 
     -- Telescope
-    use({
+    use {
       {
         "nvim-telescope/telescope.nvim",
         requires = "nvim-lua/plenary.nvim",
@@ -219,38 +239,38 @@ require("packer").startup({
         end,
         after = "telescope.nvim",
       },
-    })
+    }
 
     -- Filetype specific plugins
-    use({
+    use {
       "mattn/emmet-vim",
       keys = { { "x", "<C-q>" }, { "i", "<C-q>" } },
       setup = function()
         vim.g.user_emmet_expandabbr_key = "<C-q>"
       end,
-    })
-    use({ "alvan/vim-closetag", ft = { "html", "php" } })
-    use({
+    }
+    use { "alvan/vim-closetag", ft = { "html", "php" } }
+    use {
       "lervag/vimtex",
       ft = "tex",
       config = function()
         vim.cmd([[autocmd User VimtexEventInitPost VimtexCompile]])
       end,
-    })
-    use({
+    }
+    use {
       "norcalli/nvim-colorizer.lua",
       config = function()
-        require("colorizer").setup({
+        require("colorizer").setup {
           "css",
           "html",
           "lua",
           "php",
           -- { default_options = { names = false } }
-        })
+        }
       end,
-    })
+    }
 
-    use({
+    use {
       "vim-test/vim-test",
       ft = "python",
       config = function()
@@ -265,10 +285,10 @@ require("packer").startup({
         -- Run nearest test
         map("n", "<leader>n", "<cmd>TestNearest<cr>")
       end,
-    })
+    }
 
     -- New ways to manipulate text
-    use({
+    use {
       "wellle/targets.vim",
       -- E.g. dav to delete b from a_b_c => a_c
       { "Julian/vim-textobj-variable-segment", requires = "kana/vim-textobj-user" },
@@ -300,89 +320,87 @@ require("packer").startup({
           map("v", "<right>", "<Plug>SchleppRight", { noremap = false })
         end,
       },
-    })
+    }
 
-    use({
+    use {
       "terrortylor/nvim-comment",
       config = function()
-        require("nvim_comment").setup({
+        require("nvim_comment").setup {
           comment_empty = false,
           hook = function()
             require("ts_context_commentstring.internal").update_commentstring()
           end,
-        })
+        }
       end,
       requires = "JoosepAlviste/nvim-ts-context-commentstring",
-    })
+    }
 
-    use({
+    use {
       "windwp/nvim-autopairs",
       config = function()
         local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-        require("nvim-autopairs").setup({
+        require("nvim-autopairs").setup {
           disable_filetype = { "TelescopePrompt", "vim", "tex" },
           -- Insert brackets after selecting function from cmp
           require("cmp").event:on(
             "confirm_done",
-            cmp_autopairs.on_confirm_done({
+            cmp_autopairs.on_confirm_done {
               map_char = { tex = "" },
-            })
+            }
           ),
-        })
+        }
       end,
       after = "nvim-cmp",
-    })
+    }
 
-    use({
+    use {
       "rmagatti/auto-session",
       config = function()
-        require("auto-session").setup({
+        require("auto-session").setup {
           -- Need to type RestoreSession manually
           auto_restore_enabled = false,
-        })
+        }
       end,
-    })
+    }
 
-    use({
+    use {
       "beauwilliams/focus.nvim",
       disable = true,
       config = function()
-        require("focus").setup({ hybridnumber = true })
+        require("focus").setup { hybridnumber = true }
         require("utils").map("n", "<C-a>", "<cmd>FocusSplitNicely<cr>")
       end,
-    })
+    }
 
-    use({
+    use {
       "ggandor/lightspeed.nvim",
       config = function()
-        require("lightspeed").setup({
+        require("lightspeed").setup {
           ignore_case = true,
           repeat_ft_with_target_char = true,
-        })
+        }
       end,
-    })
+    }
 
     -- Git
-
-    use({
+    use {
       "tpope/vim-fugitive",
       config = function()
         require("plugins.fugitive")
       end,
-    })
+    }
 
-    use({
+    use {
       "max397574/better-escape.nvim",
       config = function()
-        require("better_escape").setup({
+        require("better_escape").setup {
           mapping = { "ii" },
-        })
+        }
       end,
-    })
+    }
 
     -- Writing to-do lists, emails etc.
-
-    use({
+    use {
       "vimwiki/vimwiki",
       branch = "dev",
       -- keys = { "<leader>x" },
@@ -400,9 +418,9 @@ require("packer").startup({
         -- doesn't seem to work, use syntax file instead
         -- vim.g["vimwiki_listsyms"] = "☒⊡⬕"
       end,
-    })
+    }
 
-    use({
+    use {
       "iamcco/markdown-preview.nvim",
       run = "cd app && npm install",
       ft = { "markdown", "text" },
@@ -413,9 +431,9 @@ require("packer").startup({
         local map = require("utils").map
         map("n", "<leader>m", "<Plug>MarkdownPreviewToggle", { noremap = false })
       end,
-    })
+    }
 
-    use({
+    use {
       "nvim-neorg/neorg",
       disable = true,
       branch = "unstable",
@@ -424,29 +442,27 @@ require("packer").startup({
       config = function()
         require("plugins.neorg")
       end,
-    })
+    }
 
-    use({
+    use {
       -- rtp in packer has some issues, that's why I have to use the local path
       vim.fn.stdpath("data") .. "/himalaya/vim",
       -- rtp = "vim",
       -- config = function()
       --   vim.g["himalaya_mailbox_picker"] = "telescope"
       -- end
-    })
-
-    -- use { "michaelb/sniprun", run = "bash ./install.sh" }
+    }
 
     -- Misc
 
-    use({
+    use {
       "glacambre/firenvim",
       run = function()
         vim.fn["firenvim#install"](0)
       end,
-    })
+    }
 
-    use({
+    use {
       "luukvbaal/stabilize.nvim",
       disable = vim.bo.ft ~= "vimwiki",
       config = function()
@@ -459,19 +475,19 @@ require("packer").startup({
           ]])
         require("stabilize").setup()
       end,
-    })
+    }
 
     use("arp242/undofile_warn.vim")
 
     use("tpope/vim-repeat")
 
-    use({
+    use {
       "github/copilot.vim",
       disable = true,
       config = function()
         require("plugins.copilot")
       end,
-    })
+    }
 
     if PackerBootstrap then
       require("packer").sync()
@@ -480,10 +496,10 @@ require("packer").startup({
   config = {
     display = {
       open_fn = function()
-        return require("packer.util").float({
+        return require("packer.util").float {
           border = "single",
-        })
+        }
       end,
     },
   },
-})
+}

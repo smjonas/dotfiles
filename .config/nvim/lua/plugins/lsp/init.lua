@@ -1,4 +1,4 @@
-local keymap = vim.keymap
+local map = vim.keymap.set
 local lsp = require("vim.lsp")
 
 local on_attach = function(_, bufnr)
@@ -6,17 +6,18 @@ local on_attach = function(_, bufnr)
     silent = true,
     buffer = bufnr,
   }
-  keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>zz", opts)
-  keymap.set("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-  keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
+  map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>zz", opts)
+  map("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
+  map("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
+  map("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
   -- Show buffer diagnostics in a floating menu
-  keymap.set("n", "<leader>gd", "<cmd>lua vim.diagnostic.open_float({scope = 'buffer'})<cr>", opts)
-  keymap.set("n", "<C-j>", "<cmd>lua vim.diagnostic.goto_prev()<cr>", opts)
-  keymap.set("n", "<C-k>", "<cmd>lua vim.diagnostic.goto_next()<cr>", opts)
+  map("n", "<leader>gd", "<cmd>lua vim.diagnostic.open_float({scope = 'buffer'})<cr>", opts)
+  map("n", "<C-j>", "<cmd>lua vim.diagnostic.goto_prev()<cr>", opts)
+  map("n", "<C-k>", "<cmd>lua vim.diagnostic.goto_next()<cr>", opts)
 
   -- Note: not all LSP servers support range formatting
-  keymap.set("n", "<C-f>", "<cmd>lua vim.lsp.buf.formatting_sync()<cr>", opts)
-  keymap.set("v", "<C-f>", "<cmd>lua vim.lsp.buf.range_formatting()<cr>", opts)
+  map("n", "<C-f>", "<cmd>lua vim.lsp.buf.formatting_sync()<cr>", opts)
+  map("v", "<C-f>", "<cmd>lua vim.lsp.buf.range_formatting()<cr>", opts)
 end
 
 local setup_lsp_servers = function()

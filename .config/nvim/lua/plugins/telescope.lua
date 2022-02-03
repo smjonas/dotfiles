@@ -1,6 +1,6 @@
 local telescope_theme = "dropdown"
 
-require("telescope").setup({
+require("telescope").setup {
   defaults = {
     -- sort_mru = true,
     path_display = { "truncate" },
@@ -31,47 +31,23 @@ require("telescope").setup({
       theme = telescope_theme,
     },
   },
-})
+}
 
 -- Cyan Telescope borders
 -- vim.cmd [[highlight TelescopeResultsBorder guifg=#56a5e5]]
 -- vim.cmd [[highlight TelescopePreviewBorder guifg=#56a5e5]]
 -- vim.cmd [[highlight TelescopePromptBorder guifg=#56a5e5]]
 
-local map = require("../utils").map
-
-map("n", "<leader>ff", "<cmd>lua require('plugins.telescope').find_files()<cr>")
-map("n", "<leader>fi", "<cmd>lua require('plugins.telescope').find_inacon()<cr>")
-map("n", "<leader>fu", "<cmd>lua require('plugins.telescope').find_old_inacon()<cr>")
-map("n", "<leader>fp", "<cmd>lua require('plugins.telescope').project_search()<cr>")
-
--- Search in vim plugin files
-map("n", "<leader>fv", "<cmd>lua require('plugins.telescope').find_plugins()<cr>")
-map("n", "<leader>fc", "<cmd>lua require('plugins.telescope').find_config()<cr>")
--- map("n", "<leader>vg", '<cmd>lua require("plugins.telescope").grep_plugins()<cr>')
-
--- Find old
-map("n", "<leader>fo", "<cmd>Telescope oldfiles<cr>")
--- Requires ripgrep to be installed (sudo apt install ripgrep)
-map("n", "<leader>fg", "<cmd>lua require('plugins.telescope').live_grep_git_root()<cr>")
--- nno <leader>fo <cmd>Telescope oldfiles<cr>
-
-map("n", "<leader>fb", "<cmd>Telescope buffers<cr>")
-map("n", "<leader>h", "<cmd>Telescope help_tags<cr>")
--- List keybindings
-map("n", "<leader>b", "<cmd>Telescope keymaps<cr>")
-
 local env = vim.env
 local builtin = require("telescope.builtin")
 
-local M = {}
-function M.find_files()
-  builtin.find_files({
+local function find_files()
+  builtin.find_files {
     cwd = "~",
-  })
+  }
 end
 
-function M.project_search()
+local function project_search()
   local args = {
     -- git_files by default does not search from the current directory of the opened buffer
     cwd = require("lspconfig/util").root_pattern(".git")(vim.fn.expand("%:p")),
@@ -82,39 +58,70 @@ function M.project_search()
   end
 end
 
-function M.find_inacon()
-  builtin.find_files({
+local function find_inacon()
+  builtin.find_files {
     prompt_title = "Find Inacon Files",
     search_dirs = { env.INACON_DIR .. "/Kurse", env.INACON_DIR .. "/Automation" },
-  })
+  }
 end
 
-function M.find_old_inacon()
-  builtin.oldfiles({
+local function find_old_inacon()
+  builtin.oldfiles {
     prompt_title = "Find Old Inacon Files",
     search_dirs = { env.INACON_DIR .. "/Kurse", env.INACON_DIR .. "/Automation" },
-  })
+  }
 end
 
-function M.find_plugins()
-  builtin.find_files({
+local function find_plugins()
+  builtin.find_files {
     prompt_title = "Find Vim Plugins",
     search_dirs = { vim.fn.stdpath("data") },
-  })
+  }
 end
 
-function M.find_config()
-  builtin.find_files({
+local function find_config()
+  builtin.find_files {
     prompt_title = "Find Config Files",
     search_dirs = { vim.fn.stdpath("config") },
-  })
+  }
 end
 
-function M.live_grep_git_root()
-  builtin.live_grep({
+local function live_grep_git_root()
+  builtin.live_grep {
     cwd = require("lspconfig/util").root_pattern(".git")(vim.fn.expand("%:p")),
     disable_coordinates = true,
-  })
+  }
 end
 
-return M
+local opts = {
+  silent = true,
+}
+local map = function(lhs, rhs)
+    vim.keymap.set("n", lhs, rhs, opts)
+end
+
+-- ReSume
+map("<leader>rs", "<cmd>Telescope resume<cr>")
+
+map("<leader>ff", find_files)
+map("<leader>fi", find_inacon)
+map("<leader>fu", find_old_inacon)
+map("<leader>fp", project_search)
+
+-- Find in Vim plugin files
+map("<leader>fv", find_plugins)
+map("<leader>fc", find_config)
+-- map("n", "<leader>vg", '<cmd>lua require("plugins.telescope").grep_plugins()<cr>')
+
+-- Find Old
+map( "<leader>fo", "<cmd>Telescope oldfiles<cr>")
+-- Requires ripgrep to be installed (sudo apt install ripgrep)
+map( "<leader>fg", live_grep_git_root)
+
+map( "<leader>fb", "<cmd>Telescope buffers<cr>")
+map( "<leader>h", "<cmd>Telescope help_tags<cr>")
+-- Keybindings
+map( "<leader>fk", "<cmd>Telescope keymaps<cr>")
+
+-- RefereNces
+map( "<leader>fn", "<cmd>Telescope lsp_references<cr>")
