@@ -1,6 +1,3 @@
-echo Remember to add ~/.local/bin and ~/.cargo/bin to path! export PATH="$HOME/mypath:$PATH";
-read -p "Press enter to start";
-
 #!/bin/bash
 apt install -y xclip build-essential libnewlib-arm-none-eabi
 apt install -y git kitty yadm fzf ripgrep python3-pip cargo npm
