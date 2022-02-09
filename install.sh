@@ -1,4 +1,4 @@
-echo Remember to add ~/.local/bin and ~/.cargo/bin to path! export PATH="$HOME/mypath:$PATH"
+echo Remember to add ~/.local/bin and ~/.cargo/bin to path! export PATH="$HOME/mypath:$PATH";
 read -p "Press enter to start";
 
 #!/bin/bash
@@ -11,10 +11,13 @@ pip3 install neovim black isort
 npm install --save-dev --save-exact prettier
 
 # Install Spotify
-sh -c 'echo "deb http://repository.spotify.com stable non-free" >> /etc/apt/sources.list.d/spotify.list'
+sh -c 'echo "deb http://repository.spotify.com stable non-free" > /etc/apt/sources.list.d/spotify.list'
 curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add -
 apt update
-apt install spotify-client inkscape
+apt install -y spotify-client inkscape
+
+wget -P /tmp/ http://archive.ubuntu.com/ubuntu/pool/universe/h/hamster-time-tracker/hamster-time-tracker_3.0.2-3_all.deb
+apt install ./hamster-time-tracker_3.0.2-3_all.deb
 
 echo "Setup GitHub SSH key?";
 select yn in "yes" "no";
