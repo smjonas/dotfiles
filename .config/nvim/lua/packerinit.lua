@@ -29,7 +29,7 @@ require("packer").startup {
         snippet_converter.setup {
           use_nerd_font_icons = true,
         }
-        snippet_converter.set_pipeline {
+        snippet_converter.add_template {
           sources = {
             ultisnips = {
               --[[vim.fn.stdpath("config")]]
@@ -446,7 +446,7 @@ require("packer").startup {
 
     use {
       -- rtp in packer has some issues, that's why I have to use the local path
-      vim.fn.stdpath("data") .. "/himalaya/vim",
+      vim.fn.stdpath("data") .. "/himalaya/vim", disable = true,
       -- rtp = "vim",
       -- config = function()
       --   vim.g["himalaya_mailbox_picker"] = "telescope"

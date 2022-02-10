@@ -1,10 +1,10 @@
 #!/bin/bash
 apt install -y xclip build-essential libnewlib-arm-none-eabi
-apt install -y git kitty yadm fzf ripgrep python3-pip cargo npm
+apt install -y git kitty yadm fzf ripgrep python3-pip cargo npm luarocks
 
 # Neovim related packages
 cargo install stylua
-pip3 install neovim black isort
+pip3 install neovim black isort trash-cli
 npm install --save-dev --save-exact prettier
 
 # Install Spotify
