@@ -113,7 +113,7 @@ local under_comparator = function(entry1, entry2)
   end
 end
 
-cmp.setup({
+cmp.setup {
   snippet = {
     expand = function(args)
       expand_for(cur_snippet_engine, args)
@@ -139,7 +139,9 @@ cmp.setup({
       return false
     end
     local context = require("cmp.config.context")
-    return not(context.in_treesitter_capture("comment") == true or context.in_syntax_group("Comment"))
+    return not (
+        context.in_treesitter_capture("comment") or context.in_syntax_group("Comment")
+      )
   end,
   experimental = {
     ghost_text = true,
@@ -156,31 +158,25 @@ cmp.setup({
     -- mostly keep defaults except use <C-f> instead <C-y>
     -- and overload tab keys for snippet plugins
     ["<C-f>"] = cmp.mapping(
-      cmp.mapping.confirm({
+      cmp.mapping.confirm {
         behavior = cmp.ConfirmBehavior.Replace,
         select = true,
-      }),
-      { "i", "c" }
+      },
+      { "i", "s" }
     ),
     ["<Tab>"] = cmp.mapping(function(fallback)
       tab_for(cur_snippet_engine, fallback)
-    end, {
-      "i",
-      "s",
-    }),
+    end, { "i", "s" }),
     ["<S-Tab>"] = cmp.mapping(function(fallback)
       shift_tab_for(cur_snippet_engine, fallback)
-    end, {
-      "i",
-      "s",
-    }),
+    end, { "i", "s" }),
     ["<C-Space>"] = cmp.mapping(cmp.mapping.complete()),
     ["<C-n>"] = cmp.mapping(function(fallback)
       ctrl_n(cur_snippet_engine, fallback)
-    end),
+    end, { "i", "s" }),
     ["<C-p>"] = cmp.mapping(function(fallback)
       ctrl_p(cur_snippet_engine, fallback)
-    end),
+    end, { "i", "s" }),
   },
   sorting = {
     comparators = {
@@ -203,4 +199,4 @@ cmp.setup({
       return vim_item
     end,
   },
-})
+}

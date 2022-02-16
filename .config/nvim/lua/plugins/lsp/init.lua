@@ -1,11 +1,11 @@
 local map = vim.keymap.set
 local lsp = require("vim.lsp")
 
+local opts = {
+  silent = true,
+}
 local on_attach = function(_, bufnr)
-  local opts = {
-    silent = true,
-    buffer = bufnr,
-  }
+  opts.buffer = bufnr
   map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>zz", opts)
   map("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
   map("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
@@ -14,11 +14,11 @@ local on_attach = function(_, bufnr)
   map("n", "<leader>gd", "<cmd>lua vim.diagnostic.open_float({scope = 'buffer'})<cr>", opts)
   map("n", "<C-j>", "<cmd>lua vim.diagnostic.goto_prev()<cr>", opts)
   map("n", "<C-k>", "<cmd>lua vim.diagnostic.goto_next()<cr>", opts)
-
-  -- Note: not all LSP servers support range formatting
-  map("n", "<C-f>", "<cmd>lua vim.lsp.buf.formatting_sync()<cr>", opts)
-  map("v", "<C-f>", "<cmd>lua vim.lsp.buf.range_formatting()<cr>", opts)
 end
+-- We don't need the default Ctrl-F, so make the mapping global
+map("n", "<C-f>", "<cmd>lua vim.lsp.buf.formatting_sync()<cr>", opts)
+-- Note: not all LSP servers support range formatting
+map("v", "<C-f>", "<cmd>lua vim.lsp.buf.range_formatting()<cr>", opts)
 
 local setup_lsp_servers = function()
   local lsp_installer = require("nvim-lsp-installer")
@@ -48,9 +48,9 @@ local normal_float_bg = vim.fn.synIDattr(vim.fn.hlID("NormalFloat"), "bg")
 local normal_fg = vim.fn.synIDattr(vim.fn.hlID("Normal"), "fg")
 -- vim.cmd("highlight FloatBorder guifg=" .. normal_fg .. " guibg=NONE") --.. normal_float_bg)
 
-vim.diagnostic.config({
+vim.diagnostic.config {
   virtual_text = false,
-})
+}
 
 -- Borders around lsp windows
 local popup_opts = { border = "single", focusable = false, max_width = 60 }

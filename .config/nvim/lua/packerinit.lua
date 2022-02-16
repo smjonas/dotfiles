@@ -21,15 +21,11 @@ require("packer").startup {
     -- Workaround for plugins with the rtp option (https://github.com/soywod/himalaya/issues/188)
     -- local packer_compiled = vim.fn.stdpath("config") .. "/plugin/packer_compiled.lua"
     -- vim.cmd("luafile"  .. packer_compiled)
-
     use {
       "~/Desktop/NeovimPlugins/snippet-converter.nvim",
       config = function()
         local snippet_converter = require("snippet_converter")
-        snippet_converter.setup {
-          use_nerd_font_icons = true,
-        }
-        snippet_converter.add_template {
+        local template = {
           sources = {
             ultisnips = {
               --[[vim.fn.stdpath("config")]]
@@ -41,6 +37,20 @@ require("packer").startup {
               "/home/jonas/.config/nvim/test_snippets/",
             },
           },
+        }
+        snippet_converter.setup {
+          settings = {
+            ui = {
+              use_nerdfont_icons = false,
+            },
+          },
+          templates = { template },
+          transform_snippets = function(snippet, node_visitor)
+            if snippet.trigger == "" then
+              return nil
+            end
+            return snippet
+          end,
         }
       end,
     }
@@ -446,7 +456,8 @@ require("packer").startup {
 
     use {
       -- rtp in packer has some issues, that's why I have to use the local path
-      vim.fn.stdpath("data") .. "/himalaya/vim", disable = true,
+      vim.fn.stdpath("data") .. "/himalaya/vim",
+      disable = true,
       -- rtp = "vim",
       -- config = function()
       --   vim.g["himalaya_mailbox_picker"] = "telescope"

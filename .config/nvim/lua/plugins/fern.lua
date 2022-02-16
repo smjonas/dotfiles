@@ -1,5 +1,5 @@
 vim.g["fern#drawer_width"] = 30
-local map = require("utils").map
+local map = vim.keymap.set
 map("n", "<C-n>", "<cmd>Fern %:h -drawer -toggle -reveal=%<cr>")
 map("n", "<M-n>", "<cmd>Fern %:h<cr>")
 

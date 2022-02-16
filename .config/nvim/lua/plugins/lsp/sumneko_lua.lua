@@ -8,7 +8,7 @@ local settings = {
     },
     diagnostics = {
       -- Fix undefined globals warnings
-      globals = { "vim", "describe", "it", "setup", "before_each" },
+      globals = { "vim", "describe", "it", "setup", "before_each", "stub" },
     },
     workspace = {
       library = {

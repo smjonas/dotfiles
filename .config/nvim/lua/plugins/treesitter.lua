@@ -9,7 +9,7 @@ parser_configs.norg = {
 }
 
 require("nvim-treesitter.configs").setup({
-  ensure_installed = "all",
+  ensure_installed = "maintained",
   sync_install = true,
   highlight = {
     enable = false,
