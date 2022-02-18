@@ -1,5 +1,7 @@
 alias ..='cd ..'
 alias v='nvim'
+
+alias eth='sudo ~/r8125-9.007.01/autorun.sh'
 # Restart pulseaudio to fix audio issues
 alias pk='pulseaudio -k'
 alias xampp='sudo /opt/lampp/manager-linux-x64.run'

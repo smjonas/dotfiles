@@ -1,0 +1,1 @@
+cmd_/home/jonas/Desktop/r8125-9.007.01/src/r8125.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000  --build-id  -T ./scripts/module-common.lds -o /home/jonas/Desktop/r8125-9.007.01/src/r8125.ko /home/jonas/Desktop/r8125-9.007.01/src/r8125.o /home/jonas/Desktop/r8125-9.007.01/src/r8125.mod.o;  true

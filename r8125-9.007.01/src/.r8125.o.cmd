@@ -1,0 +1,1 @@
+cmd_/home/jonas/Desktop/r8125-9.007.01/src/r8125.o := ld -m elf_x86_64  -z max-page-size=0x200000    -r -o /home/jonas/Desktop/r8125-9.007.01/src/r8125.o /home/jonas/Desktop/r8125-9.007.01/src/r8125_n.o /home/jonas/Desktop/r8125-9.007.01/src/rtl_eeprom.o /home/jonas/Desktop/r8125-9.007.01/src/rtltool.o

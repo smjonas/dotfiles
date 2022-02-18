@@ -1,0 +1,100 @@
+-------------------------------
+Wed 09 Feb 2022 12:46:28 AM CET
+make -C src/ clean
+make[1]: Entering directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C /lib/modules/5.4.0-91-generic/build M=/home/jonas/Desktop/r8125-9.007.01/src clean
+make[2]: Entering directory '/usr/src/linux-headers-5.4.0-91-generic'
+make[2]: Leaving directory '/usr/src/linux-headers-5.4.0-91-generic'
+make[1]: Leaving directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C src/ modules
+make[1]: Entering directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C /lib/modules/5.4.0-91-generic/build M=/home/jonas/Desktop/r8125-9.007.01/src modules
+make[2]: Entering directory '/usr/src/linux-headers-5.4.0-91-generic'
+  CC [M]  /home/jonas/Desktop/r8125-9.007.01/src/r8125_n.o
+  CC [M]  /home/jonas/Desktop/r8125-9.007.01/src/rtl_eeprom.o
+  CC [M]  /home/jonas/Desktop/r8125-9.007.01/src/rtltool.o
+  LD [M]  /home/jonas/Desktop/r8125-9.007.01/src/r8125.o
+  Building modules, stage 2.
+  MODPOST 1 modules
+  CC [M]  /home/jonas/Desktop/r8125-9.007.01/src/r8125.mod.o
+  LD [M]  /home/jonas/Desktop/r8125-9.007.01/src/r8125.ko
+make[2]: Leaving directory '/usr/src/linux-headers-5.4.0-91-generic'
+make[1]: Leaving directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C src/ install
+make[1]: Entering directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C /lib/modules/5.4.0-91-generic/build M=/home/jonas/Desktop/r8125-9.007.01/src INSTALL_MOD_DIR=kernel/drivers/net/ethernet/realtek modules_install
+make[2]: Entering directory '/usr/src/linux-headers-5.4.0-91-generic'
+  INSTALL /home/jonas/Desktop/r8125-9.007.01/src/r8125.ko
+  DEPMOD  5.4.0-91-generic
+make[2]: Leaving directory '/usr/src/linux-headers-5.4.0-91-generic'
+make[1]: Leaving directory '/home/jonas/Desktop/r8125-9.007.01/src'
+-------------------------------
+Wed 09 Feb 2022 09:50:14 AM CET
+make -C src/ clean
+make[1]: Entering directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C /lib/modules/5.4.0-99-generic/build M=/home/jonas/Desktop/r8125-9.007.01/src clean
+make[2]: Entering directory '/usr/src/linux-headers-5.4.0-99-generic'
+  CLEAN   /home/jonas/Desktop/r8125-9.007.01/src/Module.symvers
+make[2]: Leaving directory '/usr/src/linux-headers-5.4.0-99-generic'
+make[1]: Leaving directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C src/ modules
+make[1]: Entering directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C /lib/modules/5.4.0-99-generic/build M=/home/jonas/Desktop/r8125-9.007.01/src modules
+make[2]: Entering directory '/usr/src/linux-headers-5.4.0-99-generic'
+  CC [M]  /home/jonas/Desktop/r8125-9.007.01/src/r8125_n.o
+  CC [M]  /home/jonas/Desktop/r8125-9.007.01/src/rtl_eeprom.o
+  CC [M]  /home/jonas/Desktop/r8125-9.007.01/src/rtltool.o
+  LD [M]  /home/jonas/Desktop/r8125-9.007.01/src/r8125.o
+  Building modules, stage 2.
+  MODPOST 1 modules
+  CC [M]  /home/jonas/Desktop/r8125-9.007.01/src/r8125.mod.o
+  LD [M]  /home/jonas/Desktop/r8125-9.007.01/src/r8125.ko
+make[2]: Leaving directory '/usr/src/linux-headers-5.4.0-99-generic'
+make[1]: Leaving directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C src/ install
+make[1]: Entering directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C /lib/modules/5.4.0-99-generic/build M=/home/jonas/Desktop/r8125-9.007.01/src INSTALL_MOD_DIR=kernel/drivers/net/ethernet/realtek modules_install
+make[2]: Entering directory '/usr/src/linux-headers-5.4.0-99-generic'
+  INSTALL /home/jonas/Desktop/r8125-9.007.01/src/r8125.ko
+  DEPMOD  5.4.0-99-generic
+make[2]: Leaving directory '/usr/src/linux-headers-5.4.0-99-generic'
+make[1]: Leaving directory '/home/jonas/Desktop/r8125-9.007.01/src'
+-------------------------------
+Fri 18 Feb 2022 10:32:36 AM CET
+make -C src/ clean
+make[1]: Entering directory '/home/jonas/Desktop/Ethernet driver/src'
+make -C /lib/modules/5.4.0-100-generic/build M=/home/jonas/Desktop/Ethernet driver/src clean
+make[2]: Entering directory '/usr/src/linux-headers-5.4.0-100-generic'
+make[2]: Leaving directory '/usr/src/linux-headers-5.4.0-100-generic'
+make[1]: Leaving directory '/home/jonas/Desktop/Ethernet driver/src'
+-------------------------------
+Fri 18 Feb 2022 10:33:06 AM CET
+make -C src/ clean
+make[1]: Entering directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C /lib/modules/5.4.0-100-generic/build M=/home/jonas/Desktop/r8125-9.007.01/src clean
+make[2]: Entering directory '/usr/src/linux-headers-5.4.0-100-generic'
+  CLEAN   /home/jonas/Desktop/r8125-9.007.01/src/Module.symvers
+make[2]: Leaving directory '/usr/src/linux-headers-5.4.0-100-generic'
+make[1]: Leaving directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C src/ modules
+make[1]: Entering directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C /lib/modules/5.4.0-100-generic/build M=/home/jonas/Desktop/r8125-9.007.01/src modules
+make[2]: Entering directory '/usr/src/linux-headers-5.4.0-100-generic'
+  CC [M]  /home/jonas/Desktop/r8125-9.007.01/src/r8125_n.o
+  CC [M]  /home/jonas/Desktop/r8125-9.007.01/src/rtl_eeprom.o
+  CC [M]  /home/jonas/Desktop/r8125-9.007.01/src/rtltool.o
+  LD [M]  /home/jonas/Desktop/r8125-9.007.01/src/r8125.o
+  Building modules, stage 2.
+  MODPOST 1 modules
+  CC [M]  /home/jonas/Desktop/r8125-9.007.01/src/r8125.mod.o
+  LD [M]  /home/jonas/Desktop/r8125-9.007.01/src/r8125.ko
+make[2]: Leaving directory '/usr/src/linux-headers-5.4.0-100-generic'
+make[1]: Leaving directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C src/ install
+make[1]: Entering directory '/home/jonas/Desktop/r8125-9.007.01/src'
+make -C /lib/modules/5.4.0-100-generic/build M=/home/jonas/Desktop/r8125-9.007.01/src INSTALL_MOD_DIR=kernel/drivers/net/ethernet/realtek modules_install
+make[2]: Entering directory '/usr/src/linux-headers-5.4.0-100-generic'
+  INSTALL /home/jonas/Desktop/r8125-9.007.01/src/r8125.ko
+  DEPMOD  5.4.0-100-generic
+make[2]: Leaving directory '/usr/src/linux-headers-5.4.0-100-generic'
+make[1]: Leaving directory '/home/jonas/Desktop/r8125-9.007.01/src'
