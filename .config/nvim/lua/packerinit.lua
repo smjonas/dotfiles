@@ -13,7 +13,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- Global settings
-vim.g["snippet_engine"] = "luasnip"
+vim.g["snippet_engine"] = "ultisnips"
 vim.g["colorscheme"] = "kanagawa"
 
 require("packer").startup {
@@ -41,7 +41,7 @@ require("packer").startup {
         snippet_converter.setup {
           settings = {
             ui = {
-              use_nerdfont_icons = false,
+              use_nerdfont_icons = true,
             },
           },
           templates = { template },

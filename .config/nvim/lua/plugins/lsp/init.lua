@@ -1,24 +1,12 @@
 local map = vim.keymap.set
 local lsp = require("vim.lsp")
 
-local opts = {
-  silent = true,
-}
-local on_attach = function(_, bufnr)
-  opts.buffer = bufnr
-  map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>zz", opts)
-  map("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-  map("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-  map("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
-  -- Show buffer diagnostics in a floating menu
-  map("n", "<leader>gd", "<cmd>lua vim.diagnostic.open_float({scope = 'buffer'})<cr>", opts)
-  map("n", "<C-j>", "<cmd>lua vim.diagnostic.goto_prev()<cr>", opts)
-  map("n", "<C-k>", "<cmd>lua vim.diagnostic.goto_next()<cr>", opts)
-end
 -- We don't need the default Ctrl-F, so make the mapping global
-map("n", "<C-f>", "<cmd>lua vim.lsp.buf.formatting_sync()<cr>", opts)
+map("n", "<C-f>", lsp.buf.formatting_sync, { silent = true })
 -- Note: not all LSP servers support range formatting
-map("v", "<C-f>", "<cmd>lua vim.lsp.buf.range_formatting()<cr>", opts)
+map("v", "<C-f>", lsp.buf.range_formatting, { silent = true })
+
+local on_attach = require("plugins.lsp.on_attach")
 
 local setup_lsp_servers = function()
   local lsp_installer = require("nvim-lsp-installer")
@@ -34,7 +22,7 @@ local setup_lsp_servers = function()
     local customized_servers = { "sumneko_lua" }
     for _, customized_server in pairs(customized_servers) do
       if server.name == customized_server then
-        opts = vim.tbl_deep_extend("error", opts, require("plugins/lsp/" .. customized_server))
+        opts = vim.tbl_deep_extend("force", opts, require("plugins.lsp." .. customized_server))
       end
     end
     server:setup(opts)
