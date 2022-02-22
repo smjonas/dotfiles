@@ -16,11 +16,11 @@ apt install -y spotify-client inkscape peek flameshot filezilla
 
 # Install Discord
 wget -O /tmp/discord.deb "https://discordapp.com/api/download?platform=linux&format=deb"
-apt install /tmp/discord.deb
+apt install -y /tmp/discord.deb
 
 # Install Hamster
 wget -O /tmp/hamster.deb http://archive.ubuntu.com/ubuntu/pool/universe/h/hamster-time-tracker/hamster-time-tracker_3.0.2-3_all.deb
-apt install /tmp/hamster.deb
+apt install -y /tmp/hamster.deb
 
 echo "Setup GitHub SSH key?";
 select yn in "yes" "no";
@@ -43,7 +43,7 @@ do
     case $yn in
         yes ) yadm clone git@github.com:smjonas/dotfiles.git;
               git clone git@github.com:smjonas/inacon.git ~/Desktop/Inacon;
-              git clone git@github.com:smjonas/snippet-converter.nvim ~/Desktop/NeovimPlugins/snippet-converter;
+              git clone git@github.com:smjonas/snippet-converter.nvim ~/Desktop/NeovimPlugins/snippet-converter.nvim;
               break;;
         no ) break;;
     esac

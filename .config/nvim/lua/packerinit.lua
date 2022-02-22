@@ -182,11 +182,10 @@ require("packer").startup {
       end,
       requires = {
         {
-          -- "~/Desktop/cmp-nvim-ultisnips",
-          -- branch = "main",
-          "smjonas/cmp-nvim-ultisnips",
-          branch = "main",
-          -- "quangnguyen30192/cmp-nvim-ultisnips",
+          -- "~/Desktop/NeovimPlugins/cmp-nvim-ultisnips",
+          -- "smjonas/cmp-nvim-ultisnips",
+          "quangnguyen30192/cmp-nvim-ultisnips",
+          -- branch = "fix_undefined",
           disable = vim.g["snippet_engine"] ~= "ultisnips",
           config = function()
             require("cmp_nvim_ultisnips").setup {
@@ -231,6 +230,7 @@ require("packer").startup {
       {
         "nvim-telescope/telescope.nvim",
         requires = "nvim-lua/plenary.nvim",
+
         -- "~/Desktop/NeovimPlugins/telescope.nvim", requires = "nvim-lua/plenary.nvim",
         config = function()
           require("plugins.telescope")
@@ -347,6 +347,7 @@ require("packer").startup {
 
     use {
       "windwp/nvim-autopairs",
+      disable = true,
       config = function()
         local cmp_autopairs = require("nvim-autopairs.completion.cmp")
         require("nvim-autopairs").setup {
@@ -361,6 +362,17 @@ require("packer").startup {
         }
       end,
       after = "nvim-cmp",
+    }
+
+    use {
+      "~/Desktop/NeovimPlugins/smart-pairs",
+      config = function()
+        require("pairs"):setup {
+          -- enter = {
+          --   enable_mapping = false,
+          -- },
+        }
+      end,
     }
 
     use {
