@@ -139,9 +139,7 @@ cmp.setup {
       return false
     end
     local context = require("cmp.config.context")
-    return not (
-        context.in_treesitter_capture("comment") or context.in_syntax_group("Comment")
-      )
+    return not (context.in_treesitter_capture("comment") or context.in_syntax_group("Comment"))
   end,
   experimental = {
     ghost_text = true,
@@ -149,6 +147,8 @@ cmp.setup {
   completion = {
     border = "rounded",
     scrollbar = "║",
+    -- See https://github.com/hrsh7th/nvim-cmp/issues/808
+    keyword_pattern = [[\k\+]],
   },
   documentation = {
     border = nil,

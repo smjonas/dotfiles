@@ -12,7 +12,7 @@ sh -c 'echo "deb http://repository.spotify.com stable non-free" > /etc/apt/sourc
 curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add -
 apt update
 
-apt install -y spotify-client inkscape peek flameshot filezilla
+apt install -y spotify-client inkscape peek flameshot filezilla openvpn
 
 # Install Discord
 wget -O /tmp/discord.deb "https://discordapp.com/api/download?platform=linux&format=deb"
@@ -41,7 +41,9 @@ echo "Clone repositories?";
 select yn in "yes" "no";
 do
     case $yn in
-        yes ) yadm clone git@github.com:smjonas/dotfiles.git;
+        yes ) yadm clone git@github.com:smjonas/dotfiles.git --recursive;
+              # Clear font cache
+              fc-cache -f -v;
               git clone git@github.com:smjonas/inacon.git ~/Desktop/Inacon;
               git clone git@github.com:smjonas/snippet-converter.nvim ~/Desktop/NeovimPlugins/snippet-converter.nvim;
               break;;
