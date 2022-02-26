@@ -3,6 +3,7 @@ apt install -y xclip build-essential libnewlib-arm-none-eabi
 apt install -y git kitty yadm fzf ripgrep python3-pip cargo npm luarocks
 
 # Neovim related packages
+luarocks --lua-version=5.1 install vusted
 cargo install stylua
 pip3 install neovim black isort trash-cli
 npm install --save-dev --save-exact prettier
@@ -18,8 +19,12 @@ apt install -y spotify-client inkscape peek flameshot filezilla openvpn
 wget -O /tmp/discord.deb "https://discordapp.com/api/download?platform=linux&format=deb"
 apt install -y /tmp/discord.deb
 
+# Install Zoom
+wget -P /tmp "https://zoom.us/client/latest/zoom_amd64.deb"
+apt install -y /tmp/zoom_amd64.deb
+
 # Install Hamster
-wget -O /tmp/hamster.deb http://archive.ubuntu.com/ubuntu/pool/universe/h/hamster-time-tracker/hamster-time-tracker_3.0.2-3_all.deb
+wget -O /tmp/hamster.deb "http://archive.ubuntu.com/ubuntu/pool/universe/h/hamster-time-tracker/hamster-time-tracker_3.0.2-3_all.deb"
 apt install -y /tmp/hamster.deb
 
 echo "Setup GitHub SSH key?";
