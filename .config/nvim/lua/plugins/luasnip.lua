@@ -5,9 +5,9 @@ require("utils").map(
 )
 
 local ls = require("luasnip")
-require("luasnip.config").setup({
+require("luasnip.config").setup {
   ft_func = require("luasnip.extras.filetype_functions").from_pos_or_filetype,
-})
+}
 
 local prs = ls.parser.parse_snippet
 local s = ls.snippet
@@ -108,7 +108,7 @@ local tex = {
 }
 
 local python = {
-  s({ trig = "deb", name = "debug variable" }, { t('print(f"{'), i(1), t({ '=}")', "" }) }),
+  s({ trig = "deb", name = "debug variable" }, { t('print(f"{'), i(1), t { '=}")', "" } }),
 }
 
 local all = {

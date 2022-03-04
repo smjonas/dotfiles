@@ -13,7 +13,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- Global settings
-vim.g["snippet_engine"] = "ultisnips"
+vim.g["snippet_engine"] = "luasnip"
 vim.g["colorscheme"] = "kanagawa"
 
 require("packer").startup {
@@ -29,7 +29,8 @@ require("packer").startup {
           sources = {
             ultisnips = {
               --[[vim.fn.stdpath("config")]]
-              "/UltiSnips/lua.snippets",
+              -- "/UltiSnips/lua.snippets",
+              "latex-snippets/tex.snippets",
             },
           },
           output = {
@@ -38,6 +39,7 @@ require("packer").startup {
             },
           },
         }
+
         snippet_converter.setup {
           settings = {
             ui = {
@@ -45,6 +47,7 @@ require("packer").startup {
             },
           },
           templates = { template },
+          -- snippet, helper: parser, source_format
           transform_snippets = function(snippet, node_visitor)
             if snippet.trigger == "" then
               return nil
@@ -53,6 +56,7 @@ require("packer").startup {
           end,
         }
       end,
+      requires = "gillescastel/latex-snippets",
     }
 
     use {
@@ -132,14 +136,6 @@ require("packer").startup {
         end,
       },
       "williamboman/nvim-lsp-installer",
-      {
-        -- Modified version of mfussenegger/nvim-lint,
-        "smjonas/nvim-lint",
-        config = function()
-          require("lint").linters_by_ft = { python = { "flake8" } }
-          vim.cmd([[autocmd BufEnter,BufWritePost * lua require("lint").try_lint()]])
-        end,
-      },
       {
         "j-hui/fidget.nvim",
         config = function()
