@@ -117,6 +117,7 @@ nno } }zz
 
 nno <C-u> <C-u>zz
 nno <C-d> <C-d>zz
+nno <C-o> <C-o>zz
 
 " Easier incrementing / decrementing
 nno + g<C-a>

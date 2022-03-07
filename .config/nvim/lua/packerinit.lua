@@ -27,15 +27,15 @@ require("packer").startup {
         local snippet_converter = require("snippet_converter")
         local template = {
           sources = {
-            ultisnips = {
+            vscode = {
               --[[vim.fn.stdpath("config")]]
               -- "/UltiSnips/lua.snippets",
-              "latex-snippets/tex.snippets",
+              "~/Desktop/NeovimPlugins/snippet-converter.nvim/tests/scenarios/expected_output_vscode.json",
             },
           },
           output = {
             vscode = {
-              "/home/jonas/.config/nvim/test_snippets/",
+              "/home/jonas/.config/nvim/test_snippets/out.json",
             },
           },
         }
@@ -361,7 +361,7 @@ require("packer").startup {
     }
 
     use {
-      "~/Desktop/NeovimPlugins/smart-pairs",
+      "ZhiyuanLck/smart-pairs",
       config = function()
         require("pairs"):setup {
           -- enter = {

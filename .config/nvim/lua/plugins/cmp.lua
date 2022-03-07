@@ -123,7 +123,7 @@ cmp.setup {
     { name = "nvim_lua" },
     { name = "nvim_lsp" },
     { name = "vsnip" },
-    { name = "path" },
+    { name = "path", priority = 20 },
     { name = cur_snippet_engine, priority = 10 },
     {
       name = "buffer",
