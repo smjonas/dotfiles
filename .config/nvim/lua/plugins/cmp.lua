@@ -124,6 +124,7 @@ cmp.setup {
     { name = "nvim_lsp" },
     { name = "vsnip" },
     { name = "path", priority = 20 },
+    { name = "greek" },
     { name = cur_snippet_engine, priority = 10 },
     {
       name = "buffer",
@@ -135,7 +136,7 @@ cmp.setup {
   },
   enabled = function()
     local in_prompt = vim.api.nvim_buf_get_option(0, "buftype") == "prompt"
-    if in_prompt then
+    if in_prompt or vim.bo.filetype == "TelescopePrompt" then
       return false
     end
     local context = require("cmp.config.context")
@@ -166,10 +167,16 @@ cmp.setup {
     ),
     ["<Tab>"] = cmp.mapping(function(fallback)
       tab_for(cur_snippet_engine, fallback)
-    end, { "i", "s" }),
+    end, {
+      "i",
+      "s", --[[ "c" (to enable the mapping in command mode) ]]
+    }),
     ["<S-Tab>"] = cmp.mapping(function(fallback)
       shift_tab_for(cur_snippet_engine, fallback)
-    end, { "i", "s" }),
+    end, {
+      "i",
+      "s", --[[ "c" (to enable the mapping in command mode) ]]
+    }),
     ["<C-Space>"] = cmp.mapping(cmp.mapping.complete()),
     ["<C-n>"] = cmp.mapping(function(fallback)
       ctrl_n(cur_snippet_engine, fallback)

@@ -1,11 +1,10 @@
 let mapleader = " "
 
-" Using better-escape.nvim instead
-" nno ii <Esc>
-" xno ii <Esc>gV
-" ono ii <Esc>
-" ino ii <Esc>`^
-" cno ii <C-C><Esc>
+nno ii <Esc>
+xno ii <Esc>gV
+ono ii <Esc>
+ino ii <Esc>`^
+cno ii <C-C><Esc>
 
 " Remap exiting terminal mode
 tno ii <C-\><C-n>

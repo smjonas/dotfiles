@@ -5,7 +5,7 @@ require("null-ls").setup {
   sources = {
     formatting.stylua,
     formatting.prettier.with {
-      extra_args = { "--tab-width 4", "--bracket-same-line" },
+      extra_args = { "--bracket-same-line", "true", "--print-width", "110" },
       filetypes = { "css", "html", "javascript", "json", "xhtml" },
     },
     formatting.black.with { extra_args = { "--line-length 100" } },

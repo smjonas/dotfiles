@@ -13,11 +13,15 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- Global settings
-vim.g["snippet_engine"] = "luasnip"
+vim.g["snippet_engine"] = "ultisnips"
 vim.g["colorscheme"] = "kanagawa"
 
 require("packer").startup {
   function(use)
+    use { "garbas/vim-snipmate", requires = { "marcweber/vim-addon-mw-utils", "tomtom/tlib_vim" }, setup = function()
+        -- vim.g.snipMate.snippet_version = 1
+    end }
+
     -- Workaround for plugins with the rtp option (https://github.com/soywod/himalaya/issues/188)
     -- local packer_compiled = vim.fn.stdpath("config") .. "/plugin/packer_compiled.lua"
     -- vim.cmd("luafile"  .. packer_compiled)
@@ -26,11 +30,38 @@ require("packer").startup {
       config = function()
         local snippet_converter = require("snippet_converter")
         local template = {
+          name = "ke",
           sources = {
             vscode = {
-              --[[vim.fn.stdpath("config")]]
-              -- "/UltiSnips/lua.snippets",
               "~/Desktop/NeovimPlugins/snippet-converter.nvim/tests/scenarios/expected_output_vscode.json",
+            },
+            ultisnips = {
+              -- "*/test_snippets/*",
+              "*",
+              -- vim.fn.stdpath("config") .. "/UltiSnips/lua.snippets",
+            },
+            snipmate = {
+              "UltiSnips/snippets",
+            },
+          },
+          output = {
+            vscode = {
+              "/home/jonas/.config/nvim/test_snippets",
+            },
+          },
+        }
+
+        local template2 = {
+          sources = {
+            -- vscode = {
+            -- "~/Desktop/NeovimPlugins/snippet-converter.nvim/tests/scenarios/expected_output_vscode.json",
+            -- },
+            ultisnips = {
+              vim.fn.stdpath("config") .. "/UltiSnips/lua.snippets",
+              vim.fn.stdpath("config") .. "/UltiSnips/lua2.snippets",
+            },
+            snipmate = {
+              "UltiSnips/snippets",
             },
           },
           output = {
@@ -178,9 +209,10 @@ require("packer").startup {
       end,
       requires = {
         {
-          -- "~/Desktop/NeovimPlugins/cmp-nvim-ultisnips",
+          "~/Desktop/NeovimPlugins/cmp-nvim-ultisnips",
+          branch = "silent_mappings",
           -- "smjonas/cmp-nvim-ultisnips",
-          "quangnguyen30192/cmp-nvim-ultisnips",
+          -- "quangnguyen30192/cmp-nvim-ultisnips",
           -- branch = "fix_undefined",
           disable = vim.g["snippet_engine"] ~= "ultisnips",
           config = function()
@@ -194,6 +226,7 @@ require("packer").startup {
           disable = vim.g["snippet_engine"] ~= "luasnip",
           after = "LuaSnip",
         },
+        "max397574/cmp-greek",
         "hrsh7th/cmp-buffer",
         "hrsh7th/cmp-path",
         "hrsh7th/cmp-nvim-lua",
@@ -360,16 +393,7 @@ require("packer").startup {
       after = "nvim-cmp",
     }
 
-    use {
-      "ZhiyuanLck/smart-pairs",
-      config = function()
-        require("pairs"):setup {
-          -- enter = {
-          --   enable_mapping = false,
-          -- },
-        }
-      end,
-    }
+    use { "max-0406/autoclose.nvim" }
 
     use {
       "rmagatti/auto-session",
@@ -405,15 +429,6 @@ require("packer").startup {
       "tpope/vim-fugitive",
       config = function()
         require("plugins.fugitive")
-      end,
-    }
-
-    use {
-      "max397574/better-escape.nvim",
-      config = function()
-        require("better_escape").setup {
-          mapping = { "ii" },
-        }
       end,
     }
 
