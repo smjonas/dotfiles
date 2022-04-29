@@ -8,6 +8,7 @@ local function has_any_words_before()
 end
 
 local cmp = require("cmp")
+local compare = cmp.config.compare
 local cur_snippet_engine = vim.g["snippet_engine"]
 
 local luasnip
@@ -151,9 +152,9 @@ cmp.setup {
     -- See https://github.com/hrsh7th/nvim-cmp/issues/808
     keyword_pattern = [[\k\+]],
   },
-  documentation = {
-    border = nil,
-    scrollbar = "",
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
   },
   mapping = {
     -- mostly keep defaults except use <C-f> instead <C-y>
@@ -190,14 +191,15 @@ cmp.setup {
       function(...)
         return require("cmp_buffer"):compare_locality(...)
       end,
-      cmp.config.compare.offset,
-      cmp.config.compare.exact,
-      cmp.config.compare.score,
+      compare.locality,
+      compare.recently_used,
+      -- compare.exact,
+      compare.score,
       under_comparator,
-      cmp.config.compare.kind,
-      cmp.config.compare.sort_text,
-      cmp.config.compare.length,
-      cmp.config.compare.order,
+      compare.kind,
+      compare.sort_text,
+      compare.length,
+      compare.order,
     },
   },
   formatting = {

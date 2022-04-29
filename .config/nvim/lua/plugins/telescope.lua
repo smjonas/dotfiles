@@ -8,6 +8,10 @@ require("telescope").setup {
   pickers = {
     live_grep = {
       -- theme = telescope_theme,
+      -- Emulate AND operator
+      on_input_filter_cb = function(prompt)
+        return { prompt = prompt:gsub("%s", ".*") }
+      end,
       additional_args = function(opts)
         if opts.search_all == true then
           return {}
@@ -97,7 +101,7 @@ local opts = {
   silent = true,
 }
 local map = function(lhs, rhs)
-    vim.keymap.set("n", lhs, rhs, opts)
+  vim.keymap.set("n", lhs, rhs, opts)
 end
 
 -- ReSume
@@ -114,14 +118,14 @@ map("<leader>fc", find_config)
 -- map("n", "<leader>vg", '<cmd>lua require("plugins.telescope").grep_plugins()<cr>')
 
 -- Find Old
-map( "<leader>fo", "<cmd>Telescope oldfiles<cr>")
+map("<leader>fo", "<cmd>Telescope oldfiles<cr>")
 -- Requires ripgrep to be installed (sudo apt install ripgrep)
-map( "<leader>fg", live_grep_git_root)
+map("<leader>fg", live_grep_git_root)
 
-map( "<leader>fb", "<cmd>Telescope buffers<cr>")
-map( "<leader>h", "<cmd>Telescope help_tags<cr>")
+map("<leader>fb", "<cmd>Telescope buffers<cr>")
+map("<leader>h", "<cmd>Telescope help_tags<cr>")
 -- Keybindings
-map( "<leader>fk", "<cmd>Telescope keymaps<cr>")
+map("<leader>fk", "<cmd>Telescope keymaps<cr>")
 
 -- RefereNces
-map( "<leader>fn", "<cmd>Telescope lsp_references<cr>")
+map("<leader>fn", "<cmd>Telescope lsp_references<cr>")

@@ -18,15 +18,21 @@ vim.g["colorscheme"] = "kanagawa"
 
 require("packer").startup {
   function(use)
-    use { "garbas/vim-snipmate", requires = { "marcweber/vim-addon-mw-utils", "tomtom/tlib_vim" }, setup = function()
+    use {
+      "garbas/vim-snipmate",
+      requires = { "marcweber/vim-addon-mw-utils", "tomtom/tlib_vim" },
+      disable = true,
+      setup = function()
         -- vim.g.snipMate.snippet_version = 1
-    end }
+      end,
+    }
 
     -- Workaround for plugins with the rtp option (https://github.com/soywod/himalaya/issues/188)
     -- local packer_compiled = vim.fn.stdpath("config") .. "/plugin/packer_compiled.lua"
     -- vim.cmd("luafile"  .. packer_compiled)
     use {
       "~/Desktop/NeovimPlugins/snippet-converter.nvim",
+      -- "smjonas/snippet-converter.nvim",
       config = function()
         local snippet_converter = require("snippet_converter")
         local template = {
@@ -210,7 +216,7 @@ require("packer").startup {
       requires = {
         {
           "~/Desktop/NeovimPlugins/cmp-nvim-ultisnips",
-          branch = "silent_mappings",
+          branch = "custom_context_snippets",
           -- "smjonas/cmp-nvim-ultisnips",
           -- "quangnguyen30192/cmp-nvim-ultisnips",
           -- branch = "fix_undefined",
@@ -220,6 +226,7 @@ require("packer").startup {
               filetype_source = "treesitter",
             }
           end,
+          "rafamadriz/friendly-snippets",
         },
         {
           "saadparwaiz1/cmp_luasnip",
@@ -242,7 +249,8 @@ require("packer").startup {
     use {
       "L3MON4D3/LuaSnip",
       config = function()
-        require("plugins.luasnip")
+        require("luasnip.loaders.from_vscode").lazy_load()
+        -- require("plugins.luasnip")
       end,
     }
 
@@ -291,7 +299,7 @@ require("packer").startup {
     use { "alvan/vim-closetag", ft = { "html", "php" } }
     use {
       "lervag/vimtex",
-      ft = "tex",
+      -- ft = "tex",
       config = function()
         vim.cmd([[autocmd User VimtexEventInitPost VimtexCompile]])
       end,
