@@ -79,27 +79,31 @@ local function shift_tab_for(snippet_engine, fallback)
 end
 
 local lsp_icons = {
-  Class = " ",
-  Color = " ",
-  Constant = " ",
-  Constructor = " ",
-  Enum = "了 ",
-  EnumMember = " ",
-  Field = " ",
-  File = " ",
-  Folder = " ",
-  Function = " ",
-  Interface = "ﰮ ",
-  Keyword = " ",
-  Method = "ƒ ",
-  Module = " ",
-  Property = " ",
-  Snippet = "﬌ ",
-  Struct = " ",
-  Text = " ",
-  Unit = " ",
-  Value = " ",
-  Variable = " ",
+  Class = "ﴯ",
+  Color = "",
+  Constant = "",
+  Constructor = "⌘",
+  Enum = "",
+  EnumMember = "",
+  Event = "",
+  Field = "ﰠ",
+  File = "",
+  Folder = "",
+  Function = "",
+  Interface = "",
+  Keyword = "廓",
+  Method = "",
+  Module = "",
+  Operator = "",
+  Property = "ﰠ",
+  Reference = "",
+  Snippet = "",
+  Struct = "פּ",
+  Text = "",
+  TypeParameter = "",
+  Unit = "塞",
+  Value = "",
+  Variable = "",
 }
 
 local under_comparator = function(entry1, entry2)
@@ -203,8 +207,10 @@ cmp.setup {
     },
   },
   formatting = {
+    fields = { "kind", "abbr", "menu" },
     format = function(_, vim_item)
-      vim_item.kind = string.format("%s %s", lsp_icons[vim_item.kind], vim_item.kind)
+      vim_item.menu = vim_item.kind
+      vim_item.kind = lsp_icons[vim_item.kind]
       return vim_item
     end,
   },

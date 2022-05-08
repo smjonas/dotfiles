@@ -8,17 +8,25 @@ if exists('+termguicolors')
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
 
+" Make <C-i> and <C-tab> map to different actions
+if $TERM == "xterm-kitty"
+  autocmd UIEnter * if v:event.chan ==# 0 | call chansend(v:stderr, "\x1b[>1u") | endif
+  autocmd UILeave * if v:event.chan ==# 0 | call chansend(v:stderr, "\x1b[<1u") | endif
+endif
+
 lua << EOF
 -- Load config files from ~/.config/nvim/lua/
 require("utils") -- load global util functions
 require("options")
 require("packerinit")
+require("theme").init()
 EOF
 
 runtime mappings.vim
 
 augroup my_auto_group
   autocmd!
+
   " Run on startup for faster keyboard movement
   autocmd VimEnter * silent !xset r rate 205 35
 
@@ -56,4 +64,3 @@ augroup packer_user_config
   autocmd!
   autocmd BufWritePost */nvim/*.lua call ReloadConfig()
 augroup end
-

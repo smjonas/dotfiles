@@ -1,4 +1,3 @@
----@diagnostic disable: different-requires
 local fn = vim.fn
 local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
 if fn.empty(fn.glob(install_path)) > 0 then
@@ -13,11 +12,18 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- Global settings
-vim.g["snippet_engine"] = "ultisnips"
+vim.g["snippet_engine"] = "luasnip"
 vim.g["colorscheme"] = "kanagawa"
 
 require("packer").startup {
   function(use)
+    use { 'bennypowers/nvim-regexplainer',
+      config = function() require'regexplainer'.setup() end,
+      requires = {
+        'nvim-treesitter/nvim-treesitter',
+        'MunifTanjim/nui.nvim',
+      } }
+
     use {
       "garbas/vim-snipmate",
       requires = { "marcweber/vim-addon-mw-utils", "tomtom/tlib_vim" },
@@ -27,69 +33,37 @@ require("packer").startup {
       end,
     }
 
-    -- Workaround for plugins with the rtp option (https://github.com/soywod/himalaya/issues/188)
-    -- local packer_compiled = vim.fn.stdpath("config") .. "/plugin/packer_compiled.lua"
-    -- vim.cmd("luafile"  .. packer_compiled)
     use {
-      "~/Desktop/NeovimPlugins/snippet-converter.nvim",
       -- "smjonas/snippet-converter.nvim",
+      "~/Desktop/NeovimPlugins/snippet-converter.nvim",
       config = function()
         local snippet_converter = require("snippet_converter")
         local template = {
-          name = "ke",
+          name = "latex-snippets",
           sources = {
-            vscode = {
-              "~/Desktop/NeovimPlugins/snippet-converter.nvim/tests/scenarios/expected_output_vscode.json",
-            },
             ultisnips = {
-              -- "*/test_snippets/*",
-              "*",
-              -- vim.fn.stdpath("config") .. "/UltiSnips/lua.snippets",
+              "./latex-snippets/tex.snippets",
+              "./UltiSnips/all.snippets",
             },
-            snipmate = {
-              "UltiSnips/snippets",
-            },
+            vscode = { "./" },
           },
           output = {
             vscode = {
-              "/home/jonas/.config/nvim/test_snippets",
-            },
-          },
-        }
-
-        local template2 = {
-          sources = {
-            -- vscode = {
-            -- "~/Desktop/NeovimPlugins/snippet-converter.nvim/tests/scenarios/expected_output_vscode.json",
-            -- },
-            ultisnips = {
-              vim.fn.stdpath("config") .. "/UltiSnips/lua.snippets",
-              vim.fn.stdpath("config") .. "/UltiSnips/lua2.snippets",
-            },
-            snipmate = {
-              "UltiSnips/snippets",
-            },
-          },
-          output = {
-            vscode = {
-              "/home/jonas/.config/nvim/test_snippets/out.json",
+              "~/.config/nvim/after/my_snippets",
             },
           },
         }
 
         snippet_converter.setup {
-          settings = {
-            ui = {
-              use_nerdfont_icons = true,
-            },
-          },
           templates = { template },
-          -- snippet, helper: parser, source_format
-          transform_snippets = function(snippet, node_visitor)
-            if snippet.trigger == "" then
-              return nil
+          transform_snippets = function(snippet, _)
+            if snippet.trigger == "global" then
+              return [[
+snippet test
+kekekekek
+endsnippet
+              ]]
             end
-            return snippet
           end,
         }
       end,
@@ -233,6 +207,9 @@ require("packer").startup {
           disable = vim.g["snippet_engine"] ~= "luasnip",
           after = "LuaSnip",
         },
+        {
+          "hrsh7th/vim-vsnip",
+        },
         "max397574/cmp-greek",
         "hrsh7th/cmp-buffer",
         "hrsh7th/cmp-path",
@@ -248,8 +225,10 @@ require("packer").startup {
 
     use {
       "L3MON4D3/LuaSnip",
+      commit = "0e9139119d3ca4b858ad7c181c72a97932699b9c",
       config = function()
-        require("luasnip.loaders.from_vscode").lazy_load()
+        -- require("luasnip.loaders.from_vscode").load({paths = {"./after/my_snippets"}})
+        require("luasnip.loaders.from_vscode").load()
         -- require("plugins.luasnip")
       end,
     }

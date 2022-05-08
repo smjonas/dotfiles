@@ -1,9 +1,31 @@
-local telescope_theme = "dropdown"
+-- local telescope_theme = "dropdown"
 
 require("telescope").setup {
   defaults = {
     -- sort_mru = true,
-    path_display = { "truncate" },
+    path_display = { "smart" },
+    multi_icon = "",
+    -- The following lines were taken from thanhvule0310/dotfiles
+    prompt_prefix = "    ",
+    selection_caret = "  ",
+    entry_prefix = "  ",
+    sorting_strategy = "ascending",
+    layout_strategy = "horizontal",
+    layout_config = {
+      horizontal = {
+        prompt_position = "top",
+        preview_width = 0.55,
+        results_width = 0.8,
+      },
+      vertical = {
+        mirror = false,
+      },
+      width = 0.80,
+      height = 0.85,
+      preview_cutoff = 120,
+    },
+    border = true,
+    borderchars = { "" },
   },
   pickers = {
     live_grep = {
@@ -24,15 +46,6 @@ require("telescope").setup {
         }
         return { args_for_ext[vim.bo.filetype] }
       end,
-    },
-    find_files = {
-      theme = telescope_theme,
-    },
-    oldfiles = {
-      theme = telescope_theme,
-    },
-    buffers = {
-      theme = telescope_theme,
     },
   },
 }

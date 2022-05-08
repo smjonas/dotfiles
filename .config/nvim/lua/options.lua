@@ -20,6 +20,17 @@ o.mouse = "a"
 o.hlsearch = false
 -- Global status bar
 o.laststatus = 3
+o.fillchars:append {
+  horiz = "━",
+  horizup = "┻",
+  horizdown = "┳",
+  vert = "┃",
+  vertleft = "┨",
+  vertright = "┣",
+  verthoriz = "╋",
+}
+-- Crispy window separators
+-- vim.cmd("highlight WinSeparator guibg=None")
 o.number = true
 o.relativenumber = true
 o.scrolloff = 9

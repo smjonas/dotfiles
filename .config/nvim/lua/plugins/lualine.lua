@@ -5,13 +5,11 @@ end
 local statusline_theme = vim.g.colorscheme
 
 local cur_scheme = vim.api.nvim_exec("colorscheme", true)
-if cur_scheme == "tokyonight" then
-  statusline_theme = "nightfly"
-elseif cur_scheme == "edge" then
-  statusline_theme = "edge"
-end
+local scheme_map = { tokyonight = "nightfly", edge = "edge", onenord = "onenord" }
+statusline_theme = vim.tbl_contains(vim.tbl_keys(scheme_map), cur_scheme) and scheme_map[cur_scheme]
+  or statusline_theme
 
-require("lualine").setup({
+require("lualine").setup {
   options = {
     icons_enabled = true,
     theme = statusline_theme,
@@ -38,4 +36,4 @@ require("lualine").setup({
   },
   tabline = {},
   extensions = {},
-})
+}
