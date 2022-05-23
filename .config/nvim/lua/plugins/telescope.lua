@@ -3,10 +3,10 @@
 require("telescope").setup {
   defaults = {
     -- sort_mru = true,
-    path_display = { "smart" },
+    path_display = { "truncate" },
     multi_icon = "",
     -- The following lines were taken from thanhvule0310/dotfiles
-    prompt_prefix = "    ",
+    prompt_prefix = "   ○  ",
     selection_caret = "  ",
     entry_prefix = "  ",
     sorting_strategy = "ascending",

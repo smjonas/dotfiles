@@ -17,13 +17,6 @@ vim.g["colorscheme"] = "kanagawa"
 
 require("packer").startup {
   function(use)
-    use { 'bennypowers/nvim-regexplainer',
-      config = function() require'regexplainer'.setup() end,
-      requires = {
-        'nvim-treesitter/nvim-treesitter',
-        'MunifTanjim/nui.nvim',
-      } }
-
     use {
       "garbas/vim-snipmate",
       requires = { "marcweber/vim-addon-mw-utils", "tomtom/tlib_vim" },
@@ -48,23 +41,28 @@ require("packer").startup {
             vscode = { "./" },
           },
           output = {
-            vscode = {
+            vscode_luasnip = {
               "~/.config/nvim/after/my_snippets",
+            },
+          },
+        }
+
+        local template = {
+          name = "inacon",
+          sources = {
+            ultisnips = {
+              "~/Desktop/Inacon/snippets",
+            },
+          },
+          output = {
+            vscode_luasnip = {
+              "~/.config/nvim/after/custom_snippets",
             },
           },
         }
 
         snippet_converter.setup {
           templates = { template },
-          transform_snippets = function(snippet, _)
-            if snippet.trigger == "global" then
-              return [[
-snippet test
-kekekekek
-endsnippet
-              ]]
-            end
-          end,
         }
       end,
       requires = "gillescastel/latex-snippets",
@@ -114,12 +112,9 @@ endsnippet
     -- Color schemes
     use(require("colorschemes"))
 
-    -- Status bar
+    -- Status line
     use {
-      -- Change font to Powerline compatible font in Edit > Preferences (bash)
-      -- or set the font in ~/.config/alacritty/alacritty.yml
-      -- after installing by cloning git@github.com:powerline/fonts.git
-      -- and running ./install.sh
+      -- Change font to Powerline compatible font
       "nvim-lualine/lualine.nvim",
       requires = "kyazdani42/nvim-web-devicons",
       config = function()
@@ -225,10 +220,8 @@ endsnippet
 
     use {
       "L3MON4D3/LuaSnip",
-      commit = "0e9139119d3ca4b858ad7c181c72a97932699b9c",
       config = function()
-        -- require("luasnip.loaders.from_vscode").load({paths = {"./after/my_snippets"}})
-        require("luasnip.loaders.from_vscode").load()
+        require("luasnip.loaders.from_vscode").load { paths = { "./after/custom_snippets" } }
         -- require("plugins.luasnip")
       end,
     }

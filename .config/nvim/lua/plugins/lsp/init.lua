@@ -2,7 +2,7 @@ local map = vim.keymap.set
 local lsp = require("vim.lsp")
 
 -- We don't need the default Ctrl-F, so make the mapping global
-map("n", "<C-f>", lsp.buf.formatting_sync, { silent = true })
+map("n", "<C-f>", lsp.buf.format, { silent = true })
 -- Note: not all LSP servers support range formatting
 map("v", "<C-f>", lsp.buf.range_formatting, { silent = true })
 

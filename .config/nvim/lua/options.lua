@@ -18,6 +18,8 @@ o.inccommand = "nosplit"
 -- Drag window with mouse
 o.mouse = "a"
 o.hlsearch = false
+-- Winbar
+o.winbar = "%f"
 -- Global status bar
 o.laststatus = 3
 o.fillchars:append {

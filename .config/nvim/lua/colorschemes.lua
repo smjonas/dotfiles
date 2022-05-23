@@ -28,7 +28,8 @@ return {
     end,
   },
   {
-    "rmehri01/onenord.nvim",
+    -- "rmehri01/onenord.nvim",
+    "~/Desktop/NeovimPlugins/onenord.nvim"
     -- config = function()
     --   vim.cmd("colorscheme onenord")
     -- end,

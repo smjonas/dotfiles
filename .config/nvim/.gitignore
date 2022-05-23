@@ -2,3 +2,5 @@
 plugin/packer_compiled.lua
 *haskell-language-server*
 hls
+# Snippets generated with snippets-converter
+custom_snippets/UltiSnips
