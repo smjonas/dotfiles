@@ -2,6 +2,12 @@
 apt install -y xclip build-essential libnewlib-arm-none-eabi
 apt install -y git kitty yadm fzf ripgrep python3-pip cargo npm luarocks
 
+# Install homebrew (required for gh)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# (required: echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.profile)
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+brew install gh
+
 # Neovim related packages
 luarocks --lua-version=5.1 install vusted
 cargo install stylua
