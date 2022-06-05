@@ -27,6 +27,14 @@ require("packer").startup {
     }
 
     use {
+      "~/Desktop/NeovimPlugins/inc-rename.nvim",
+      -- "smjonas/inc-rename.nvim",
+      config = function()
+        require("inc_rename").setup()
+      end,
+    }
+
+    use {
       -- "smjonas/snippet-converter.nvim",
       "~/Desktop/NeovimPlugins/snippet-converter.nvim",
       config = function()
@@ -43,20 +51,6 @@ require("packer").startup {
           output = {
             vscode_luasnip = {
               "~/.config/nvim/after/my_snippets",
-            },
-          },
-        }
-
-        local template = {
-          name = "inacon",
-          sources = {
-            ultisnips = {
-              "~/Desktop/Inacon/snippets",
-            },
-          },
-          output = {
-            vscode_luasnip = {
-              "~/.config/nvim/after/custom_snippets",
             },
           },
         }

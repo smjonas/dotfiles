@@ -6,6 +6,7 @@ map("n", "<C-f>", lsp.buf.format, { silent = true })
 -- Note: not all LSP servers support range formatting
 map("v", "<C-f>", lsp.buf.range_formatting, { silent = true })
 
+-- Contain keymappings to set when server attached
 local on_attach = require("plugins.lsp.on_attach")
 local capabilities = require("cmp_nvim_lsp").update_capabilities(
   lsp.protocol.make_client_capabilities()

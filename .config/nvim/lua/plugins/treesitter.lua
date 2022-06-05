@@ -8,8 +8,8 @@ parser_configs.norg = {
   },
 }
 
-require("nvim-treesitter.configs").setup({
-  ensure_installed = "all",
+require("nvim-treesitter.configs").setup {
+  ensure_installed = { "lua" },
   sync_install = true,
   highlight = {
     enable = false,
@@ -32,4 +32,4 @@ require("nvim-treesitter.configs").setup({
       },
     },
   },
-})
+}

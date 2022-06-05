@@ -64,3 +64,4 @@ augroup packer_user_config
   autocmd!
   autocmd BufWritePost */nvim/*.lua call ReloadConfig()
 augroup end
+

@@ -27,8 +27,8 @@ local settings = {
 -- Only use null-ls for formatting
 local on_attach = function(client, bufnr)
   default_on_attach(client, bufnr)
-  client.server_capabilities.document_formatting = false
-  client.server_capabilities.document_range_formatting = false
+  client.server_capabilities.documentFormattingProvider = false
+  client.server_capabilities.documentRangeFormattingProvider = false
 end
 
 return { settings = settings, on_attach = on_attach }
