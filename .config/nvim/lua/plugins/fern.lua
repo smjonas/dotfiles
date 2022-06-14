@@ -9,6 +9,7 @@ vim.cmd([[
     nmap <buffer> . <Plug>(fern-action-hidden-toggle)
     nmap <buffer> nf <Plug>(fern-action-new-file)
     nmap <buffer> nd <Plug>(fern-action-new-dir)
+    nmap <buffer> <Plug>(fern-action-open-or-expand) <Plug>(fern-action-open:select)
   endfunction
 
   augroup fern_custom

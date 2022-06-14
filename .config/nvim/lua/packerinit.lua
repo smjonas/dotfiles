@@ -16,6 +16,15 @@ vim.g["snippet_engine"] = "luasnip"
 vim.g["colorscheme"] = "kanagawa"
 
 require("packer").startup {
+  config = {
+    display = {
+      open_fn = function()
+        return require("packer.util").float {
+          border = "single",
+        }
+      end,
+    },
+  },
   function(use)
     use {
       "garbas/vim-snipmate",
@@ -30,7 +39,9 @@ require("packer").startup {
       "~/Desktop/NeovimPlugins/inc-rename.nvim",
       -- "smjonas/inc-rename.nvim",
       config = function()
-        require("inc_rename").setup()
+        require("inc_rename").setup {
+          multifile_preview = true,
+        }
       end,
     }
 
@@ -79,6 +90,7 @@ require("packer").startup {
       requires = {
         "nvim-treesitter/nvim-treesitter-textobjects",
         "nvim-treesitter/playground",
+        "nvim-treesitter/nvim-treesitter-context",
         module = "nvim-treesitter-textobjects",
       },
       config = function()
@@ -501,13 +513,4 @@ require("packer").startup {
       require("packer").sync()
     end
   end,
-  config = {
-    display = {
-      open_fn = function()
-        return require("packer.util").float {
-          border = "single",
-        }
-      end,
-    },
-  },
 }
