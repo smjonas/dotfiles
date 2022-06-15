@@ -1,5 +1,6 @@
 local fn = vim.fn
 local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
+
 if fn.empty(fn.glob(install_path)) > 0 then
   PackerBootstrap = fn.system {
     "git",
@@ -27,6 +28,16 @@ require("packer").startup {
   },
   function(use)
     use {
+      "wbthomason/packer.nvim",
+      config = function()
+        local map = require("utils").map
+        map("n", "<leader>c", "<cmd>PackerClean<cr>")
+        map("n", "<leader>u", "<cmd>PackerSync<cr>")
+        map("n", "<leader>i", "<cmd>PackerInstall<cr>")
+      end,
+    }
+
+    use {
       "garbas/vim-snipmate",
       requires = { "marcweber/vim-addon-mw-utils", "tomtom/tlib_vim" },
       disable = true,
@@ -39,9 +50,7 @@ require("packer").startup {
       "~/Desktop/NeovimPlugins/inc-rename.nvim",
       -- "smjonas/inc-rename.nvim",
       config = function()
-        require("inc_rename").setup {
-          multifile_preview = true,
-        }
+        require("inc_rename").setup()
       end,
     }
 
@@ -71,16 +80,6 @@ require("packer").startup {
         }
       end,
       requires = "gillescastel/latex-snippets",
-    }
-
-    use {
-      "wbthomason/packer.nvim",
-      config = function()
-        local map = require("utils").map
-        map("n", "<leader>c", "<cmd>PackerClean<cr>")
-        map("n", "<leader>u", "<cmd>PackerSync<cr>")
-        map("n", "<leader>i", "<cmd>PackerInstall<cr>")
-      end,
     }
 
     -- Treesitter
@@ -277,7 +276,7 @@ require("packer").startup {
     use { "alvan/vim-closetag", ft = { "html", "php" } }
     use {
       "lervag/vimtex",
-      -- ft = "tex",
+      ft = "tex",
       config = function()
         vim.cmd([[autocmd User VimtexEventInitPost VimtexCompile]])
       end,
@@ -385,8 +384,7 @@ require("packer").startup {
       "rmagatti/auto-session",
       config = function()
         require("auto-session").setup {
-          -- Need to type RestoreSession manually
-          auto_restore_enabled = false,
+          auto_restore_enabled = true,
         }
       end,
     }

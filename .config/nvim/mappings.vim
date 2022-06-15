@@ -185,7 +185,6 @@ nnoremap <leader>rc <cmd>e $MYVIMRC<cr>
 let nvim_config_root = stdpath('config')
 nnoremap <leader>rp <cmd>execute 'e ' . nvim_config_root . '/lua/packerinit.lua'<cr>
 nnoremap <leader>ro <cmd>execute 'e ' . nvim_config_root . '/lua/options.lua'<cr>
-nnoremap <leader>ru <cmd>execute 'e ' . nvim_config_root . '/lua/utils.lua'<cr>
 nnoremap <leader>rm <cmd>execute 'e ' . nvim_config_root . '/mappings.vim'<cr>
 
 " Reload packerinit file, save and resource vim files (except init.vim)

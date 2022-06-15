@@ -52,12 +52,21 @@ augroup my_auto_group
   autocmd TermOpen * startinsert
 augroup end
 
+" Command for reloading commonly used Lua modules
+lua << EOF
+vim.api.nvim_create_user_command("ReloadDevModules", function()
+  package.loaded["inc_rename"] = nil
+  package.loaded["snippet_converter"] = nil
+end, {})
+EOF
+
 function ReloadConfig()
   :luafile ~/.config/nvim/lua/packerinit.lua
   :luafile ~/.config/nvim/lua/colorschemes.lua
   :luafile ~/.config/nvim/lua/options.lua
   :runtime mappings.vim
   :PackerCompile
+  :ReloadDevModules
 endfunction
 
 augroup packer_user_config
