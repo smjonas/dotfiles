@@ -165,6 +165,8 @@ nnoremap <leader>k <cmd>cnext<cr>
 " Circular window movements
 nnoremap <Tab>   <C-w>w
 nnoremap <S-Tab> <C-w>W
+" Remap <Tab> but keep default behavior of <C-I>
+nnoremap <C-I> <C-I>
 
 " Open new horizontal split (consistent with Ctrl-W + v)
 nnoremap <C-w><C-h> <cmd>split<cr>

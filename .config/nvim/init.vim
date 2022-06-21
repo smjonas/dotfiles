@@ -8,12 +8,6 @@ if exists('+termguicolors')
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
 
-" Make <C-i> and <C-tab> map to different actions
-if $TERM == "xterm-kitty"
-  autocmd UIEnter * if v:event.chan ==# 0 | call chansend(v:stderr, "\x1b[>1u") | endif
-  autocmd UILeave * if v:event.chan ==# 0 | call chansend(v:stderr, "\x1b[<1u") | endif
-endif
-
 lua << EOF
 -- Load config files from ~/.config/nvim/lua/
 require("utils") -- load global util functions
@@ -65,8 +59,8 @@ function ReloadConfig()
   :luafile ~/.config/nvim/lua/colorschemes.lua
   :luafile ~/.config/nvim/lua/options.lua
   :runtime mappings.vim
-  :PackerCompile
   :ReloadDevModules
+  :PackerCompile
 endfunction
 
 augroup packer_user_config
