@@ -8,7 +8,7 @@ require("null-ls").setup {
       extra_args = { "--bracket-same-line", "true", "--print-width", "110" },
       filetypes = { "css", "html", "javascript", "json", "xhtml" },
     },
-    formatting.black.with { extra_args = { "--line-length 100" } },
+    formatting.black.with { extra_args = { "--line-length", "110" } },
     -- formatting.isort.with({ extra_args = { "--profile black" } }),
     formatting.isort,
   },

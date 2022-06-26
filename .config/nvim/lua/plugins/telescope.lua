@@ -104,8 +104,18 @@ local function find_config()
 end
 
 local function live_grep_git_root()
+  local path = vim.fn.expand("%:p")
+  local cwd
+  -- If the picker was opened in any of the Nvim config files,
+  -- use ~/.config/nvim as the cwd instead of looking for a .git directory
+  if path:match("^" .. vim.fn.stdpath("config")) then
+    cwd = vim.fn.stdpath("config")
+  else
+    cwd = require("lspconfig/util").root_pattern(".git")(path)
+  end
   builtin.live_grep {
-    cwd = require("lspconfig/util").root_pattern(".git")(vim.fn.expand("%:p")),
+    cwd = cwd,
+    glob_pattern = "!*plugin/packer_compiled.lua",
     disable_coordinates = true,
   }
 end

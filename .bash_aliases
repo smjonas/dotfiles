@@ -1,5 +1,6 @@
 alias ..='cd ..'
 alias v='nvim'
+alias r='nvim -c "RestoreSession"'
 
 alias eth='sudo ~/r8125-9.007.01/autorun.sh'
 # Restart pulseaudio to fix audio issues
