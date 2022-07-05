@@ -8,8 +8,23 @@ parser_configs.norg = {
   },
 }
 
+local ts_parsers = require("nvim-treesitter.parsers")
+
+-- Auto-install missing treesitter parser when entering buffer
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "*" },
+  callback = function()
+    local lang = ts_parsers.get_buf_lang()
+  if ts_parsers.get_parser_configs()[lang] and not ts_parsers.has_parser(lang) then
+    vim.schedule_wrap(function()
+    vim.cmd("TSInstall "..lang)
+    end)()
+  end
+  end,
+})
+
 require("nvim-treesitter.configs").setup {
-  ensure_installed = { "lua" },
+  ensure_installed = { "markdown_inline" },
   sync_install = true,
   highlight = {
     enable = false,
