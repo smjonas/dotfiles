@@ -44,6 +44,7 @@ augroup my_auto_group
   " and change to current directory
   autocmd TermOpen * silent !lcd %:p:h
   autocmd TermOpen * startinsert
+
 augroup end
 
 " Command for reloading commonly used Lua modules

@@ -1,7 +1,23 @@
--- local telescope_theme = "dropdown"
+local actions = require("telescope.actions")
 
 require("telescope").setup {
   defaults = {
+    mappings = {
+      i = {
+        ["<C-n>"] = actions.move_selection_next,
+        ["<C-p>"] = actions.move_selection_previous,
+        ["<C-c>"] = actions.close,
+        ["<C-j>"] = actions.cycle_history_next,
+        ["<C-k>"] = actions.cycle_history_prev,
+        ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
+        ["<CR>"] = actions.select_default + actions.center,
+      },
+      n = {
+        ["<C-n>"] = actions.move_selection_next,
+        ["<C-p>"] = actions.move_selection_previous,
+        ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
+      },
+    },
     -- sort_mru = true,
     path_display = { "truncate" },
     multi_icon = "",
@@ -29,7 +45,9 @@ require("telescope").setup {
   },
   pickers = {
     live_grep = {
-      -- theme = telescope_theme,
+      disable_coordinates = true,
+      -- Do not sort by file name etc.
+      only_sort_text = true,
       -- Emulate AND operator
       on_input_filter_cb = function(prompt)
         return { prompt = prompt:gsub("%s", ".*") }
@@ -76,17 +94,19 @@ local function project_search()
   end
 end
 
+local inacon_dir = vim.env.HOME .. "/Desktop/Inacon/"
+
 local function find_inacon()
   builtin.find_files {
     prompt_title = "Find Inacon Files",
-    search_dirs = { env.INACON_DIR .. "/Kurse", env.INACON_DIR .. "/Automation" },
+    search_dirs = { env.INACON_DIR .. "/Kurse", inacon_dir .. "/Automation" },
   }
 end
 
 local function find_old_inacon()
   builtin.oldfiles {
     prompt_title = "Find Old Inacon Files",
-    search_dirs = { env.INACON_DIR .. "/Kurse", env.INACON_DIR .. "/Automation" },
+    search_dirs = { env.INACON_DIR .. "/Kurse", inacon_dir .. "/Automation" },
   }
 end
 
@@ -117,7 +137,6 @@ local function live_grep_git_root()
   builtin.live_grep {
     cwd = cwd,
     glob_pattern = "!*plugin/packer_compiled.lua",
-    disable_coordinates = true,
   }
 end
 

@@ -27,7 +27,7 @@ require("nvim-treesitter.configs").setup {
   ensure_installed = { "markdown_inline" },
   sync_install = true,
   highlight = {
-    enable = false,
+    enable = true,
   },
   context_commentstring = {
     enable = true,
@@ -47,18 +47,4 @@ require("nvim-treesitter.configs").setup {
       },
     },
   },
-}
-
-require("treesitter-context").setup {
-  patterns = {
-    default = {
-      "class",
-      "function",
-      "method",
-      "for",
-      "while",
-      "if",
-    },
-  },
-  mode = "topline",
 }

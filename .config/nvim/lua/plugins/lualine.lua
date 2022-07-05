@@ -1,9 +1,14 @@
 local statusline_theme = vim.g.colorscheme
 
 local cur_scheme = vim.api.nvim_exec("colorscheme", true)
-local scheme_map = { tokyonight = "nightfly", edge = "edge", onenord = "onenord" }
+local scheme_map = {
+  tokyonight = "nightfly",
+  edge = "edge",
+  onenord = "onenord",
+  vscode = "vscode",
+}
 statusline_theme = vim.tbl_contains(vim.tbl_keys(scheme_map), cur_scheme) and scheme_map[cur_scheme]
-    or statusline_theme
+  or statusline_theme
 -- assert(statusline_theme == "onenord")
 -- local colors = require("onenord.colors").load()
 
