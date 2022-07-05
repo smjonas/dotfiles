@@ -38,13 +38,14 @@ require("telescope").setup {
         if opts.search_all == true then
           return {}
         end
-        -- only show results from files of the same filetype as the
-        -- buffer where live_grep was opened from
+        -- Only show results from files of the same filetype as the
+        -- buffer where live_grep was opened in (except for Lua files)
         local args_for_ext = {
-          ["lua"] = "-tlua",
-          ["python"] = "-tpy",
+          lua = { "-tlua", "-tvim" },
+          python = { "-tpy" },
+          tex = { "-ttex" },
         }
-        return { args_for_ext[vim.bo.filetype] }
+        return args_for_ext[vim.bo.filetype] or {}
       end,
     },
   },
