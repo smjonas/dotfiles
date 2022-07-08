@@ -8,9 +8,8 @@ map("v", "<C-f>", lsp.buf.range_formatting, { silent = true })
 
 -- Contain keymappings to set when server attached
 local on_attach = require("plugins.lsp.on_attach")
-local capabilities = require("cmp_nvim_lsp").update_capabilities(
-  lsp.protocol.make_client_capabilities()
-)
+local capabilities =
+  require("cmp_nvim_lsp").update_capabilities(lsp.protocol.make_client_capabilities())
 
 local setup_lsp_servers = function()
   lsp_installer = require("nvim-lsp-installer")

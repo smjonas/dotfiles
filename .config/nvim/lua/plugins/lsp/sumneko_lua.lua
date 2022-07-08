@@ -13,10 +13,10 @@ local settings = {
       globals = { "vim", "describe", "it", "setup", "before_each", "stub" },
     },
     workspace = {
-      library = {
-        vim.fn.expand("$VIMRUNTIME/lua"),
-        vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
-      },
+      -- library = {
+        -- vim.fn.expand("$VIMRUNTIME/lua"),
+        -- vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
+      -- },
     },
     telemetry = {
       enable = false,
@@ -31,4 +31,6 @@ local on_attach = function(client, bufnr)
   client.server_capabilities.documentRangeFormattingProvider = false
 end
 
-return { settings = settings, on_attach = on_attach }
+return require("lua-dev").setup {
+  lspconfig = { settings = settings, on_attach = on_attach },
+}

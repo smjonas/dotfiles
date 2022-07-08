@@ -13,8 +13,8 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- Global settings
-vim.g["snippet_engine"] = "luasnip"
-vim.g["colorscheme"] = "kanagawa"
+vim.g["snippet_engine"] = "ultisnips"
+vim.cmd("colorscheme github_dark")
 
 require("packer").startup {
   config = {
@@ -47,11 +47,21 @@ require("packer").startup {
     }
 
     use {
-      "~/Desktop/NeovimPlugins/inc-rename.nvim",
-      -- "smjonas/inc-rename.nvim",
+      -- "~/Desktop/NeovimPlugins/inc-rename.nvim",
+      "smjonas/inc-rename.nvim",
       config = function()
-        require("inc_rename").setup()
+        require("inc_rename").setup {}
+        -- require("dressing").setup {
+        --   input = {
+        --     override = function(conf)
+        --       conf.col = -1
+        --       conf.row = 0
+        --       return conf
+        --     end,
+        --   },
+        -- }
       end,
+      -- requires = "stevearc/dressing.nvim",
     }
 
     use {
@@ -60,17 +70,14 @@ require("packer").startup {
       config = function()
         local snippet_converter = require("snippet_converter")
         local template = {
-          name = "latex-snippets",
           sources = {
             ultisnips = {
-              "./latex-snippets/tex.snippets",
-              "./UltiSnips/all.snippets",
+              "~/.config/nvim/after/my_snippets/ultisnips",
             },
-            vscode = { "./" },
           },
           output = {
             vscode_luasnip = {
-              "~/.config/nvim/after/my_snippets",
+              "~/.config/nvim/after/my_snippets/luasnip",
             },
           },
         }
@@ -84,12 +91,12 @@ require("packer").startup {
 
     -- Treesitter
     use {
-      "nvim-treesitter/nvim-treesitter",
+      -- "nvim-treesitter/nvim-treesitter",
+      "~/Desktop/NeovimPlugins/nvim-treesitter",
       run = ":TSUpdate",
       requires = {
         "nvim-treesitter/nvim-treesitter-textobjects",
         "nvim-treesitter/playground",
-        "nvim-treesitter/nvim-treesitter-context",
         module = "nvim-treesitter-textobjects",
       },
       config = function()
@@ -161,6 +168,9 @@ require("packer").startup {
           }
         end,
       },
+      {
+        "SmiteshP/nvim-navic",
+      },
     }
 
     -- Debugging
@@ -175,7 +185,7 @@ require("packer").startup {
     -- Tree viewer / file browser
     use {
       "lambdalisue/fern.vim",
-      disable = false,
+      requires = "lambdalisue/fern-hijack.vim",
       config = function()
         require("plugins.fern")
       end,
@@ -207,13 +217,11 @@ require("packer").startup {
           disable = vim.g["snippet_engine"] ~= "luasnip",
           after = "LuaSnip",
         },
-        {
-          "hrsh7th/vim-vsnip",
-        },
         "max397574/cmp-greek",
         "hrsh7th/cmp-buffer",
         "hrsh7th/cmp-path",
-        "hrsh7th/cmp-nvim-lua",
+        "folke/lua-dev.nvim",
+        -- "hrsh7th/cmp-nvim-lua",
         {
           "hrsh7th/cmp-nvim-lsp",
           config = function()
@@ -226,7 +234,7 @@ require("packer").startup {
     use {
       "L3MON4D3/LuaSnip",
       config = function()
-        require("luasnip.loaders.from_vscode").load { paths = { "./after/custom_snippets" } }
+        require("luasnip.loaders.from_vscode").load { paths = { "./after/my_snippets/luasnip" } }
         -- require("plugins.luasnip")
       end,
     }
@@ -244,7 +252,6 @@ require("packer").startup {
       {
         "nvim-telescope/telescope.nvim",
         requires = "nvim-lua/plenary.nvim",
-
         -- "~/Desktop/NeovimPlugins/telescope.nvim", requires = "nvim-lua/plenary.nvim",
         config = function()
           require("plugins.telescope")
@@ -361,7 +368,6 @@ require("packer").startup {
 
     use {
       "windwp/nvim-autopairs",
-      disable = true,
       config = function()
         local cmp_autopairs = require("nvim-autopairs.completion.cmp")
         require("nvim-autopairs").setup {
@@ -378,13 +384,11 @@ require("packer").startup {
       after = "nvim-cmp",
     }
 
-    use { "max-0406/autoclose.nvim" }
-
     use {
       "rmagatti/auto-session",
       config = function()
         require("auto-session").setup {
-          auto_restore_enabled = true,
+          auto_restore_enabled = false,
         }
       end,
     }
@@ -399,12 +403,10 @@ require("packer").startup {
     }
 
     use {
-      "ggandor/lightspeed.nvim",
+      -- "ggandor/lightspeed.nvim",
+      "ggandor/leap.nvim",
       config = function()
-        require("lightspeed").setup {
-          ignore_case = true,
-          repeat_ft_with_target_char = true,
-        }
+        require("leap").set_default_keymaps()
       end,
     }
 

@@ -125,19 +125,11 @@ cmp.setup {
     end,
   },
   sources = {
-    { name = "nvim_lua" },
     { name = "nvim_lsp" },
-    { name = "vsnip" },
     { name = "path", priority = 20 },
     { name = "greek" },
-    { name = cur_snippet_engine, priority = 10 },
-    {
-      name = "buffer",
-      option = {
-        keyword_pattern = [[\k\+]],
-      },
-      keyword_length = 1,
-    },
+    { name = cur_snippet_engine, priority = 10, keyword_length = 1 },
+    { name = "buffer", option = { keyword_pattern = [[\k\+]] }, keyword_length = 1 },
   },
   enabled = function()
     local in_prompt = vim.api.nvim_buf_get_option(0, "buftype") == "prompt"

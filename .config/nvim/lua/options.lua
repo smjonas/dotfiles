@@ -18,8 +18,8 @@ o.inccommand = "nosplit"
 -- Drag window with mouse
 o.mouse = "a"
 o.hlsearch = false
--- Winbar
-o.winbar = "%f"
+-- Winbar (code context + right-aligned filename)
+o.winbar = " %{%v:lua.require'nvim-navic'.get_location()%} %= %f "
 -- Global status bar
 o.laststatus = 3
 o.fillchars:append {
