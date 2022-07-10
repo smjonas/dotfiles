@@ -8,6 +8,10 @@ apt install -y git kitty yadm fzf ripgrep python3-pip cargo npm luarocks
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 brew install gh
 
+# Install Neovim
+cargo install --git https://github.com/MordechaiHadad/bob.git
+bob install nightly
+
 # Neovim related packages
 luarocks --lua-version=5.1 install vusted
 cargo install stylua
