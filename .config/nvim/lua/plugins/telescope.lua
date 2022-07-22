@@ -10,18 +10,23 @@ require("telescope").setup {
         ["<C-j>"] = actions.cycle_history_next,
         ["<C-k>"] = actions.cycle_history_prev,
         ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
+        ["<C-f>"] = require("telescope.actions.layout").toggle_preview,
         ["<CR>"] = actions.select_default + actions.center,
       },
       n = {
         ["<C-n>"] = actions.move_selection_next,
         ["<C-p>"] = actions.move_selection_previous,
+        ["<C-c>"] = actions.close,
         ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
       },
     },
+    -- preview = {
+    --   hide_on_startup = true,
+    -- },
     -- sort_mru = true,
     path_display = { "truncate" },
     multi_icon = "",
-    -- The following lines were taken from thanhvule0310/dotfiles
+    -- The following lines were adapted from thanhvule0310/dotfiles
     prompt_prefix = "   ○  ",
     selection_caret = "  ",
     entry_prefix = "  ",
@@ -30,18 +35,14 @@ require("telescope").setup {
     layout_config = {
       horizontal = {
         prompt_position = "top",
-        preview_width = 0.55,
-        results_width = 0.8,
+        -- Golden ratio because why not :D
+        preview_width = 5 / 13,
+        results_width = 8 / 13,
       },
-      vertical = {
-        mirror = false,
-      },
-      width = 0.80,
-      height = 0.85,
+      width = 0.75,
+      height = 0.75,
       preview_cutoff = 120,
     },
-    border = true,
-    borderchars = { "" },
   },
   pickers = {
     live_grep = {
@@ -65,6 +66,10 @@ require("telescope").setup {
         }
         return args_for_ext[vim.bo.filetype] or {}
       end,
+    },
+    buffers = {
+      theme = "dropdown",
+      previewer = false,
     },
   },
 }
@@ -110,13 +115,6 @@ local function find_old_inacon()
   }
 end
 
-local function find_plugins()
-  builtin.find_files {
-    prompt_title = "Find Vim Plugins",
-    search_dirs = { vim.fn.stdpath("data") },
-  }
-end
-
 local function find_config()
   builtin.find_files {
     prompt_title = "Find Config Files",
@@ -124,27 +122,33 @@ local function find_config()
   }
 end
 
-local function live_grep_git_root()
-  local path = vim.fn.expand("%:p")
-  local cwd
-  -- If the picker was opened in any of the Nvim config files,
-  -- use ~/.config/nvim as the cwd instead of looking for a .git directory
-  if path:match("^" .. vim.fn.stdpath("config")) then
-    cwd = vim.fn.stdpath("config")
-  else
-    cwd = require("lspconfig/util").root_pattern(".git")(path)
-  end
-  builtin.live_grep {
-    cwd = cwd,
-    glob_pattern = "!*plugin/packer_compiled.lua",
+local function find_nvim_plugins()
+  builtin.find_files {
+    prompt_title = "Find Neovim Plugin Files",
+    search_dirs = { "~/Desktop/NeovimPlugins" },
   }
 end
 
-local opts = {
-  silent = true,
-}
+local function grep_git_root(grep_fn)
+  return function()
+    local path = vim.fn.expand("%:p")
+    local cwd
+    -- If the picker was opened in any of the Nvim config files,
+    -- use ~/.config/nvim as the cwd instead of looking for a .git directory
+    if path:match("^" .. vim.fn.stdpath("config")) then
+      cwd = vim.fn.stdpath("config")
+    else
+      cwd = require("lspconfig/util").root_pattern(".git")(path)
+    end
+    grep_fn {
+      cwd = cwd,
+      glob_pattern = "!*plugin/packer_compiled.lua",
+    }
+  end
+end
+
 local map = function(lhs, rhs)
-  vim.keymap.set("n", lhs, rhs, opts)
+  vim.keymap.set("n", lhs, rhs, { silent = true })
 end
 
 -- ReSume
@@ -154,21 +158,18 @@ map("<leader>ff", find_files)
 map("<leader>fi", find_inacon)
 map("<leader>fu", find_old_inacon)
 map("<leader>fp", project_search)
-
--- Find in Vim plugin files
-map("<leader>fv", find_plugins)
+map("<leader>fv", find_nvim_plugins)
 map("<leader>fc", find_config)
--- map("n", "<leader>vg", '<cmd>lua require("plugins.telescope").grep_plugins()<cr>')
-
 -- Find Old
 map("<leader>fo", "<cmd>Telescope oldfiles<cr>")
 -- Requires ripgrep to be installed (sudo apt install ripgrep)
-map("<leader>fg", live_grep_git_root)
+map("<leader>fg", grep_git_root(builtin.live_grep))
+-- Find Word
+map("<leader>fw", grep_git_root(builtin.grep_string))
 
 map("<leader>fb", "<cmd>Telescope buffers<cr>")
 map("<leader>h", "<cmd>Telescope help_tags<cr>")
 -- Keybindings
 map("<leader>fk", "<cmd>Telescope keymaps<cr>")
-
 -- RefereNces
 map("<leader>fn", "<cmd>Telescope lsp_references<cr>")

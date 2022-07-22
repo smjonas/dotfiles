@@ -19,7 +19,10 @@ o.inccommand = "nosplit"
 o.mouse = "a"
 o.hlsearch = false
 -- Winbar (code context + right-aligned filename)
-o.winbar = " %{%v:lua.require'nvim-navic'.get_location()%} %= %f "
+local ok, _ = pcall(require, "nvim-navic")
+if ok then
+  o.winbar = " %f %= %{%v:lua.require'nvim-navic'.get_location()%} "
+end
 -- Global status bar
 o.laststatus = 3
 o.fillchars:append {

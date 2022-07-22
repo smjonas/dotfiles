@@ -75,7 +75,9 @@ nmap <leader>Y mxggyG`xzz
 nnoremap <leader>p <cmd>set paste<cr>a<C-r>+<Esc><cmd>set nopaste<cr>
 inoremap <A-b> <cmd>set paste<cr><C-r>+<cmd>set nopaste<cr>
 xnoremap <leader>p <cmd>set paste<cr>"+p<cmd>set nopaste<cr>
-vnoremap <leader>p <cmd>set paste<cr>"+p<cmd>set nopaste<cr>
+
+" Remove once #19354 is merged
+xnoremap p P | xnoremap P p
 
 " Duplicate selection in visual mode
 xmap cv y'>p
@@ -90,7 +92,15 @@ nnoremap gp `[v`]
 " For usage with vim-ReplaceWithRegister: replace from clipboard
 nmap gR "+gr
 
-" Avoids accidentally recording a macro
+function! Sort(...) abort
+  '[,']sort
+  call setpos('.', getpos("''"))
+endfunction
+" Sort operator (remove once #19354 is merged)
+nnoremap gs m'<Cmd>set operatorfunc=Sort<CR>g@
+xnoremap gs :sort<CR>
+
+" Makes it harder to accidentally record a macro
 nnoremap Q q
 nnoremap q nop
 " Go to previous / next buffers
@@ -150,6 +160,9 @@ nnoremap ` '
 nnoremap <leader><F2> :%s///gc<left><left><left><left>
 xnoremap <F2> :s/\%V//g<left><left><left>
 
+" Repeat the last substitute command while using the same flags (remove once #19365 is merged)
+nnoremap & :&&<CR>
+
 " Quickfix list mappings
 function! ToggleQfList()
   if empty(filter(getwininfo(), 'v:val.quickfix'))
@@ -199,6 +212,10 @@ nnoremap <Plug>reload_my_config <cmd>luafile ~/.config/nvim/lua/packerinit.lua<c
 " Launch current buffer in new kitty tab
 " (requires the current terminal emulator instance to be started with kitty -o allow_remote_control=yes --listen-on unix:/tmp/mykitty)
 nnoremap <F1> <cmd>silent !kitty @ launch --type=tab --cwd=current --location=neighbor nvim %<cr>
+
+" Save and restore sessions
+nnoremap <F5> <cmd>SaveSession<cr>
+nnoremap <F6> <cmd>RestoreSession<cr>
 
 " Open terminal in new window to the right
 nnoremap <leader>to <cmd>vsplit<cr><cmd>term<cr>

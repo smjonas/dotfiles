@@ -69,7 +69,8 @@ require("packer").startup {
       "~/Desktop/NeovimPlugins/snippet-converter.nvim",
       config = function()
         local snippet_converter = require("snippet_converter")
-        local template = {
+        local ultisnips_to_luasnip = {
+          name = "ultisnips_to_luasnip",
           sources = {
             ultisnips = {
               "~/.config/nvim/after/my_snippets/ultisnips",
@@ -82,8 +83,22 @@ require("packer").startup {
           },
         }
 
+        -- local vscode_to_ultisnips = {
+        --   name = "vscode_to_ultisnips",
+        --   sources = {
+        --     vscode = {
+        --       "~/.config/nvim/after/my_snippets/vscode",
+        --     },
+        --   },
+        --   output = {
+        --     ultisnips = {
+        --       "~/.config/nvim/after/my_snippets/ultisnips",
+        --     },
+        --   },
+        -- }
+
         snippet_converter.setup {
-          templates = { template },
+          templates = { ultisnips_to_luasnip },
         }
       end,
       requires = "gillescastel/latex-snippets",
@@ -112,12 +127,9 @@ require("packer").startup {
         require("neogen").setup {
           enabled = true,
         }
-        vim.keymap.set(
-          "n",
-          "<leader>nf",
-          "<cmd>lua require('neogen').generate()<cr>",
-          { silent = true }
-        )
+        vim.keymap.set("n", "<leader>nf", function()
+          require("neogen").generate {}
+        end, { silent = true })
       end,
     }
 
@@ -145,7 +157,7 @@ require("packer").startup {
         config = function()
           require("plugins.lsp.init")
         end,
-        after = "nvim-cmp",
+        requires = { "folke/lua-dev.nvim" },
       },
       {
         "jose-elias-alvarez/null-ls.nvim",
@@ -170,6 +182,9 @@ require("packer").startup {
       },
       {
         "SmiteshP/nvim-navic",
+        config = function()
+          vim.g.navic_silence = true
+        end,
       },
     }
 
@@ -194,36 +209,24 @@ require("packer").startup {
     -- Auto-completion and snippets
     use {
       "hrsh7th/nvim-cmp",
+      event = "InsertEnter",
+      after = "nvim-lspconfig",
       config = function()
         require("plugins.cmp")
       end,
       requires = {
         {
-          "~/Desktop/NeovimPlugins/cmp-nvim-ultisnips",
-          branch = "custom_context_snippets",
-          -- "smjonas/cmp-nvim-ultisnips",
-          -- "quangnguyen30192/cmp-nvim-ultisnips",
-          -- branch = "fix_undefined",
-          disable = vim.g["snippet_engine"] ~= "ultisnips",
-          config = function()
-            require("cmp_nvim_ultisnips").setup {
-              filetype_source = "treesitter",
-            }
-          end,
-          "rafamadriz/friendly-snippets",
-        },
-        {
           "saadparwaiz1/cmp_luasnip",
           disable = vim.g["snippet_engine"] ~= "luasnip",
-          after = "LuaSnip",
+          after = "nvim-cmp",
         },
-        "max397574/cmp-greek",
-        "hrsh7th/cmp-buffer",
-        "hrsh7th/cmp-path",
-        "folke/lua-dev.nvim",
+        { "max397574/cmp-greek", after = "nvim-cmp" },
+        { "hrsh7th/cmp-buffer", after = "nvim-cmp" },
+        { "hrsh7th/cmp-path", after = "nvim-cmp" },
         -- "hrsh7th/cmp-nvim-lua",
         {
           "hrsh7th/cmp-nvim-lsp",
+          after = "nvim-cmp",
           config = function()
             require("cmp_nvim_lsp")
           end,
@@ -233,14 +236,16 @@ require("packer").startup {
 
     use {
       "L3MON4D3/LuaSnip",
+      disable = vim.g["snippet_engine"] ~= "luasnip",
+      -- after = "nvim-cmp",
       config = function()
         require("luasnip.loaders.from_vscode").load { paths = { "./after/my_snippets/luasnip" } }
-        -- require("plugins.luasnip")
       end,
     }
 
     use {
       "SirVer/ultisnips",
+      disable = vim.g["snippet_engine"] ~= "ultisnips",
       requires = "honza/vim-snippets",
       config = function()
         vim.g.UltiSnipsEnableSnipMate = 1
@@ -359,7 +364,7 @@ require("packer").startup {
         require("nvim_comment").setup {
           comment_empty = false,
           hook = function()
-            require("ts_context_commentstring.internal").update_commentstring()
+            require("ts_context_commentstring.internal").update_commentstring {}
           end,
         }
       end,
@@ -368,6 +373,7 @@ require("packer").startup {
 
     use {
       "windwp/nvim-autopairs",
+      after = "nvim-cmp",
       config = function()
         local cmp_autopairs = require("nvim-autopairs.completion.cmp")
         require("nvim-autopairs").setup {
@@ -381,7 +387,6 @@ require("packer").startup {
           ),
         }
       end,
-      after = "nvim-cmp",
     }
 
     use {
@@ -390,15 +395,6 @@ require("packer").startup {
         require("auto-session").setup {
           auto_restore_enabled = false,
         }
-      end,
-    }
-
-    use {
-      "beauwilliams/focus.nvim",
-      disable = true,
-      config = function()
-        require("focus").setup { hybridnumber = true }
-        require("utils").map("n", "<C-a>", "<cmd>FocusSplitNicely<cr>")
       end,
     }
 
@@ -422,9 +418,9 @@ require("packer").startup {
     use {
       "vimwiki/vimwiki",
       branch = "dev",
-      -- keys = { "<leader>x" },
+      -- keys = "<leader>x",
       config = function()
-        vim.g["vimwiki_list"] = {
+        vim.g.vimwiki_list = {
           {
             template_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/vimwiki/autoload/",
             syntax = "markdown",
@@ -432,10 +428,9 @@ require("packer").startup {
           },
         }
         vim.g["vimwiki_global_ext"] = 0
-        local map = require("utils").map
-        map("n", "<leader>x", "<Plug>VimwikiIndex", { noremap = false, unique = false })
         -- doesn't seem to work, use syntax file instead
         -- vim.g["vimwiki_listsyms"] = "☒⊡⬕"
+        vim.keymap.set("n", "<leader>x", "<Plug>VimwikiIndex")
       end,
     }
 
@@ -446,7 +441,6 @@ require("packer").startup {
       config = function()
         vim.g["mkdp_auto_close"] = 0
         vim.g["mkdp_filetypes"] = { "markdown", "text" }
-
         local map = require("utils").map
         map("n", "<leader>m", "<Plug>MarkdownPreviewToggle", { noremap = false })
       end,
@@ -484,7 +478,6 @@ require("packer").startup {
 
     use {
       "luukvbaal/stabilize.nvim",
-      disable = vim.bo.ft ~= "vimwiki",
       config = function()
         -- Workaround for error that occurs when using vim-fugitive and stabililize.nvim
         -- at the same time. See https://github.com/luukvbaal/stabilize.nvim/issues/6.
@@ -497,13 +490,17 @@ require("packer").startup {
       end,
     }
 
+    use("dstein64/vim-startuptime")
+
     use("arp242/undofile_warn.vim")
 
     use("tpope/vim-repeat")
 
+    use("lewis6991/impatient.nvim")
+
     use {
       "github/copilot.vim",
-      disable = true,
+      -- disable = true,
       config = function()
         require("plugins.copilot")
       end,

@@ -1,7 +1,6 @@
+-- local map = require("utils").map
 
-local map = require("utils").map
-
-map("n", "<C-f>", "copilot#Accept("\\<CR>")", { noremap = false, script = true, expr = true })
+-- map("n", "<C-f>", "copilot#Accept('\\<CR>')", { noremap = false, script = true, expr = true })
 vim.g["g_copilot_no_tab_map"] = true
 vim.g["g_copilot_assume_mapped"] = true
 

@@ -7,4 +7,13 @@ local on_attach = function(client, bufnr)
   client.server_capabilities.documentRangeFormattingProvider = false
 end
 
-return { on_attach = on_attach }
+local settings = {
+  plugins = {
+    pycodestyle = {
+      maxLineLength = 100,
+      ["max-line-length"] = 100,
+    },
+  },
+}
+
+return { settings = settings, on_attach = on_attach }
