@@ -1,6 +1,14 @@
-local map = require("utils").map
+local map = vim.keymap.set
 map("n", "<leader>gs", "<cmd>Git<cr>")
 map("n", "<leader>gp", "<cmd>Git push<cr>")
+
+vim.api.nvim_create_autocmd("BufEnter", {
+  callback = function()
+    if vim.bo.filetype == "fugitive" then
+      map("n", "<leader>gf", "<cmd>Git push -f<cr>", { buffer = true })
+    end
+  end,
+})
 
 local M = {}
 
