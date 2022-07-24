@@ -161,15 +161,16 @@ map("<leader>fp", project_search)
 map("<leader>fv", find_nvim_plugins)
 map("<leader>fc", find_config)
 -- Find Old
-map("<leader>fo", "<cmd>Telescope oldfiles<cr>")
+map("<leader>fo", builtin.oldfiles)
 -- Requires ripgrep to be installed (sudo apt install ripgrep)
 map("<leader>fg", grep_git_root(builtin.live_grep))
 -- Find Word
 map("<leader>fw", grep_git_root(builtin.grep_string))
 
-map("<leader>fb", "<cmd>Telescope buffers<cr>")
-map("<leader>h", "<cmd>Telescope help_tags<cr>")
+map("<leader>fb", builtin.buffers)
+map("<leader>h", builtin.help_tags)
+map("<leader>fq", builtin.quickfix)
 -- Keybindings
-map("<leader>fk", "<cmd>Telescope keymaps<cr>")
+map("<leader>fk", builtin.keymaps)
 -- RefereNces
-map("<leader>fn", "<cmd>Telescope lsp_references<cr>")
+map("<leader>fn", builtin.lsp_references)

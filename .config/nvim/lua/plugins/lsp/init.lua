@@ -28,24 +28,24 @@ local on_attach = require("plugins.lsp.on_attach")
 local capabilities = update_capabilities(lsp.protocol.make_client_capabilities())
 
 local setup_lsp_servers = function()
-  local lsp_installer = require("nvim-lsp-installer")
-  lsp_installer.setup {
+  local mason = require("mason-lspconfig")
+  mason.setup {
     ensure_installed = { "sumneko_lua", "pylsp" },
   }
   local lsp_config = require("lspconfig")
+  vim.pretty_print(mason.get_installed_servers())
 
-  for _, server in ipairs(lsp_installer.get_installed_servers()) do
+  for _, server in ipairs(mason.get_installed_servers()) do
     local opts = {
       on_attach = on_attach,
       capabilities = capabilities,
       single_file_support = true,
     }
     local customized_servers = { "sumneko_lua", "pylsp" }
-    if vim.tbl_contains(customized_servers, server.name) then
-      opts = vim.tbl_deep_extend("force", opts, require("plugins.lsp." .. server.name))
+    if vim.tbl_contains(customized_servers, server) then
+      opts = vim.tbl_deep_extend("force", opts, require("plugins.lsp." .. server))
     end
-    -- print(vim.inspect(lsp_config[server.name], server.name))
-    lsp_config[server.name].setup(opts)
+    lsp_config[server].setup(opts)
   end
 end
 

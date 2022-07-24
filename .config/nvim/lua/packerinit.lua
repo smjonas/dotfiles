@@ -38,30 +38,42 @@ require("packer").startup {
     }
 
     use {
-      "garbas/vim-snipmate",
-      requires = { "marcweber/vim-addon-mw-utils", "tomtom/tlib_vim" },
-      disable = true,
-      setup = function()
-        -- vim.g.snipMate.snippet_version = 1
+      "~/Desktop/NeovimPlugins/inc-rename.nvim",
+      -- "smjonas/inc-rename.nvim",
+      config = function()
+        require("inc_rename").setup {
+          hl_group = "IncSearch",
+        }
       end,
+      -- requires = {
+      --   "stevearc/dressing.nvim",
+      --   disable = true,
+      --   config = function()
+      --     require("dressing").setup {
+      --       input = {
+      --         override = function(conf)
+      --           conf.col = -1
+      --           conf.row = 0
+      --           return conf
+      --         end,
+      --       },
+      --     }
+      --   end,
+      -- },
     }
 
     use {
-      -- "~/Desktop/NeovimPlugins/inc-rename.nvim",
-      "smjonas/inc-rename.nvim",
+      "~/Desktop/NeovimPlugins/live-command.nvim",
+      -- "smjonas/inc-norm.nvim",
       config = function()
-        require("inc_rename").setup {}
-        -- require("dressing").setup {
-        --   input = {
-        --     override = function(conf)
-        --       conf.col = -1
-        --       conf.row = 0
-        --       return conf
-        --     end,
-        --   },
-        -- }
+        local commands = { Norm = { cmd = "norm" } }
+        for _, register in ipairs { "a", "b", "c" } do
+          commands["Reg" .. register] = { cmd = "norm", args = "@" .. register }
+        end
+        require("live_command").setup {
+          commands = commands,
+        }
       end,
-      -- requires = "stevearc/dressing.nvim",
     }
 
     use {
@@ -165,7 +177,13 @@ require("packer").startup {
           require("plugins.lsp.null_ls")
         end,
       },
-      "williamboman/nvim-lsp-installer",
+      {
+        "williamboman/mason.nvim",
+        config = function()
+          require("mason").setup()
+        end,
+        requires = "williamboman/mason-lspconfig.nvim",
+      },
       {
         "j-hui/fidget.nvim",
         config = function()
@@ -340,6 +358,19 @@ require("packer").startup {
         end,
       },
       {
+        "kylechui/nvim-surround",
+        config = function()
+          require("nvim-surround").setup {
+            delimiters = {
+              invalid_key_behavior = function(char)
+                return { char, char }
+              end,
+            },
+          }
+        end,
+      },
+      {
+        disable = true,
         "machakann/vim-sandwich",
         config = function()
           require("plugins.vim_sandwich")
