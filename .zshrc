@@ -1,5 +1,7 @@
+export PATH=$PATH:/home/jonas/.local/share/neovim/bin
+
 export SHELL=/usr/bin/zsh
-source $HOME/.aliases
+source ~/.aliases
 
 # Set neovim as manpager
 export MANPAGER='nvim --appimage-extract-and-run -c "set ft=man"'

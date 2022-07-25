@@ -6,7 +6,18 @@ local opts = {
 
 return function(client, bufnr)
   opts.buffer = bufnr
-  map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>zz", opts)
+  map("n", "gd", function()
+    vim.lsp.buf.definition {
+      on_list = function(items)
+        -- Do not open the quickfix list (very annoying with sumneko lua),
+        -- but simply jump to the first item
+        vim.fn.setqflist({}, "r", items)
+        vim.cmd("cfirst")
+      end,
+    }
+    vim.cmd("zz")
+  end, opts)
+
   map("n", "K", vim.lsp.buf.hover, opts)
   map("n", "<C-j>", vim.diagnostic.goto_prev)
   map("n", "<C-k>", vim.diagnostic.goto_next)
