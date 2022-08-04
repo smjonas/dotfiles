@@ -1,6 +1,8 @@
 #!/bin/bash
 apt install -y xclip build-essential libnewlib-arm-none-eabi
-apt install -y git kitty yadm fzf ripgrep python3-pip cargo npm luarocks
+apt install -y zsh git kitty yadm fzf ripgrep python3-pip cargo npm luarocks
+# Make zsh the default shell
+chsh -s $(which zsh)
 
 # Install homebrew (required for gh)
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -61,6 +63,8 @@ do
               fc-cache -f -v;
               git clone git@github.com:smjonas/inacon.git ~/Desktop/Inacon;
               git clone git@github.com:smjonas/snippet-converter.nvim ~/Desktop/NeovimPlugins/snippet-converter.nvim;
+              git clone git@github.com:smjonas/inc-rename.nvim ~/Desktop/NeovimPlugins/inc-rename.nvim;
+              git clone git@github.com:smjonas/live-command.nvim ~/Desktop/NeovimPlugins/live-command.nvim;
               break;;
         no ) break;;
     esac
