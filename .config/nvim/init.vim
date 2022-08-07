@@ -17,29 +17,23 @@ require("theme").init()
 EOF
 
 runtime mappings.vim
+" Faster keyboard movement
+silent !xset r rate 205 35
 
 augroup my_auto_group
+
   autocmd!
-
-  " Run on startup for faster keyboard movement
-  autocmd VimEnter * silent !xset r rate 205 35
-
   " Remove trailing whitespace on save (/e to hide errors)
   autocmd BufWritePre * %s/\s\+$//e
-
   " Enable highlight on yank
   autocmd TextYankPost * silent! lua vim.highlight.on_yank { timeout = 130 }
-
   " Equalize splits after resizing
   autocmd VimResized * wincmd =
-
   " Open help files in a vertical split
   autocmd FileType help wincmd L
-
   " Do not wrap text, only comments. This somehow does not work when set
   " as a global option (see https://vi.stackexchange.com/a/9366/37072)
   autocmd FileType * set formatoptions-=t
-
   " Automatically enter insert mode when in terminal mode
   " and change to current directory
   autocmd TermOpen * silent !lcd %:p:h
@@ -47,9 +41,10 @@ augroup my_auto_group
 
 augroup end
 
-" Command for reloading commonly used Lua modules
+" Command for reloading commonly used Lua modules such as my plugins
 lua << EOF
 vim.api.nvim_create_user_command("ReloadDevModules", function()
+  package.loaded["live_command"] = nil
   package.loaded["inc_rename"] = nil
   package.loaded["snippet_converter"] = nil
 end, {})

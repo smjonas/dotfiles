@@ -11,5 +11,6 @@ require("null-ls").setup {
     formatting.black.with { extra_args = { "--line-length", "110" } },
     -- formatting.isort.with({ extra_args = { "--profile black" } }),
     formatting.isort,
+    formatting.gofmt,
   },
 }

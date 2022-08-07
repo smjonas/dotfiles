@@ -13,7 +13,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- Global settings
-vim.g["snippet_engine"] = "ultisnips"
+vim.g["snippet_engine"] = "luasnip"
 vim.cmd("colorscheme github_dark")
 
 require("packer").startup {
@@ -34,6 +34,15 @@ require("packer").startup {
         map("n", "<leader>c", "<cmd>PackerClean<cr>")
         map("n", "<leader>u", "<cmd>PackerSync<cr>")
         map("n", "<leader>i", "<cmd>PackerInstall<cr>")
+      end,
+    }
+
+    use {
+      "kylechui/nvim-surround",
+      -- disable = true,
+      config = function()
+        require("nvim-surround").setup {}
+        require("plugins.nvim-surround")
       end,
     }
 
@@ -359,19 +368,15 @@ require("packer").startup {
       },
       {
         "kylechui/nvim-surround",
+        disable = true,
+        branch = "pattern-matching",
         config = function()
-          require("nvim-surround").setup {
-            delimiters = {
-              invalid_key_behavior = function(char)
-                return { char, char }
-              end,
-            },
-          }
+          require("nvim-surround").setup {}
         end,
       },
       {
-        disable = true,
-        "machakann/vim-sandwich",
+        -- disable = true,
+        "machakann/vim-sanwich",
         config = function()
           require("plugins.vim_sandwich")
         end,

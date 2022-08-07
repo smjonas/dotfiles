@@ -15,7 +15,7 @@ return function(client, bufnr)
         vim.cmd("cfirst")
       end,
     }
-    vim.cmd("zz")
+    vim.cmd("norm zz")
   end, opts)
 
   map("n", "K", vim.lsp.buf.hover, opts)

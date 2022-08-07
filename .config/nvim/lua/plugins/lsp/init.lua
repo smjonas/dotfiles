@@ -33,7 +33,6 @@ local setup_lsp_servers = function()
     ensure_installed = { "sumneko_lua", "pylsp" },
   }
   local lsp_config = require("lspconfig")
-  vim.pretty_print(mason.get_installed_servers())
 
   for _, server in ipairs(mason.get_installed_servers()) do
     local opts = {

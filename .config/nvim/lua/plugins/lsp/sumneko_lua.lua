@@ -13,11 +13,14 @@ local settings = {
       -- Fix undefined globals warnings
       globals = { "vim", "describe", "it", "setup", "before_each", "stub", "mock" },
     },
+    hint = {
+      enable = true,
+    },
     workspace = {
-      -- library = {
-      -- vim.fn.expand("$VIMRUNTIME/lua"),
-      -- vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
-      -- },
+      library = {
+        vim.fn.expand("$VIMRUNTIME/lua"),
+        -- vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
+      },
     },
     telemetry = {
       enable = false,
