@@ -13,7 +13,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- Global settings
-vim.g["snippet_engine"] = "luasnip"
+vim.g.snippet_engine = "luasnip"
 vim.cmd("colorscheme github_dark")
 
 require("packer").startup {
@@ -41,7 +41,11 @@ require("packer").startup {
       "kylechui/nvim-surround",
       -- disable = true,
       config = function()
-        require("nvim-surround").setup {}
+        require("nvim-surround").setup {
+          aliases = {
+            ["b"] = { ")", "]" },
+          },
+        }
         require("plugins.nvim-surround")
       end,
     }
@@ -179,12 +183,24 @@ require("packer").startup {
           require("plugins.lsp.init")
         end,
         requires = { "folke/lua-dev.nvim" },
+        after = "inlay-hints.nvim",
+      },
+      {
+        "simrat39/inlay-hints.nvim",
+        disable = true,
+        config = function()
+          require("inlay-hints").setup {
+            -- renderer = "inlay-hints.render.virtline",
+            only_current_line = true,
+          }
+        end,
       },
       {
         "jose-elias-alvarez/null-ls.nvim",
         config = function()
           require("plugins.lsp.null_ls")
         end,
+        requires = "nvim-lua/plenary.nvim",
       },
       {
         "williamboman/mason.nvim",
@@ -244,7 +260,7 @@ require("packer").startup {
       requires = {
         {
           "saadparwaiz1/cmp_luasnip",
-          disable = vim.g["snippet_engine"] ~= "luasnip",
+          disable = vim.g.snippet_engine ~= "luasnip",
           after = "nvim-cmp",
         },
         { "max397574/cmp-greek", after = "nvim-cmp" },
@@ -263,16 +279,17 @@ require("packer").startup {
 
     use {
       "L3MON4D3/LuaSnip",
-      disable = vim.g["snippet_engine"] ~= "luasnip",
+      disable = vim.g.snippet_engine ~= "luasnip",
       -- after = "nvim-cmp",
       config = function()
         require("luasnip.loaders.from_vscode").load { paths = { "./after/my_snippets/luasnip" } }
       end,
+      requires = "rafamadriz/friendly-snippets",
     }
 
     use {
       "SirVer/ultisnips",
-      disable = vim.g["snippet_engine"] ~= "ultisnips",
+      disable = vim.g.snippet_engine ~= "ultisnips",
       requires = "honza/vim-snippets",
       config = function()
         vim.g.UltiSnipsEnableSnipMate = 1
@@ -536,7 +553,7 @@ require("packer").startup {
 
     use {
       "github/copilot.vim",
-      -- disable = true,
+      disable = true,
       config = function()
         require("plugins.copilot")
       end,

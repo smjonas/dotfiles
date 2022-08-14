@@ -1,3 +1,6 @@
+-- Surround the current line with a pretty_print statement
+vim.keymap.set("n", "<C-p>", "<cmd>norm yssp<cr>")
+
 local custom_surrounds = {
   vimwiki = {
     -- word + ysiwl => [word](https://github.com/current_clipboard_contents)
@@ -38,6 +41,16 @@ local custom_surrounds = {
       delete = "^(vim%.pretty_print%()().-(%))()$",
       change = {
         target = "^(vim%.pretty_print%()().-(%))()$",
+      },
+    },
+  },
+  go = {
+    ["p"] = {
+      add = { "fmt.Println(", ")" },
+      find = "fmt%.Println%b()",
+      delete = "^(fmt%.Println%()().-(%))()$",
+      change = {
+        target = "^(fmt%.Println%()().-(%))()$",
       },
     },
   },

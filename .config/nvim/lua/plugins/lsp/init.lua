@@ -30,7 +30,7 @@ local capabilities = update_capabilities(lsp.protocol.make_client_capabilities()
 local setup_lsp_servers = function()
   local mason = require("mason-lspconfig")
   mason.setup {
-    ensure_installed = { "sumneko_lua", "pylsp" },
+    ensure_installed = { "sumneko_lua", "pylsp", "gopls" },
   }
   local lsp_config = require("lspconfig")
 

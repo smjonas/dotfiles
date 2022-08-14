@@ -11,7 +11,13 @@ require("telescope").setup {
         ["<C-k>"] = actions.cycle_history_prev,
         ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
         ["<C-f>"] = require("telescope.actions.layout").toggle_preview,
-        ["<CR>"] = actions.select_default + actions.center,
+        ["<Cr>"] = function(bufnr)
+          -- If the buffer is already open in a window, jump to that window
+          require("telescope.actions.set").edit(bufnr, "drop")
+          actions.center(bufnr)
+        end,
+        ["<Tab>"] = function() end,
+        ["<S-Tab>"] = function() end,
       },
       n = {
         ["<C-n>"] = actions.move_selection_next,
@@ -169,6 +175,7 @@ map("<leader>fw", grep_git_root(builtin.grep_string))
 
 map("<leader>fb", builtin.buffers)
 map("<leader>h", builtin.help_tags)
+map("<leader>fl", builtin.lsp_document_symbols)
 map("<leader>fq", builtin.quickfix)
 -- Keybindings
 map("<leader>fk", builtin.keymaps)

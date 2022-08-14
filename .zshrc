@@ -1,4 +1,6 @@
 export PATH=$PATH:/home/jonas/.local/share/neovim/bin
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/home/jonas/go/bin
 
 export SHELL=/usr/bin/zsh
 source ~/.aliases
