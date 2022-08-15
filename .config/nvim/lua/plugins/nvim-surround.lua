@@ -39,9 +39,6 @@ local custom_surrounds = {
       add = { "vim.pretty_print(", ")" },
       find = "vim%.pretty_print%b()",
       delete = "^(vim%.pretty_print%()().-(%))()$",
-      change = {
-        target = "^(vim%.pretty_print%()().-(%))()$",
-      },
     },
   },
   go = {
@@ -49,9 +46,6 @@ local custom_surrounds = {
       add = { "fmt.Println(", ")" },
       find = "fmt%.Println%b()",
       delete = "^(fmt%.Println%()().-(%))()$",
-      change = {
-        target = "^(fmt%.Println%()().-(%))()$",
-      },
     },
   },
 }

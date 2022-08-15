@@ -77,9 +77,12 @@ require("packer").startup {
 
     use {
       "~/Desktop/NeovimPlugins/live-command.nvim",
-      -- "smjonas/inc-norm.nvim",
+      -- "smjonas/live-command.nvim",
       config = function()
-        local commands = { Norm = { cmd = "norm" } }
+        local commands = {
+          Norm = { cmd = "norm" },
+          G = { cmd = "g", hl_range = { 1, -1, kind = "absolute" } },
+        }
         for _, register in ipairs { "a", "b", "c" } do
           commands["Reg" .. register] = { cmd = "norm", args = "@" .. register }
         end
@@ -123,7 +126,7 @@ require("packer").startup {
         -- }
 
         snippet_converter.setup {
-          templates = { ultisnips_to_luasnip },
+          templates = { ultisnips_to_luasnip, friendly_snippets },
         }
       end,
       requires = "gillescastel/latex-snippets",
@@ -131,8 +134,8 @@ require("packer").startup {
 
     -- Treesitter
     use {
-      -- "nvim-treesitter/nvim-treesitter",
-      "~/Desktop/NeovimPlugins/nvim-treesitter",
+      "nvim-treesitter/nvim-treesitter",
+      -- "~/Desktop/NeovimPlugins/nvim-treesitter",
       run = ":TSUpdate",
       requires = {
         "nvim-treesitter/nvim-treesitter-textobjects",
@@ -383,19 +386,12 @@ require("packer").startup {
           map("n", "<A-right>", "<cmd>SidewaysRight<cr>")
         end,
       },
+
       {
-        "kylechui/nvim-surround",
         disable = true,
-        branch = "pattern-matching",
+        "machakann/vim-sandwich",
         config = function()
-          require("nvim-surround").setup {}
-        end,
-      },
-      {
-        -- disable = true,
-        "machakann/vim-sanwich",
-        config = function()
-          require("plugins.vim_sandwich")
+          require("plugins.vim-sandwich")
         end,
       },
       {
