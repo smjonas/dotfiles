@@ -4,7 +4,7 @@ vim.keymap.set("n", "<C-p>", "<cmd>norm yssp<cr>")
 local custom_surrounds = {
   vimwiki = {
     -- word + ysiwl => [word](https://github.com/current_clipboard_contents)
-    ["l"] = {
+    l = {
       add = function()
         local clipboard = vim.fn.getreg("+"):gsub("^[%s\n]*(.-)[%s\n]*$", "%1")
         if clipboard:find("\n") then
@@ -33,16 +33,24 @@ local custom_surrounds = {
         end,
       },
     },
+    ["*"] = {
+      add = { "**", "**" },
+      find = "%*%*.-%*%*",
+      delete = "^(%*%*?)().-(%*%*?)()$",
+      change = {
+        target = "^(%*%*?)().-(%*%*?)()$",
+      },
+    },
   },
   lua = {
-    ["p"] = {
+    p = {
       add = { "vim.pretty_print(", ")" },
       find = "vim%.pretty_print%b()",
       delete = "^(vim%.pretty_print%()().-(%))()$",
     },
   },
   go = {
-    ["p"] = {
+    p = {
       add = { "fmt.Println(", ")" },
       find = "fmt%.Println%b()",
       delete = "^(fmt%.Println%()().-(%))()$",
