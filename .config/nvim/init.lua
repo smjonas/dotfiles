@@ -1,26 +1,23 @@
-let $INACON_DIR = $HOME . '/Desktop/Inacon/'
-let $INACON_VENV_ACTIVATE = $INACON_DIR . 'inacon_env/bin/activate'
-let $INACON_VENV_PYTHON = $INACON_DIR . 'inacon_env/bin'
-
-" Fixes wrong terminal colors when using tmux
+-- Fixes wrong terminal colors when using tmux
+vim.cmd([[
 if exists('+termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
+]])
 
-lua << EOF
--- Load config files from ~/.config/nvim/lua/
-require("utils") -- load global util functions
+-- Load config files
+require("utils")
 require("options")
 require("packerinit")
 require("theme").init()
-EOF
 
+vim.cmd([[
 runtime mappings.vim
 " Faster keyboard movement
 silent !xset r rate 205 35
 
-augroup my_auto_group
+augroup dotfiles
 
   autocmd!
   " Remove trailing whitespace on save (/e to hide errors)
@@ -40,27 +37,26 @@ augroup my_auto_group
   autocmd TermOpen * startinsert
 
 augroup end
+]])
 
-" Command for reloading commonly used Lua modules such as my plugins
-lua << EOF
-vim.api.nvim_create_user_command("ReloadDevModules", function()
-  package.loaded["live_command"] = nil
-  package.loaded["inc_rename"] = nil
-  package.loaded["snippet_converter"] = nil
-end, {})
-EOF
+local function reload_dev_modules()
+  for _, plugin in ipairs { "live_command", "inc_rename", "snippet_converter" } do
+    package.loaded[plugin] = nil
+  end
+end
 
-function ReloadConfig()
-  :luafile ~/.config/nvim/lua/packerinit.lua
-  :luafile ~/.config/nvim/lua/colorschemes.lua
-  :luafile ~/.config/nvim/lua/options.lua
-  :runtime mappings.vim
-  :ReloadDevModules
-  :PackerCompile
-endfunction
+local function reload_config()
+  reload_dev_modules()
+  vim.cmd([[
+:luafile ~/.config/nvim/lua/packerinit.lua
+:luafile ~/.config/nvim/lua/colorschemes.lua
+:luafile ~/.config/nvim/lua/options.lua
+:runtime mappings.vim
+:PackerCompile]])
+end
 
-augroup packer_user_config
-  autocmd!
-  autocmd BufWritePost */nvim/*.lua call ReloadConfig()
-augroup end
-
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = "*/nvim/*",
+  callback = reload_config,
+  desc = "Reload config on save",
+})

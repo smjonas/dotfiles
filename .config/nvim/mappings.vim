@@ -196,10 +196,9 @@ nnoremap <leader>q <cmd>q<cr>
 " Open current file in browser
 nnoremap <silent> <F3> <cmd>!sensible-browser %<cr>
 
-" Open vim.init
-nnoremap <leader>rc <cmd>e $MYVIMRC<cr>
-" Open lua config files
 let nvim_config_root = stdpath('config')
+" Open lua config files
+nnoremap <leader>rc <cmd>execute 'e ' . nvim_config_root . '/init.lua'<cr>
 nnoremap <leader>rp <cmd>execute 'e ' . nvim_config_root . '/lua/packerinit.lua'<cr>
 nnoremap <leader>ro <cmd>execute 'e ' . nvim_config_root . '/lua/options.lua'<cr>
 nnoremap <leader>rm <cmd>execute 'e ' . nvim_config_root . '/mappings.vim'<cr>
