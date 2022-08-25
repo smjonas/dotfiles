@@ -123,6 +123,8 @@ nnoremap g; g;zz
 nnoremap g, g,zz
 nnoremap { {zz
 nnoremap } }zz
+nnoremap * *zz
+nnoremap # #zz
 
 nnoremap <C-u> <C-u>zz
 nnoremap <C-d> <C-d>zz

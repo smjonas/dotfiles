@@ -15,8 +15,8 @@ end
 local dap = require("dap")
 
 -- samuraiRed from kanagawa theme
-vim.cmd("highlight _Red guifg=#E82424")
-vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "_Red", linehl = "", numhl = "" })
+vim.cmd("highlight DapRed guifg=#E82424")
+vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DapRed", linehl = "", numhl = "" })
 dap.configurations.lua = {
   {
     type = "nlua",

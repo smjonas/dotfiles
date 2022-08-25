@@ -11,11 +11,7 @@ require("telescope").setup {
         ["<C-k>"] = actions.cycle_history_prev,
         ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
         ["<C-f>"] = require("telescope.actions.layout").toggle_preview,
-        ["<Cr>"] = function(bufnr)
-          -- If the buffer is already open in a window, jump to that window
-          require("telescope.actions.set").edit(bufnr, "drop")
-          actions.center(bufnr)
-        end,
+        ["<Cr>"] = actions.select_default + actions.center,
         ["<Tab>"] = function() end,
         ["<S-Tab>"] = function() end,
       },
@@ -41,9 +37,8 @@ require("telescope").setup {
     layout_config = {
       horizontal = {
         prompt_position = "top",
-        -- Golden ratio because why not :D
-        preview_width = 5 / 13,
-        results_width = 8 / 13,
+        preview_width = 0.5,
+        results_width = 0.5,
       },
       width = 0.75,
       height = 0.75,

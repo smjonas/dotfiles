@@ -191,17 +191,6 @@ require("packer").startup {
           require("plugins.lsp.init")
         end,
         requires = { "smjonas/lua-dev.nvim" },
-        after = "inlay-hints.nvim",
-      },
-      {
-        "simrat39/inlay-hints.nvim",
-        disable = true,
-        config = function()
-          require("inlay-hints").setup {
-            -- renderer = "inlay-hints.render.virtline",
-            only_current_line = true,
-          }
-        end,
       },
       {
         "jose-elias-alvarez/null-ls.nvim",
@@ -298,7 +287,6 @@ require("packer").startup {
     use {
       "SirVer/ultisnips",
       disable = vim.g.snippet_engine ~= "ultisnips",
-      requires = "honza/vim-snippets",
       config = function()
         vim.g.UltiSnipsEnableSnipMate = 1
       end,
@@ -389,14 +377,6 @@ require("packer").startup {
           -- Swap function arguments using Alt + arrow keys
           map("n", "<A-left>", "<cmd>SidewaysLeft<cr>")
           map("n", "<A-right>", "<cmd>SidewaysRight<cr>")
-        end,
-      },
-
-      {
-        disable = true,
-        "machakann/vim-sandwich",
-        config = function()
-          require("plugins.vim-sandwich")
         end,
       },
       {
@@ -493,27 +473,6 @@ require("packer").startup {
         local map = require("utils").map
         map("n", "<leader>m", "<Plug>MarkdownPreviewToggle", { noremap = false })
       end,
-    }
-
-    use {
-      "nvim-neorg/neorg",
-      disable = true,
-      branch = "unstable",
-      requires = "nvim-lua/plenary.nvim",
-      -- after = "nvim-treesitter",
-      config = function()
-        require("plugins.neorg")
-      end,
-    }
-
-    use {
-      -- rtp in packer has some issues, that's why I have to use the local path
-      vim.fn.stdpath("data") .. "/himalaya/vim",
-      disable = true,
-      -- rtp = "vim",
-      -- config = function()
-      --   vim.g["himalaya_mailbox_picker"] = "telescope"
-      -- end
     }
 
     -- Misc
