@@ -98,6 +98,13 @@ require("packer").startup {
     }
 
     use {
+      "smjonas/live-tests-busted.nvim",
+      config = function()
+        require("live_tests_busted")
+      end,
+    }
+
+    use {
       -- "smjonas/snippet-converter.nvim",
       "~/Desktop/NeovimPlugins/snippet-converter.nvim",
       config = function()
