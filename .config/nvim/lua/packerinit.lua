@@ -52,6 +52,7 @@ require("packer").startup {
 
     use {
       "~/Desktop/NeovimPlugins/inc-rename.nvim",
+      branch = "always_multifile",
       -- "smjonas/inc-rename.nvim",
       config = function()
         require("inc_rename").setup {
@@ -77,16 +78,20 @@ require("packer").startup {
 
     use {
       "~/Desktop/NeovimPlugins/live-command.nvim",
+      branch = "hl_improvements",
       -- "smjonas/live-command.nvim",
       config = function()
         local commands = {
           Norm = { cmd = "norm" },
-          G = { cmd = "g", hl_range = { 1, -1, kind = "absolute" } },
+          G = { cmd = "g", hl_range = { kind = "visible" } },
         }
         for _, register in ipairs { "a", "b", "c" } do
           commands["Reg" .. register] = { cmd = "norm", args = "@" .. register }
         end
         require("live_command").setup {
+          defaults = {
+            -- hl_groups = { deletion = false },
+          },
           commands = commands,
         }
       end,
@@ -185,7 +190,7 @@ require("packer").startup {
         config = function()
           require("plugins.lsp.init")
         end,
-        requires = { "folke/lua-dev.nvim" },
+        requires = { "smjonas/lua-dev.nvim" },
         after = "inlay-hints.nvim",
       },
       {
@@ -341,7 +346,7 @@ require("packer").startup {
       end,
     }
     use {
-      "norcalli/nvim-colorizer.lua",
+      "NvChad/nvim-colorizer.lua",
       config = function()
         require("colorizer").setup {
           "css",
@@ -408,14 +413,9 @@ require("packer").startup {
     }
 
     use {
-      "terrortylor/nvim-comment",
+      "numToStr/Comment.nvim",
       config = function()
-        require("nvim_comment").setup {
-          comment_empty = false,
-          hook = function()
-            require("ts_context_commentstring.internal").update_commentstring {}
-          end,
-        }
+        require("Comment").setup()
       end,
       requires = "JoosepAlviste/nvim-ts-context-commentstring",
     }
