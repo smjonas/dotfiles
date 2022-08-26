@@ -18,7 +18,8 @@ return function(client, bufnr)
     vim.cmd("norm zz")
   end, opts)
 
-  map("n", "K", vim.lsp.buf.hover, opts)
+  -- map("n", "K", vim.lsp.buf.hover, opts)
+  map("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
   map("n", "<C-j>", vim.diagnostic.goto_prev)
   map("n", "<C-k>", vim.diagnostic.goto_next)
 

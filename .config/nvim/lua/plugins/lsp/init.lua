@@ -60,6 +60,6 @@ vim.diagnostic.config {
 }
 
 -- Borders around lsp windows
-local popup_opts = { border = "single", focusable = false, max_width = 60 }
-lsp.handlers["textDocument/hover"] = lsp.with(lsp.handlers.hover, popup_opts)
-lsp.handlers["textDocument/signatureHelp"] = lsp.with(lsp.handlers.signature_help, popup_opts)
+-- local popup_opts = { border = "single", focusable = false, max_width = 60 }
+-- lsp.handlers["textDocument/hover"] = lsp.with(lsp.handlers.hover, popup_opts)
+-- lsp.handlers["textDocument/signatureHelp"] = lsp.with(lsp.handlers.signature_help, popup_opts)

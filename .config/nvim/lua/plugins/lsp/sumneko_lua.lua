@@ -1,5 +1,6 @@
 local default_on_attach = require("plugins.lsp.on_attach")
 
+-- See https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json
 local settings = {
   Lua = {
     runtime = {
@@ -21,6 +22,8 @@ local settings = {
         vim.fn.expand("$VIMRUNTIME/lua"),
         -- vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
       },
+      maxPreload = 1000,
+      preloadFileSize = 150,
     },
     telemetry = {
       enable = false,
@@ -33,9 +36,9 @@ local on_attach = function(client, bufnr)
   default_on_attach(client, bufnr)
   client.server_capabilities.documentFormattingProvider = false
   client.server_capabilities.documentRangeFormattingProvider = false
-  -- require("inlay-hints").on_attach(client, bufnr)
 end
 
 return require("lua-dev").setup {
-  lspconfig = { settings = settings, on_attach = on_attach, plugins = { "nvim-treesitter" } },
+  lsp_config = { settings = settings, on_attach = on_attach },
+  opts = { plugins = { "nvim-treesitter" } },
 }

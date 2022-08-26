@@ -83,6 +83,17 @@ require("telescope").setup {
 local env = vim.env
 local builtin = require("telescope.builtin")
 
+local function get_start_dir()
+  local path = vim.fn.expand("%:p")
+  -- If the picker was opened in any of the Nvim config files,
+  -- use ~/.config/nvim as the cwd instead of looking for a .git directory
+  if path:match("^" .. vim.fn.stdpath("config")) then
+    return vim.fn.stdpath("config")
+  else
+    return require("lspconfig/util").root_pattern(".git")(path)
+  end
+end
+
 local function find_files()
   builtin.find_files {
     cwd = "~",
@@ -91,8 +102,7 @@ end
 
 local function project_search()
   local args = {
-    -- git_files by default does not search from the current directory of the opened buffer
-    cwd = require("lspconfig/util").root_pattern(".git")(vim.fn.expand("%:p")),
+    cwd = get_start_dir(),
     prompt_title = "Git Files",
   }
   if not pcall(builtin.git_files, args) then
@@ -132,17 +142,8 @@ end
 
 local function grep_git_root(grep_fn)
   return function()
-    local path = vim.fn.expand("%:p")
-    local cwd
-    -- If the picker was opened in any of the Nvim config files,
-    -- use ~/.config/nvim as the cwd instead of looking for a .git directory
-    if path:match("^" .. vim.fn.stdpath("config")) then
-      cwd = vim.fn.stdpath("config")
-    else
-      cwd = require("lspconfig/util").root_pattern(".git")(path)
-    end
     grep_fn {
-      cwd = cwd,
+      cwd = get_start_dir(),
       glob_pattern = "!*plugin/packer_compiled.lua",
     }
   end
