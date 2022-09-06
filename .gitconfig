@@ -1,6 +1,8 @@
 [alias]
 	st = status
+    c = commit -m
     ca = commit --amend --no-edit
+    fp = push -f
 [user]
 	email = jonas.strittmatter@gmx.de
 	name = smjonas
