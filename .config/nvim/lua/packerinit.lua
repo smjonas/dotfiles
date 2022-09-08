@@ -53,28 +53,30 @@ require("packer").startup {
 
     use {
       "~/Desktop/NeovimPlugins/inc-rename.nvim",
-      branch = "always_multifile",
+      branch = "proper_dressing",
       -- "smjonas/inc-rename.nvim",
       config = function()
         require("inc_rename").setup {
           hl_group = "IncSearch",
+          input_buffer_type = "dressing",
         }
       end,
-      -- requires = {
-      --   "stevearc/dressing.nvim",
-      --   disable = true,
-      --   config = function()
-      --     require("dressing").setup {
-      --       input = {
-      --         override = function(conf)
-      --           conf.col = -1
-      --           conf.row = 0
-      --           return conf
-      --         end,
-      --       },
-      --     }
-      --   end,
-      -- },
+      requires = {
+        -- disable = true,
+        "~/Desktop/NeovimPlugins/dressing.nvim",
+        -- "stevearc/dressing.nvim",
+        config = function()
+          require("dressing").setup {
+            input = {
+              override = function(conf)
+                conf.col = -1
+                conf.row = 0
+                return conf
+              end,
+            },
+          }
+        end,
+      },
     }
 
     use {
@@ -201,13 +203,16 @@ require("packer").startup {
         requires = { "~/Desktop/NeovimPlugins/lua-dev.nvim" },
       },
       {
-        disable = true,
         "glepnir/lspsaga.nvim",
         config = function()
-          local saga = require("lspsaga")
-          saga.init_lsp_saga()
+          require("lspsaga").init_lsp_saga {
+            code_action_lightbulb = {
+              enable = false,
+            },
+          }
         end,
       },
+      { "ray-x/lsp_signature.nvim" },
       {
         "jose-elias-alvarez/null-ls.nvim",
         config = function()
@@ -330,6 +335,13 @@ require("packer").startup {
           require("telescope").load_extension("fzf")
         end,
         after = "telescope.nvim",
+      },
+      {
+        -- Better :Telescope oldfiles
+        "smartpde/telescope-recent-files",
+        config = function()
+          require("telescope").load_extension("recent_files")
+        end,
       },
     }
 
@@ -459,9 +471,14 @@ require("packer").startup {
       end,
     }
 
+    use {
+      "sindrets/diffview.nvim",
+    }
+
     -- Writing to-do lists, emails etc.
     use {
       "vimwiki/vimwiki",
+      disable = true,
       branch = "dev",
       -- keys = "<leader>x",
       config = function()

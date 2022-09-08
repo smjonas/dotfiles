@@ -1,3 +1,7 @@
+vim.env.INACON_DIR = vim.env.HOME .. "/Desktop/Inacon/"
+vim.env.INACON_VENV_ACTIVATE = vim.env.INACON_DIR .. "inacon_env/bin/activate"
+vim.env.INACON_VENV_PYTHON = vim.env.INACON_DIR .. "inacon_env/bin"
+
 -- Fixes wrong terminal colors when using tmux
 vim.cmd([[
 if exists('+termguicolors')
@@ -40,14 +44,20 @@ augroup end
 ]])
 
 local function reload_dev_modules()
-  for _, plugin in ipairs { "live_command", "inc_rename", "snippet_converter" } do
-    package.loaded[plugin] = nil
-  end
+	for _, plugin in ipairs({
+		"live_command",
+		"live_command.provider.improved_levenshtein",
+		"inc_rename",
+		"snippet_converter",
+	}) do
+		package.loaded[plugin] = nil
+	end
 end
+vim.api.nvim_create_user_command("ReloadDevModules", reload_dev_modules, {})
 
 local function reload_config()
-  reload_dev_modules()
-  vim.cmd([[
+	reload_dev_modules()
+	vim.cmd([[
 :luafile ~/.config/nvim/lua/packerinit.lua
 :luafile ~/.config/nvim/lua/colorschemes.lua
 :luafile ~/.config/nvim/lua/options.lua
@@ -56,7 +66,7 @@ local function reload_config()
 end
 
 vim.api.nvim_create_autocmd("BufWritePost", {
-  pattern = "*/nvim/*",
-  callback = reload_config,
-  desc = "Reload config on save",
+	pattern = "*/nvim/*",
+	callback = reload_config,
+	desc = "Reload config on save",
 })

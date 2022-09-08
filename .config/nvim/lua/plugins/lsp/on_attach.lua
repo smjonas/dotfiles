@@ -18,6 +18,16 @@ return function(client, bufnr)
     vim.cmd("norm zz")
   end, opts)
 
+  require("lsp_signature").on_attach({
+    doc_lines = 0,
+    hint_enable = false,
+    toggle_key = "<C-s>",
+    -- floating_window = false,
+    max_width = 200,
+    -- hi_parameter = "DiffAdd",
+  }, bufnr)
+  -- map("i", "<C-s>", vim.lsp.buf.signature_help, opts)
+
   -- map("n", "K", vim.lsp.buf.hover, opts)
   map("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
   map("n", "<C-j>", vim.diagnostic.goto_prev)

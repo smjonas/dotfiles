@@ -163,7 +163,7 @@ map("<leader>fp", project_search)
 map("<leader>fv", find_nvim_plugins)
 map("<leader>fc", find_config)
 -- Find Old
-map("<leader>fo", builtin.oldfiles)
+map("<leader>fo", "<cmd>lua require('telescope').extensions.recent_files.pick()<cr>")
 -- Requires ripgrep to be installed (sudo apt install ripgrep)
 map("<leader>fg", grep_git_root(builtin.live_grep))
 -- Find Word

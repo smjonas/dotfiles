@@ -159,8 +159,8 @@ nnoremap ' `
 nnoremap ` '
 
 " Search and replace
-nnoremap <leader><F2> :%s///gc<left><left><left><left>
-xnoremap <F2> :s/\%V//g<left><left><left>
+nnoremap <leader>s :%s///gc<left><left><left><left>
+xnoremap s :s/\%V//g<left><left><left>
 
 " Repeat the last substitute command while using the same flags (remove once #19365 is merged)
 nnoremap & :&&<CR>
