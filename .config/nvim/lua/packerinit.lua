@@ -12,7 +12,6 @@ if fn.empty(fn.glob(install_path)) > 0 then
   }
 end
 
--- tall
 -- Global settings
 vim.g.snippet_engine = "luasnip"
 vim.cmd("colorscheme github_dark")
@@ -200,7 +199,8 @@ require("packer").startup {
         config = function()
           require("plugins.lsp.init")
         end,
-        requires = { "~/Desktop/NeovimPlugins/lua-dev.nvim" },
+        -- requires = { "~/Desktop/NeovimPlugins/lua-dev.nvim" },
+        requires = { "folke/lua-dev.nvim" },
       },
       {
         "glepnir/lspsaga.nvim",

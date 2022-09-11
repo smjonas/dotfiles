@@ -129,6 +129,7 @@ nnoremap # #zz
 nnoremap <C-u> <C-u>zz
 nnoremap <C-d> <C-d>zz
 nnoremap <C-o> <C-o>zz
+nnoremap <C-i> <C-i>zz
 
 " Easier incrementing / decrementing
 nnoremap + g<C-a>

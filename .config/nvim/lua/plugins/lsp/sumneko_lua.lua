@@ -18,10 +18,10 @@ local settings = {
     --   enable = true,
     -- },
     workspace = {
-      library = {
-        vim.fn.expand("$VIMRUNTIME/lua"),
+      -- library = {
+        -- vim.fn.expand("$VIMRUNTIME/lua"),
         -- vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
-      },
+      -- },
       maxPreload = 1000,
       preloadFileSize = 150,
     },
@@ -38,7 +38,5 @@ local on_attach = function(client, bufnr)
   client.server_capabilities.documentRangeFormattingProvider = false
 end
 
-return require("lua-dev").setup {
-  lsp_config = { settings = settings, on_attach = on_attach },
-  opts = { plugins = { "nvim-treesitter" } },
-}
+local lua_dev_setup = require("lua-dev").setup {}
+return vim.tbl_deep_extend("force", lua_dev_setup, { settings = settings, on_attach = on_attach })
