@@ -1,3 +1,9 @@
+require("nvim-surround").setup {
+  aliases = {
+    ["b"] = { ")", "]" },
+  },
+}
+
 -- Surround the current line with a pretty_print statement
 vim.keymap.set("n", "<C-p>", "<cmd>norm yssp<cr>", {})
 

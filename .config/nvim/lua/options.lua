@@ -48,8 +48,7 @@ o.shortmess = o.shortmess + "c"
 -- Current mode in insert mode is not necessary when using status line plugin
 o.showmode = false
 o.sidescrolloff = 6
--- Display diagnostics signs instead of line number (if there is a symbol to show)
-o.signcolumn = "number"
+o.signcolumn = "yes:1"
 o.smartcase = true
 o.splitbelow = false
 o.splitright = true

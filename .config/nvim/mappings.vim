@@ -195,7 +195,7 @@ nnoremap <leader>w <cmd>w<cr>
 nnoremap <leader>q <cmd>q<cr>
 
 " Open current file in browser
-nnoremap <silent> <F3> <cmd>!sensible-browser %<cr>
+nnoremap <silent> <F3> <cmd>!firefox %<cr>
 
 let nvim_config_root = stdpath('config')
 " Open lua config files

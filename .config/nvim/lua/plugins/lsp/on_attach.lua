@@ -32,6 +32,7 @@ return function(client, bufnr)
   map("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
   map("n", "<C-j>", vim.diagnostic.goto_prev)
   map("n", "<C-k>", vim.diagnostic.goto_next)
+  map("n", "<leader>a", "<cmd>Lspsaga code_action<cr>", opts)
 
   vim.keymap.set("n", "<leader>rn", function()
     return ":IncRename " .. vim.fn.expand("<cword>")
