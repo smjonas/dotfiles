@@ -5,7 +5,6 @@ pcall(vim.cmd, "colorscheme github_dark")
 return {
   ["packer.nvim"] = {
     config = function()
-      local map = require("utils").map
       map("n", "<leader>c", "<cmd>PackerClean<cr>")
       map("n", "<leader>u", "<cmd>PackerSync<cr>")
       map("n", "<leader>i", "<cmd>PackerInstall<cr>")
@@ -15,16 +14,6 @@ return {
     -- disable = true,
     config = function()
       require("plugins.nvim-surround")
-    end,
-  },
-  ["inc-rename.nvim"] = {
-    branch = "proper_dressing",
-    -- "smjonas/inc-rename.nvim",
-    config = function()
-      require("inc_rename").setup {
-        hl_group = "IncSearch",
-        input_buffer_type = "dressing",
-      }
     end,
   },
   ["dressing.nvim"] = {
@@ -167,6 +156,27 @@ return {
       require("plugins.dap")
     end,
   },
+  -- Visual / UX enhancements
+  ["windows.nvim"] = {
+    config = function()
+      require("windows").setup {
+        animation = {
+          enable = false,
+        },
+      }
+    end,
+  },
+  ["inc-rename.nvim"] = {
+    branch = "sync",
+    -- "smjonas/inc-rename.nvim",
+    config = function()
+      require("inc_rename").setup {
+        async = false,
+        hl_group = "IncSearch",
+        input_buffer_type = "dressing",
+      }
+    end,
+  },
   -- Tree viewer / file browser
   ["fern.vim"] = {
     config = function()
@@ -220,7 +230,6 @@ return {
     config = function()
       require("telescope").load_extension("fzf")
     end,
-    after = "telescope.nvim",
   },
   -- Better :Telescope oldfiles
   ["telescope-recent-files"] = {
@@ -228,7 +237,7 @@ return {
       require("telescope").load_extension("recent_files")
     end,
   },
-  -- Filetype specific plugins
+  -- Filetype-specific plugins
   ["emmet-vim"] = {
     keys = { { "x", "<C-q>" }, { "i", "<C-q>" } },
     setup = function()
@@ -257,7 +266,6 @@ return {
       vim.g["test#strategy"] = "neovim"
       vim.g["test#neovim#term_position"] = "vertical 80"
 
-      local map = require("utils").map
       -- Run tests
       map("n", "<leader>t", "<cmd>TestFile<cr>")
       -- Run nearest test
@@ -267,7 +275,6 @@ return {
   -- New ways to manipulate text
   ["sideways.vim"] = {
     config = function()
-      local map = require("utils").map
       -- Swap function arguments using Alt + arrow keys
       map("n", "<A-left>", "<cmd>SidewaysLeft<cr>")
       map("n", "<A-right>", "<cmd>SidewaysRight<cr>")
@@ -276,7 +283,6 @@ return {
   -- "Schlepp" text around while respecting existing text
   ["vim-schlepp"] = {
     config = function()
-      local map = require("utils").map
       map("v", "<up>", "<Plug>SchleppUp", { noremap = false })
       map("v", "<down>", "<Plug>SchleppDown", { noremap = false })
       map("v", "<left>", "<Plug>SchleppLeft", { noremap = false })
@@ -348,7 +354,6 @@ return {
     config = function()
       vim.g["mkdp_auto_close"] = 0
       vim.g["mkdp_filetypes"] = { "markdown", "text" }
-      local map = require("utils").map
       map("n", "<leader>m", "<Plug>MarkdownPreviewToggle", { noremap = false })
     end,
   },

@@ -28,7 +28,11 @@ local on_attach = require("plugins.lsp.on_attach")
 local capabilities = update_capabilities(lsp.protocol.make_client_capabilities())
 
 local setup_lsp_servers = function()
-  local mason = require("mason-lspconfig")
+  local ok, mason = pcall(require, "mason-lspconfig")
+  if not ok then
+    vim.notify("Mason was not found: no LSP servers set up", vim.log.levels.ERROR)
+    return
+  end
   mason.setup {
     ensure_installed = { "sumneko_lua", "pylsp", "gopls" },
   }
@@ -58,6 +62,24 @@ local normal_fg = vim.fn.synIDattr(vim.fn.hlID("Normal"), "fg")
 vim.diagnostic.config {
   virtual_text = false,
 }
+
+local diagnostic_symbols = {
+  Error = "",
+  Information = { "", "DiagnosticSignInfo" },
+  Hint = "",
+  Info = "",
+  Warn = "",
+}
+
+for prefix, icon in pairs(diagnostic_symbols) do
+  local is_table = type(icon) == "table"
+  local hl = is_table and icon[2] or "DiagnosticSign" .. prefix
+  vim.fn.sign_define("DiagnosticSign" .. prefix, {
+    text = is_table and icon[1] or icon,
+    texthl = hl,
+    numhl = "Normal",
+  })
+end
 
 -- Borders around lsp windows
 -- local popup_opts = { border = "single", focusable = false, max_width = 60 }

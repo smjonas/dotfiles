@@ -9,9 +9,7 @@ function _G.P(...)
   return ...
 end
 
-local M = {}
-
-function M.map(mode, lhs, rhs, opt)
+function map(mode, lhs, rhs, opt)
   local options = { noremap = true, silent = true }
   if opt then
     options = vim.tbl_extend("force", options, opt)
@@ -19,4 +17,24 @@ function M.map(mode, lhs, rhs, opt)
   vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
-return M
+function safe_require(module_name)
+  local ok, module = pcall(require, module_name)
+  if not ok then
+    -- vim.defer_fn(function()
+    --   vim.schedule(function()
+        vim.notify(
+          "Could not load module: " .. module_name,
+          vim.log.levels.ERROR,
+          { title = "Module Not Found" }
+        )
+    --   end)
+    -- end, 1000)
+    -- Ignore any function call on the module
+    return setmetatable({}, {
+      __index = function()
+        return function() end
+      end,
+    })
+  end
+  return module
+end

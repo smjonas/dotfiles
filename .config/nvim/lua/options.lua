@@ -10,6 +10,8 @@ o.cmdheight = 2
 o.completeopt = "menu,menuone"
 o.cursorline = true
 o.expandtab = true
+-- Don't make all windows the same size when resizing (also required for windows.nvim)
+o.equalalways = false
 -- Do not open folds when moving with { or }
 o.foldopen = o.foldopen - "block"
 o.ignorecase = true
@@ -64,4 +66,5 @@ o.undofile = true
 -- Enables selecting a block of text across line boundaries
 o.virtualedit = o.virtualedit + "block"
 o.wildignorecase = true
+o.winminwidth = 10
 o.wrap = false

@@ -1,4 +1,4 @@
-require("utils").map(
+map(
   "n",
   "<leader>s",
   "<cmd>e " .. vim.fn.stdpath("config") .. "/lua/plugins/luasnip.lua<cr>"

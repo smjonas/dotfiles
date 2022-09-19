@@ -198,11 +198,13 @@ nnoremap <leader>q <cmd>q<cr>
 nnoremap <silent> <F3> <cmd>!firefox %<cr>
 
 let nvim_config_root = stdpath('config')
-" Open lua config files
-nnoremap <leader>rc <cmd>execute 'e ' . nvim_config_root . '/init.lua'<cr>
-nnoremap <leader>rp <cmd>execute 'e ' . nvim_config_root . '/lua/packerinit.lua'<cr>
-nnoremap <leader>ro <cmd>execute 'e ' . nvim_config_root . '/lua/options.lua'<cr>
-nnoremap <leader>rm <cmd>execute 'e ' . nvim_config_root . '/mappings.vim'<cr>
+" Edit lua config files
+nnoremap <leader>ec <cmd>execute 'e ' . nvim_config_root . '/init.lua'<cr>
+nnoremap <leader>eu <cmd>execute 'e ' . nvim_config_root . '/lua/packerinit.lua'<cr>
+nnoremap <leader>ep <cmd>execute 'e ' . nvim_config_root . '/lua/plugin_settings.lua'<cr>
+nnoremap <leader>el <cmd>execute 'e ' . nvim_config_root . '/lua/plugin_list.lua'<cr>
+nnoremap <leader>eo <cmd>execute 'e ' . nvim_config_root . '/lua/options.lua'<cr>
+nnoremap <leader>em <cmd>execute 'e ' . nvim_config_root . '/mappings.vim'<cr>
 
 " Reload packerinit file, save and resource vim files (except init.vim)
 " This is used in .vimrc to reload the config when a file in the config folder was saved.

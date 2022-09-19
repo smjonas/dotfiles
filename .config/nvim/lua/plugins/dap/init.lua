@@ -1,7 +1,6 @@
 local M = {}
 
 local setup_mappings = function()
-  local map = require("utils").map
   -- DAP debug
   map("n", "<leader>db", "<cmd>lua require('osv').run_this()<cr>")
   map("n", "<leader>dh", "<cmd>lua require('dap').toggle_breakpoint()<cr>")

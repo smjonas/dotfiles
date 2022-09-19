@@ -18,7 +18,7 @@ return function(client, bufnr)
     vim.cmd("norm zz")
   end, opts)
 
-  require("lsp_signature").on_attach({
+  safe_require("lsp_signature").on_attach({
     doc_lines = 0,
     hint_enable = false,
     toggle_key = "<C-s>",
@@ -38,5 +38,5 @@ return function(client, bufnr)
     return ":IncRename " .. vim.fn.expand("<cword>")
   end, { expr = true })
 
-  require("nvim-navic").attach(client, bufnr)
+  -- safe_require("nvim-navic").attach(client, bufnr)
 end
