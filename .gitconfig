@@ -1,3 +1,5 @@
+[init]
+    defaultBranch = main
 [alias]
 	st = status
     c = commit -m
