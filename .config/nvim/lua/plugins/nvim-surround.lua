@@ -65,6 +65,13 @@ local custom_surrounds = {
       delete = "^(fmt%.Println%()().-(%))()$",
     },
   },
+  python = {
+    p = {
+      add = { "vim.pretty_print(", ")" },
+      find = "vim%.pretty_print%b()",
+      delete = "^(vim%.pretty_print%()().-(%))()$",
+    },
+  },
 }
 
 local group = vim.api.nvim_create_augroup("custom_surrounds", {})

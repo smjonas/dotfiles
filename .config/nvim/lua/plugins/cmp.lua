@@ -13,7 +13,11 @@ local cur_snippet_engine = vim.g["snippet_engine"]
 
 local luasnip
 if cur_snippet_engine == "luasnip" then
-  luasnip = require("luasnip")
+  local ok
+  ok, luasnip = pcall(require, "luasnip")
+  if not ok then
+    return
+  end
 end
 
 local function expand_for(snippet_engine, args)

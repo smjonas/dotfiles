@@ -92,6 +92,8 @@ require("packer").startup {
     register_plugins(plugins.all, use)
     -- Color schemes
     use(require("colorschemes"))
+    vim.cmd("colorscheme github_dark")
+
     local count = vim.tbl_count(disabled)
     if count > 0 then
       vim.schedule(function()

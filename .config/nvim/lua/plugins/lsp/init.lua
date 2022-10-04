@@ -77,7 +77,7 @@ for prefix, icon in pairs(diagnostic_symbols) do
   vim.fn.sign_define("DiagnosticSign" .. prefix, {
     text = is_table and icon[1] or icon,
     texthl = hl,
-    numhl = "Normal",
+    numhl = "Comment",
   })
 end
 

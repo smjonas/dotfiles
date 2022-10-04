@@ -31,19 +31,21 @@ return {
     end,
   },
   ["live-command.nvim"] = {
-    branch = "hl_improvements",
+    branch = "1.0_release",
     -- "smjonas/live-command.nvim",
     config = function()
       local commands = {
         Norm = { cmd = "norm" },
-        G = { cmd = "g", hl_range = { kind = "visible" } },
+        G = { cmd = "g" },
       }
       for _, register in ipairs { "a", "b", "c" } do
         commands["Reg" .. register] = { cmd = "norm", args = "@" .. register }
       end
-      require("live_command").setup {
+      require("live-command").setup {
         defaults = {
           -- hl_groups = { deletion = false },
+          enable_highlighting = true,
+          -- interline_highlighting = false,
         },
         commands = commands,
       }

@@ -144,9 +144,10 @@ nnoremap <leader>= gg=G""
 xnoremap . :norm .<cr>
 
 " Better undo break points
-inoremap , ,<C-g>u
-inoremap . .<C-g>u
-inoremap _ _<C-g>u
+" Leave uncommented until #20248 is fixed (causes issues with live-command)
+" inoremap , ,<C-g>u
+" inoremap . .<C-g>u
+" inoremap _ _<C-g>u
 
 " Jumplist mutations
 nnoremap <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k'
@@ -199,12 +200,12 @@ nnoremap <silent> <F3> <cmd>!firefox %<cr>
 
 let nvim_config_root = stdpath('config')
 " Edit lua config files
-nnoremap <leader>ec <cmd>execute 'e ' . nvim_config_root . '/init.lua'<cr>
-nnoremap <leader>eu <cmd>execute 'e ' . nvim_config_root . '/lua/packerinit.lua'<cr>
-nnoremap <leader>ep <cmd>execute 'e ' . nvim_config_root . '/lua/plugin_settings.lua'<cr>
-nnoremap <leader>el <cmd>execute 'e ' . nvim_config_root . '/lua/plugin_list.lua'<cr>
-nnoremap <leader>eo <cmd>execute 'e ' . nvim_config_root . '/lua/options.lua'<cr>
-nnoremap <leader>em <cmd>execute 'e ' . nvim_config_root . '/mappings.vim'<cr>
+nnoremap <leader>rc <cmd>execute 'e ' . nvim_config_root . '/init.lua'<cr>
+nnoremap <leader>ru <cmd>execute 'e ' . nvim_config_root . '/lua/packerinit.lua'<cr>
+nnoremap <leader>rp <cmd>execute 'e ' . nvim_config_root . '/lua/plugin_settings.lua'<cr>
+nnoremap <leader>rl <cmd>execute 'e ' . nvim_config_root . '/lua/plugin_list.lua'<cr>
+nnoremap <leader>ro <cmd>execute 'e ' . nvim_config_root . '/lua/options.lua'<cr>
+nnoremap <leader>rm <cmd>execute 'e ' . nvim_config_root . '/mappings.vim'<cr>
 
 " Reload packerinit file, save and resource vim files (except init.vim)
 " This is used in .vimrc to reload the config when a file in the config folder was saved.
@@ -216,6 +217,7 @@ nnoremap <Plug>reload_my_config <cmd>luafile ~/.config/nvim/lua/packerinit.lua<c
 " Launch current buffer in new kitty tab
 " (requires the current terminal emulator instance to be started with kitty -o allow_remote_control=yes --listen-on unix:/tmp/mykitty)
 nnoremap <F1> <cmd>silent !kitty @ launch --type=tab --cwd=current --location=neighbor nvim %<cr>
+nnoremap <F2> <cmd>ReloadConfig<cr>
 
 " Save and restore sessions
 nnoremap <F5> <cmd>SaveSession<cr>

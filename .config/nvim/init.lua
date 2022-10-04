@@ -47,15 +47,14 @@ augroup end
 local function reload_dev_modules()
  for _, plugin in ipairs({
  "plugins",
- "live_command",
- "live_command.provider.improved_levenshtein",
+ "plugin_list",
+ "live-command",
  "inc_rename",
  "snippet_converter",
  }) do
  package.loaded[plugin] = nil
  end
 end
-vim.api.nvim_create_user_command("ReloadDevModules", reload_dev_modules, {})
 
 local function reload_config()
  reload_dev_modules()
@@ -67,6 +66,8 @@ local function reload_config()
 :runtime mappings.vim
 :PackerCompile]])
 end
+
+vim.api.nvim_create_user_command("ReloadConfig", reload_config, {})
 
 vim.api.nvim_create_autocmd("BufWritePost", {
  pattern = "*/nvim/*",

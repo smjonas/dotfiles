@@ -26,7 +26,7 @@ require("lualine").setup {
         symbols = { modified = "[*]" },
       },
     },
-    lualine_x = { "diagnostics" },
+    lualine_x = { --[[ "diagnostics" ]] },
     lualine_y = { "filetype" },
     lualine_z = {
       {
