@@ -38,5 +38,5 @@ local on_attach = function(client, bufnr)
   client.server_capabilities.documentRangeFormattingProvider = false
 end
 
-local lua_dev_setup = require("lua-dev").setup {}
-return vim.tbl_deep_extend("force", lua_dev_setup, { settings = settings, on_attach = on_attach })
+local neodev_setup = require("neodev").setup {}
+return vim.tbl_deep_extend("force", neodev_setup, { settings = settings, on_attach = on_attach })

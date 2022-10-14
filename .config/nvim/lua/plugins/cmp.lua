@@ -9,77 +9,10 @@ end
 
 local cmp = require("cmp")
 local compare = cmp.config.compare
-local cur_snippet_engine = vim.g["snippet_engine"]
 
-local luasnip
-if cur_snippet_engine == "luasnip" then
-  local ok
-  ok, luasnip = pcall(require, "luasnip")
-  if not ok then
-    return
-  end
-end
-
-local function expand_for(snippet_engine, args)
-  if snippet_engine == "luasnip" then
-    luasnip.lsp_expand(args.body)
-  elseif snippet_engine == "ultisnips" then
-    vim.fn["UltiSnips#Anon"](args.body)
-  end
-end
-
-local function ctrl_n(snippet_engine, fallback)
-  if
-    snippet_engine == "luasnip"
-    and luasnip.choice_active()
-    and luasnip.expand_or_locally_jumpable()
-  then
-    luasnip.change_choice(1)
-  elseif cmp.visible() then
-    cmp.select_next_item()
-  else
-    fallback()
-  end
-end
-
-local function ctrl_p(snippet_engine, fallback)
-  if
-    snippet_engine == "luasnip"
-    and luasnip.choice_active()
-    and luasnip.expand_or_locally_jumpable()
-  then
-    luasnip.change_choice(-1)
-  elseif cmp.visible() then
-    cmp.select_prev_item()
-  else
-    fallback()
-  end
-end
-
-local function tab_for(snippet_engine, fallback)
-  if snippet_engine == "luasnip" then
-    if luasnip.expand_or_locally_jumpable() then
-      luasnip.expand_or_jump()
-    elseif has_any_words_before() then
-      cmp.complete()
-    else
-      fallback()
-    end
-  elseif snippet_engine == "ultisnips" then
-    require("cmp_nvim_ultisnips.mappings").expand_or_jump_forwards(fallback)
-  end
-end
-
-local function shift_tab_for(snippet_engine, fallback)
-  if snippet_engine == "luasnip" then
-    if luasnip.jumpable(-1) then
-      luasnip.jump(-1)
-    else
-      fallback()
-    end
-  elseif snippet_engine == "ultisnips" then
-    require("cmp_nvim_ultisnips.mappings").jump_backwards(fallback)
-  end
+local ok, luasnip = pcall(require, "luasnip")
+if not ok then
+  return
 end
 
 local lsp_icons = {
@@ -125,14 +58,14 @@ end
 cmp.setup {
   snippet = {
     expand = function(args)
-      expand_for(cur_snippet_engine, args)
+      luasnip.lsp_expand(args.body)
     end,
   },
   sources = {
     { name = "nvim_lsp" },
     { name = "path", priority = 20 },
     { name = "greek" },
-    { name = cur_snippet_engine, priority = 10, keyword_length = 1 },
+    { name = "luasnip", priority = 10, keyword_length = 1 },
     { name = "buffer", option = { keyword_pattern = [[\k\+]] }, keyword_length = 1 },
   },
   enabled = function()
@@ -167,23 +100,45 @@ cmp.setup {
       { "i", "s" }
     ),
     ["<Tab>"] = cmp.mapping(function(fallback)
-      tab_for(cur_snippet_engine, fallback)
+      if luasnip.expand_or_locally_jumpable() then
+        luasnip.expand_or_jump()
+      elseif has_any_words_before() then
+        cmp.complete()
+      else
+        fallback()
+      end
     end, {
       "i",
       "s", --[[ "c" (to enable the mapping in command mode) ]]
     }),
     ["<S-Tab>"] = cmp.mapping(function(fallback)
-      shift_tab_for(cur_snippet_engine, fallback)
+      if luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
     end, {
       "i",
       "s", --[[ "c" (to enable the mapping in command mode) ]]
     }),
     ["<C-Space>"] = cmp.mapping(cmp.mapping.complete()),
     ["<C-n>"] = cmp.mapping(function(fallback)
-      ctrl_n(cur_snippet_engine, fallback)
+      if luasnip.choice_active() and luasnip.expand_or_locally_jumpable() then
+        luasnip.change_choice(1)
+      elseif cmp.visible() then
+        cmp.select_next_item()
+      else
+        fallback()
+      end
     end, { "i", "s" }),
     ["<C-p>"] = cmp.mapping(function(fallback)
-      ctrl_p(cur_snippet_engine, fallback)
+      if luasnip.choice_active() and luasnip.expand_or_locally_jumpable() then
+        luasnip.change_choice(-1)
+      elseif cmp.visible() then
+        cmp.select_prev_item()
+      else
+        fallback()
+      end
     end, { "i", "s" }),
   },
   sorting = {

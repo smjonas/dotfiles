@@ -1,12 +1,13 @@
 local plugins = require("plugin_list")
 local plugin_settings = require("plugin_settings")
 
-local function command_preview(opts, _, _)
-  vim.cmd("norm i " .. opts.args)
-  return 0
+local function command_preview(_, _, _)
+  vim.g.kek = vim.api.nvim_get_mode()
+  vim.cmd("norm A = 'hey")
+  return 2
 end
 
-vim.api.nvim_create_user_command("Test", function() end, { preview = command_preview, nargs = 1 })
+vim.api.nvim_create_user_command("Test", function() end, { preview = command_preview, nargs = 0 })
 
 local fn = vim.fn
 local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
@@ -90,9 +91,7 @@ require("packer").startup {
   function(use)
     plugin_settings = vim.deepcopy(plugin_settings)
     register_plugins(plugins.all, use)
-    -- Color schemes
-    use(require("colorschemes"))
-    vim.cmd("colorscheme github_dark")
+    vim.cmd("colorscheme tokyonight-moon")
 
     local count = vim.tbl_count(disabled)
     if count > 0 then

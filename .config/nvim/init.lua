@@ -20,7 +20,7 @@ require("theme").init()
 vim.cmd([[
 runtime mappings.vim
 " Faster keyboard movement
-" silent !xset r rate 205 35
+silent !xset r rate 205 35
 
 augroup dotfiles
 
@@ -46,8 +46,8 @@ augroup end
 
 local function reload_dev_modules()
  for _, plugin in ipairs({
- "plugins",
  "plugin_list",
+ "plugin_settings",
  "live-command",
  "inc_rename",
  "snippet_converter",
@@ -59,7 +59,7 @@ end
 local function reload_config()
  reload_dev_modules()
  vim.cmd([[
-:luafile ~/.config/nvim/lua/plugin_settings.lua
+ :luafile ~/.config/nvim/lua/plugin_settings.lua
 :luafile ~/.config/nvim/lua/packerinit.lua
 :luafile ~/.config/nvim/lua/colorschemes.lua
 :luafile ~/.config/nvim/lua/options.lua

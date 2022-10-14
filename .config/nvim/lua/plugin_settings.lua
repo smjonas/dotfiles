@@ -1,7 +1,3 @@
--- Global settings
-vim.g.snippet_engine = "luasnip"
-pcall(vim.cmd, "colorscheme github_dark")
-
 return {
   ["packer.nvim"] = {
     config = function()
@@ -31,21 +27,28 @@ return {
     end,
   },
   ["live-command.nvim"] = {
-    branch = "1.0_release",
+    -- branch = "inline_highlights",
     -- "smjonas/live-command.nvim",
     config = function()
       local commands = {
         Norm = { cmd = "norm" },
         G = { cmd = "g" },
+        D = { cmd = "d" },
+        Reg = {
+          cmd = "norm",
+          args = function(opts)
+            return (opts.count == -1 and "" or opts.count) .. "@" .. opts.args
+          end,
+          range = "",
+        },
       }
-      for _, register in ipairs { "a", "b", "c" } do
-        commands["Reg" .. register] = { cmd = "norm", args = "@" .. register }
-      end
       require("live-command").setup {
+        debug = true,
         defaults = {
-          -- hl_groups = { deletion = false },
-          enable_highlighting = true,
-          -- interline_highlighting = false,
+          --   -- hl_groups = { deletion = false },
+          --   enable_highlighting = true,
+          --   -- interline_highlighting = false,
+          -- },
         },
         commands = commands,
       }
@@ -57,6 +60,7 @@ return {
     end,
   },
   ["snippet-converter.nvim"] = {
+    branch = "yasnippet",
     config = function()
       local snippet_converter = require("snippet_converter")
       local ultisnips_to_luasnip = {
@@ -72,8 +76,22 @@ return {
           },
         },
       }
+      local yasnippet = {
+        name = "yasnippet",
+        sources = {
+          yasnippet = {
+            "~/Desktop/yasnippets",
+          },
+        },
+        output = {
+          vscode_luasnip = {
+            "~/Desktop/yasnippets_output",
+          },
+        },
+      }
       snippet_converter.setup {
-        templates = { ultisnips_to_luasnip, friendly_snippets },
+        -- templates = { ultisnips_to_luasnip, friendly_snippets },
+        templates = { yasnippet },
       }
     end,
   },
@@ -108,6 +126,15 @@ return {
       vim.cmd("highlight FloatBorder guifg=" .. normal_fg .. " guibg=" .. normal_float_bg)
     end,
   },
+  -- Color schemes
+  ["github-nvim-theme"] = {
+    config = function()
+      require("github-theme").setup {}
+    end,
+  },
+  -- ["shaunsingh/oxocarbon.nvim"] = {
+  --   run = "./install.sh",
+  -- },
   -- LSP
   ["nvim-lspconfig"] = {
     config = function()
@@ -204,16 +231,9 @@ return {
   ["cmp-buffer"] = { after = "nvim-cmp" },
   ["cmp-path"] = { after = "nvim-cmp" },
   ["LuaSnip"] = {
-    disable = vim.g.snippet_engine ~= "luasnip",
     -- after = "nvim-cmp",
     config = function()
       require("luasnip.loaders.from_vscode").load { paths = { "./after/my_snippets/luasnip" } }
-    end,
-  },
-  ["ultisnips"] = {
-    disable = vim.g.snippet_engine ~= "ultisnips",
-    config = function()
-      vim.g.UltiSnipsEnableSnipMate = 1
     end,
   },
   ["telescope.nvim"] = {
@@ -301,6 +321,7 @@ return {
     config = function()
       local cmp_autopairs = require("nvim-autopairs.completion.cmp")
       require("nvim-autopairs").setup {
+        break_undo = false,
         disable_filetype = { "TelescopePrompt", "vim", "tex" },
         -- Insert brackets after selecting function from cmp
         require("cmp").event:on(
