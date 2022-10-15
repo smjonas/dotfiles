@@ -19,8 +19,8 @@ local settings = {
     -- },
     workspace = {
       -- library = {
-        -- vim.fn.expand("$VIMRUNTIME/lua"),
-        -- vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
+      -- vim.fn.expand("$VIMRUNTIME/lua"),
+      -- vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
       -- },
       maxPreload = 1000,
       preloadFileSize = 150,
@@ -38,5 +38,5 @@ local on_attach = function(client, bufnr)
   client.server_capabilities.documentRangeFormattingProvider = false
 end
 
-local neodev_setup = require("neodev").setup {}
-return vim.tbl_deep_extend("force", neodev_setup, { settings = settings, on_attach = on_attach })
+require("neodev").setup {}
+return { settings = settings, on_attach = on_attach }
