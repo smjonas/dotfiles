@@ -5,6 +5,11 @@ export PATH=$PATH:/home/jonas/.local/share/neovim/bin
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:/home/jonas/go/bin
 
+# TeX Live
+export PATH=$PATH:/usr/local/texlive/2022/bin/x86_64-linux
+export INFOPATH=$INFOPATH:/usr/local/texlive/2022/texmf-dist/doc/info
+export MANPATH=$MANPATH:/usr/local/texlive/2022/texmf-dist/doc/man
+
 export SHELL=/usr/bin/zsh
 source ~/.aliases
 
