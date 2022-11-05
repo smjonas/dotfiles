@@ -1,7 +1,5 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
-export PATH=$PATH:/home/jonas/.local/share/neovim/bin
+# export PATH=$PATH:/home/jonas/.local/share/neovim/bin
+export PATH=$PATH:/home/jonas/.local/share/bob/nightly/nvim-linux64/bin
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:/home/jonas/go/bin
 

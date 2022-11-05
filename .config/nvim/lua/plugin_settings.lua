@@ -12,20 +12,6 @@ return {
       require("plugins.nvim-surround")
     end,
   },
-  ["dressing.nvim"] = {
-    -- "stevearc/dressing.nvim",
-    config = function()
-      require("dressing").setup {
-        input = {
-          override = function(conf)
-            conf.col = -1
-            conf.row = 0
-            return conf
-          end,
-        },
-      }
-    end,
-  },
   ["live-command.nvim"] = {
     -- branch = "inline_highlights",
     -- "smjonas/live-command.nvim",
@@ -89,9 +75,22 @@ return {
           },
         },
       }
+      local extends_test = {
+        name = "extends_test",
+        sources = {
+          ultisnips = {
+            "~/Desktop/ultisnips/",
+          },
+        },
+        output = {
+          vscode = {
+            "~/Desktop/ultisnips/output",
+          },
+        },
+      }
       snippet_converter.setup {
         -- templates = { ultisnips_to_luasnip, friendly_snippets },
-        templates = { yasnippet },
+        templates = { yasnippet, extends_test },
       }
     end,
   },
@@ -196,13 +195,20 @@ return {
     end,
   },
   ["inc-rename.nvim"] = {
-    branch = "sync",
+    branch = "preview",
     -- "smjonas/inc-rename.nvim",
     config = function()
       require("inc_rename").setup {
-        async = false,
+        async = true,
         hl_group = "IncSearch",
-        input_buffer_type = "dressing",
+      }
+    end,
+  },
+  ["noice.nvim"] = {
+    event = "VimEnter",
+    config = function()
+      require("noice").setup {
+        presets = { inc_rename = true },
       }
     end,
   },
@@ -354,7 +360,6 @@ return {
   },
   -- Writing to-do lists, emails etc.
   ["vimwiki"] = {
-    disable = true,
     branch = "dev",
     -- keys = "<leader>x",
     config = function()
