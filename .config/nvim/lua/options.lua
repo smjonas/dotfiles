@@ -9,6 +9,7 @@ o.cmdheight = 2
 -- o.completeopt = "menuone,noselect,preview"
 o.completeopt = "menu,menuone"
 o.cursorline = true
+o.diffopt = o.diffopt + "linematch:60"
 o.expandtab = true
 -- Don't make all windows the same size when resizing (also required for windows.nvim)
 o.equalalways = false
@@ -16,7 +17,8 @@ o.equalalways = false
 o.foldopen = o.foldopen - "block"
 o.ignorecase = true
 -- Show replacement results while typing command
-o.inccommand = "nosplit"
+-- TODO: change back to nosplit
+o.inccommand = "split"
 -- Drag window with mouse
 o.mouse = "a"
 o.hlsearch = false

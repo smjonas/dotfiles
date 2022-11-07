@@ -91,7 +91,7 @@ require("packer").startup {
   function(use)
     plugin_settings = vim.deepcopy(plugin_settings)
     register_plugins(plugins.all, use)
-    vim.cmd("colorscheme tokyonight-moon")
+    pcall(vim.cmd, "colorscheme tokyonight-moon")
 
     local count = vim.tbl_count(disabled)
     if count > 0 then
