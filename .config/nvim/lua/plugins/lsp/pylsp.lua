@@ -8,10 +8,11 @@ local on_attach = function(client, bufnr)
 end
 
 local settings = {
-  plugins = {
-    pycodestyle = {
-      maxLineLength = 100,
-      ["max-line-length"] = 100,
+  pylsp = {
+    plugins = {
+      pycodestyle = {
+        maxLineLength = 110,
+      },
     },
   },
 }
