@@ -1,7 +1,5 @@
 local plugin_list = {
   "wbthomason/packer.nvim",
-  -- "kylechui/nvim-surround",
-  "~/Desktop/NeovimPlugins/nvim-surround",
   "~/Desktop/NeovimPlugins/live-command.nvim",
   "smjonas/live-tests-busted.nvim",
   "~/Desktop/NeovimPlugins/snippet-converter.nvim",
@@ -65,10 +63,13 @@ local plugin_list = {
   "lervag/vimtex",
   "NvChad/nvim-colorizer.lua",
   "vim-test/vim-test",
-  "wellle/targets.vim",
+  -- "wellle/targets.vim",
+  "echasnovski/mini.nvim",
   { "Julian/vim-textobj-variable-segment", requires = "kana/vim-textobj-user" },
   "inkarkat/vim-ReplaceWithRegister",
   -- New ways to manipulate text
+  "kylechui/nvim-surround",
+  "windwp/nvim-autopairs",
   "AndrewRadev/sideways.vim",
   "zirrostig/vim-schlepp",
   {
@@ -78,8 +79,6 @@ local plugin_list = {
       "nvim-treesitter/nvim-treesitter",
     },
   },
-  "windwp/nvim-autopairs",
-  "rmagatti/auto-session",
   "ggandor/leap.nvim",
   "tpope/vim-fugitive",
   { "sindrets/diffview.nvim", requires = "nvim-lua/plenary.nvim" },
@@ -92,6 +91,7 @@ local plugin_list = {
   "arp242/undofile_warn.vim",
   "tpope/vim-repeat",
   "lewis6991/impatient.nvim",
+  "rmagatti/auto-session",
 }
 
 -- "plenary.nvim",
