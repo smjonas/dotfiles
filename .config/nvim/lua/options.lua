@@ -17,8 +17,7 @@ o.equalalways = false
 o.foldopen = o.foldopen - "block"
 o.ignorecase = true
 -- Show replacement results while typing command
--- TODO: change back to nosplit
-o.inccommand = "split"
+o.inccommand = "nosplit"
 -- Drag window with mouse
 o.mouse = "a"
 o.hlsearch = false

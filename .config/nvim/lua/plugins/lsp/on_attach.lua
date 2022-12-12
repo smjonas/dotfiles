@@ -34,9 +34,5 @@ return function(client, bufnr)
   map("n", "<C-k>", vim.diagnostic.goto_next)
   map("n", "<leader>a", "<cmd>Lspsaga code_action<cr>", opts)
 
-  vim.keymap.set("n", "<leader>rn", function()
-    return ":IncRename " .. vim.fn.expand("<cword>")
-  end, { expr = true })
-
   -- safe_require("nvim-navic").attach(client, bufnr)
 end

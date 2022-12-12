@@ -164,6 +164,19 @@ nnoremap ` '
 nnoremap <leader>s :%s///gc<left><left><left><left>
 xnoremap s :s/\%V//g<left><left><left>
 
+lua << EOF
+vim.keymap.set("n", "<leader>rn", function()
+  -- Fallback to text substitution when LSP is not available
+  local cur_word = vim.fn.expand("<cword>")
+  vim.pretty_print(vim.lsp.get_active_clients { bufnr = vim.api.nvim_get_current_buf() })
+  if vim.tbl_isempty(vim.lsp.get_active_clients { bufnr = vim.api.nvim_get_current_buf() }) then
+    return ":%s/" .. cur_word .. "//gc" .. ("<left>"):rep(3)
+  else
+    return ":IncRename " .. cur_word
+  end
+end, { expr = true })
+EOF
+
 " Repeat the last substitute command while using the same flags (remove once #19365 is merged)
 nnoremap & :&&<CR>
 
