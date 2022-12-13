@@ -4,7 +4,7 @@ apt install -y zsh git kitty yadm fzf ripgrep python3-pip cargo npm luarocks
 # Make zsh the default shell
 chsh -s $(which zsh)
 
-# Install oh-my-sh
+# Install oh-my-zsh
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 # Install homebrew (required for gh)
