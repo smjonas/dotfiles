@@ -2,7 +2,7 @@ alias ..='cd ..'
 alias v='nvim'
 alias r='nvim -c "RestoreSession"'
 
-alias eth='sudo ~/r8125-9.007.01/autorun.sh'
+alias inet='sudo ~/r8125-9.007.01/autorun.sh'
 # Restart pulseaudio to fix audio issues
 alias pk='pulseaudio -k'
 alias xampp='sudo /opt/lampp/manager-linux-x64.run'
@@ -12,6 +12,10 @@ alias stox='clear && cd ~/Desktop/Inacon/Automation/stocks && \
     source ../../inacon_env/bin/activate && python3 price_scraping.py'
 
 alias vpn='sudo openvpn --config /media/jonas/Volume/KIT/kit.ovpn'
+
+# JPlag
+alias jplag_build='cd ~/Desktop/JPlag/ && mvn -U -B clean package assembly:single -Dmaven.test.skip=true'
+alias jplag_run='cd ~/Desktop/JPlag/ && java -jar cli/target/jplag-4.1.0-jar-with-dependencies.jar -l scxml'
 
 # git
 alias g='git'
