@@ -4,6 +4,7 @@
 --   install_info = {
 --     url = "https://github.com/nvim-neorg/tree-sitter-norg",
 --     files = { "src/parser.c", "src/scanner.cc" },
+
 --     branch = "main",
 --   },
 -- }
@@ -31,6 +32,16 @@ require("nvim-treesitter.configs").setup {
         ["ia"] = "@parameter.inner",
         ["ai"] = "@conditional.outer",
         ["ii"] = "@conditional.inner",
+      },
+    },
+    move = {
+      enable = true,
+      set_jumps = true,
+      goto_previous_start = {
+        ["[["] = "@function.outer",
+      },
+      goto_next_start = {
+        ["]]"] = "@function.outer",
       },
     },
   },
