@@ -8,8 +8,10 @@ require("lualine").setup {
   options = {
     icons_enabled = true,
     theme = statusline_theme,
-    section_separators = { left = "", right = "" },
-    component_separators = { left = "", right = "" },
+    -- section_separators = { left = "", right = "" },
+    section_separators = { left = "", right = "" },
+    -- component_separators = { left = "", right = "" },
+    component_separators = { left = "|", right = "|" },
     disabled_filetypes = {},
   },
   sections = {
@@ -26,7 +28,7 @@ require("lualine").setup {
         symbols = { modified = "[*]" },
       },
     },
-    lualine_x = { --[[ "diagnostics" ]] },
+    lualine_x = { --[[ "searchcount" ]] },
     lualine_y = { "filetype" },
     lualine_z = {
       {
