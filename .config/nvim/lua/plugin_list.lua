@@ -1,4 +1,6 @@
 local plugin_list = {
+  -- "tpope/vim-abolish",
+  "~/Desktop/NeovimPlugins/vim-abolish",
   "wbthomason/packer.nvim",
   "~/Desktop/NeovimPlugins/live-command.nvim",
   "smjonas/live-tests-busted.nvim",
@@ -50,7 +52,8 @@ local plugin_list = {
   },
   { "L3MON4D3/LuaSnip", requires = "rafamadriz/friendly-snippets" },
   {
-    "nvim-telescope/telescope.nvim",
+    -- "nvim-telescope/telescope.nvim",
+    "~/Desktop/NeovimPlugins/telescope.nvim",
     requires = {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope-fzf-native.nvim",

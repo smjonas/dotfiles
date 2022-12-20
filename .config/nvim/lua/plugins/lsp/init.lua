@@ -33,7 +33,7 @@ local setup_lsp_servers = function()
     return
   end
   mason.setup {
-    ensure_installed = { "sumneko_lua", "pylsp", "gopls" },
+    ensure_installed = { "pylsp", "gopls" },
   }
   local lsp_config = require("lspconfig")
 

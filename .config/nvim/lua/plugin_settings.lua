@@ -1,3 +1,20 @@
+local old = 1
+local test = vim.lsp.buf.rename
+vim.lsp.buf.rename = function()
+  vim.api.nvim_feedkeys(":IncRename ", "n", false)
+  -- test()
+end
+
+vim.api.nvim_create_user_command("Crash", function()
+  vim.cmd("%s/old/new/")
+end, {
+  preview = function()
+    vim.cmd("%s/old/new/")
+    return 2
+  end,
+})
+-- hello
+
 return {
   ["packer.nvim"] = {
     config = function()
@@ -27,12 +44,14 @@ return {
           end,
           range = "",
         },
+        LSubvert = { cmd = "Subvert", enable_highlighting = false },
+        S = { cmd = "substitute" },
       }
       require("live-command").setup {
         debug = true,
         defaults = {
           --   -- hl_groups = { deletion = false },
-          --   enable_highlighting = true,
+          enable_highlighting = false,
           --   -- interline_highlighting = false,
           -- },
         },
@@ -151,7 +170,7 @@ return {
   },
   ["null-ls.nvim"] = {
     config = function()
-      require("plugins.lsp.null_ls")
+      -- require("plugins.lsp.null_ls")
     end,
   },
 
@@ -274,9 +293,9 @@ return {
   },
   { ["vim-closetag"] = { ft = { "html", "php" } } },
   ["vimtex"] = {
-    ft = "tex",
+    -- ft = "tex",
     config = function()
-      vim.cmd([[autocmd User VimtexEventInitPost VimtexCompile]])
+      -- vim.cmd([[autocmd User VimtexEventInitPost VimtexCompile]])
     end,
   },
   ["nvim-colorizer.lua"] = {
