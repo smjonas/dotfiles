@@ -1,16 +1,6 @@
-local map = vim.keymap.set
-map("n", "<leader>gs", "<cmd>Git<cr>")
-map("n", "<leader>gp", "<cmd>Git push<cr>")
-
-vim.api.nvim_create_autocmd("BufEnter", {
-  callback = function()
-    if vim.bo.filetype == "fugitive" then
-      map("n", "<leader>gf", "<cmd>Git push -f<cr>", { buffer = true })
-    end
-  end,
-})
-
-local M = {}
+local M = {
+  "tpope/vim-fugitive",
+}
 
 -- This is a hacky way to trick fugitive into using yadm instead of git from all buffers.
 
@@ -74,11 +64,30 @@ function M.yadm_command(cmd)
   ]])
 end
 
--- Defines custom Yadm command
-vim.cmd(
-  "command! -nargs=? -complete=customlist,fugitive#Complete Yadm lua require('plugins.fugitive').yadm_command(<f-args>)"
-)
-map("n", "<leader>ys", "<cmd>lua require('plugins.fugitive').yadm_command('')<cr>")
-map("n", "<leader>yp", "<cmd>lua require('plugins.fugitive').yadm_command('push')<cr>")
+M.config = function()
+  local map = vim.keymap.set
+  map("n", "<leader>gs", "<cmd>Git<cr>")
+  map("n", "<leader>gp", "<cmd>Git push<cr>")
 
+  vim.api.nvim_create_autocmd("BufEnter", {
+    callback = function()
+      if vim.bo.filetype == "fugitive" then
+        map("n", "<leader>gf", "<cmd>Git push -f<cr>", { buffer = true })
+      end
+    end,
+  })
+
+  -- Defines custom Yadm command
+  vim.cmd(
+    "command! -nargs=? -complete=customlist,fugitive#Complete Yadm lua require('plugins.fugitive').yadm_command(<f-args>)"
+  )
+
+  map("n", "<leader>ys", function()
+    M.yadm_command("")
+  end)
+
+  map("n", "<leader>yp", function()
+    M.yadm_command("push")
+  end)
+end
 return M

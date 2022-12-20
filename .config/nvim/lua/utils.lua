@@ -23,7 +23,7 @@ function safe_require(module_name)
     -- vim.defer_fn(function()
     --   vim.schedule(function()
         vim.notify(
-          "Could not load module: " .. module_name,
+          "utils..safe_require: could not load module: " .. module_name,
           vim.log.levels.ERROR,
           { title = "Module Not Found" }
         )

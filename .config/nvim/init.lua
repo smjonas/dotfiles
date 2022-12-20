@@ -10,13 +10,6 @@ if exists('+termguicolors')
 endif
 ]])
 
--- Load config files
-require("utils")
-require("autocmds")
-require("options")
-require("packerinit")
-require("theme").init()
-
 vim.cmd([[
 runtime mappings.vim
 " Faster keyboard movement
@@ -44,6 +37,12 @@ augroup dotfiles
 augroup end
 ]])
 
+-- Load config files
+require("utils")
+require("autocmds")
+require("options")
+require("lazyinit")
+
 local function reload_dev_modules()
  for _, plugin in ipairs({
  "plugin_list",
@@ -59,12 +58,10 @@ end
 local function reload_config()
  reload_dev_modules()
  vim.cmd([[
- :luafile ~/.config/nvim/lua/plugin_settings.lua
-:luafile ~/.config/nvim/lua/packerinit.lua
-:luafile ~/.config/nvim/lua/colorschemes.lua
+:luafile ~/.config/nvim/lua/lazyinit.lua
 :luafile ~/.config/nvim/lua/options.lua
 :runtime mappings.vim
-:PackerCompile]])
+]])
 end
 
 vim.api.nvim_create_user_command("ReloadConfig", reload_config, {})
