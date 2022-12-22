@@ -18,3 +18,6 @@ require("lazy").setup("plugins", {
     patterns = { "smjonas" },
   },
 })
+
+vim.keymap.set("n", "<leader>l", "<cmd>:Lazy<cr>")
+vim.keymap.set("n", "<leader>u", "<cmd>:Lazy update<cr>")

@@ -1,6 +1,7 @@
 return {
   "smjonas/live-command.nvim",
-  dev = true,
+  dependencies = { "tpope/vim-abolish" },
+  -- dev = true,
   -- branch = "inline_highlights",
   -- "smjonas/live-command.nvim",
   config = function()
@@ -15,7 +16,7 @@ return {
         end,
         range = "",
       },
-      LSubvert = { cmd = "Subvert", enable_highlighting = false },
+      LSubvert = { cmd = "Subvert" },
       S = { cmd = "substitute" },
     }
     require("live-command").setup {

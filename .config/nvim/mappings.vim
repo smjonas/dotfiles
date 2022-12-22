@@ -214,7 +214,7 @@ nnoremap <silent> <F3> <cmd>!firefox %<cr>
 let nvim_config_root = stdpath('config')
 " Edit lua config files
 nnoremap <leader>rc <cmd>execute 'e ' . nvim_config_root . '/init.lua'<cr>
-nnoremap <leader>rp <cmd>execute 'e ' . nvim_config_root . '/lua/plugins/init.lua'<cr>
+nnoremap <leader>rp <cmd>execute 'e ' . nvim_config_root . '/lua/lazyinit.lua'<cr>
 nnoremap <leader>ro <cmd>execute 'e ' . nvim_config_root . '/lua/options.lua'<cr>
 nnoremap <leader>rm <cmd>execute 'e ' . nvim_config_root . '/mappings.vim'<cr>
 
