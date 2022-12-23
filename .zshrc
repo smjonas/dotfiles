@@ -1,3 +1,5 @@
+source ~/openai_api_key.sh
+
 # export PATH=$PATH:/home/jonas/.local/share/neovim/bin
 export PATH=$PATH:/home/jonas/.local/share/bob/nightly/nvim-linux64/bin
 export PATH=$PATH:/usr/local/go/bin

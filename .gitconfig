@@ -2,7 +2,7 @@
     defaultBranch = main
 [alias]
 	st = status
-    c = commit -m
+    co = commit -m
     ca = commit --amend --no-edit
     fp = push -f
 [user]

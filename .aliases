@@ -21,5 +21,4 @@ alias jplag_run='cd ~/Desktop/JPlag/ && java -jar cli/target/jplag-4.1.0-jar-wit
 alias g='git'
 alias gs='git status'
 alias ga='git add -A'
-alias gc='git commit -m'
 alias gp='git push'
