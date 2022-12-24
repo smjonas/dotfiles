@@ -24,78 +24,78 @@ M.config = function()
   local actions = require("telescope.actions")
 
   require("telescope").setup {
-    -- defaults = {
-    --   mappings = {
-    --     i = {
-    --       ["<C-n>"] = actions.move_selection_next,
-    --       ["<C-p>"] = actions.move_selection_previous,
-    --       ["<C-c>"] = actions.close,
-    --       ["<C-j>"] = actions.cycle_history_next,
-    --       ["<C-k>"] = actions.cycle_history_prev,
-    --       ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
-    --       ["<C-f>"] = require("telescope.actions.layout").toggle_preview,
-    --       ["<Cr>"] = actions.select_default + actions.center,
-    --       ["<Tab>"] = function() end,
-    --       ["<S-Tab>"] = function() end,
-    --     },
-    --     n = {
-    --       ["<C-n>"] = actions.move_selection_next,
-    --       ["<C-p>"] = actions.move_selection_previous,
-    --       ["<C-c>"] = actions.close,
-    --       ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
-    --     },
-    --   },
-    --   -- preview = {
-    --   --   hide_on_startup = true,
-    --   -- },
-    --   -- sort_mru = true,
-    --   path_display = { "truncate" },
-    --   multi_icon = "",
-    --   -- The following lines were adapted from thanhvule0310/dotfiles
-    --   prompt_prefix = "   ○  ",
-    --   selection_caret = "  ",
-    --   entry_prefix = "  ",
-    --   sorting_strategy = "ascending",
-    --   layout_strategy = "horizontal",
-    --   layout_config = {
-    --     horizontal = {
-    --       prompt_position = "top",
-    --       preview_width = 0.5,
-    --       results_width = 0.5,
-    --     },
-    --     width = 0.75,
-    --     height = 0.75,
-    --     preview_cutoff = 120,
-    --   },
-    -- },
-    -- pickers = {
-    --   live_grep = {
-    --     disable_coordinates = true,
-    --     -- Do not sort by file name etc.
-    --     only_sort_text = true,
-    --     -- Emulate AND operator
-    --     on_input_filter_cb = function(prompt)
-    --       return { prompt = prompt:gsub("%s", ".*") }
-    --     end,
-    --     additional_args = function(opts)
-    --       if opts.search_all == true then
-    --         return {}
-    --       end
-    --       -- Only show results from files of the same filetype as the
-    --       -- buffer where live_grep was opened in (except for Lua files)
-    --       local args_for_ext = {
-    --         lua = { "-tlua", "-tvim" },
-    --         python = { "-tpy" },
-    --         tex = { "-ttex" },
-    --       }
-    --       return args_for_ext[vim.bo.filetype] or {}
-    --     end,
-    --   },
-    --   buffers = {
-    --     theme = "dropdown",
-    --     previewer = false,
-    --   },
-    -- },
+    defaults = {
+      mappings = {
+        i = {
+          ["<C-n>"] = actions.move_selection_next,
+          ["<C-p>"] = actions.move_selection_previous,
+          ["<C-c>"] = actions.close,
+          ["<C-j>"] = actions.cycle_history_next,
+          ["<C-k>"] = actions.cycle_history_prev,
+          ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
+          ["<C-f>"] = require("telescope.actions.layout").toggle_preview,
+          ["<Cr>"] = actions.select_default + actions.center,
+          ["<Tab>"] = function() end,
+          ["<S-Tab>"] = function() end,
+        },
+        n = {
+          ["<C-n>"] = actions.move_selection_next,
+          ["<C-p>"] = actions.move_selection_previous,
+          ["<C-c>"] = actions.close,
+          ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
+        },
+      },
+      -- preview = {
+      --   hide_on_startup = true,
+      -- },
+      -- sort_mru = true,
+      path_display = { "truncate" },
+      multi_icon = "",
+      -- The following lines were adapted from thanhvule0310/dotfiles
+      prompt_prefix = "   ○  ",
+      selection_caret = "  ",
+      entry_prefix = "  ",
+      sorting_strategy = "ascending",
+      layout_strategy = "horizontal",
+      layout_config = {
+        horizontal = {
+          prompt_position = "top",
+          preview_width = 0.5,
+          results_width = 0.5,
+        },
+        width = 0.75,
+        height = 0.75,
+        preview_cutoff = 120,
+      },
+    },
+    pickers = {
+      live_grep = {
+        disable_coordinates = true,
+        -- Do not sort by file name etc.
+        only_sort_text = true,
+        -- Emulate AND operator
+        on_input_filter_cb = function(prompt)
+          return { prompt = prompt:gsub("%s", ".*") }
+        end,
+        additional_args = function(opts)
+          if opts.search_all == true then
+            return {}
+          end
+          -- Only show results from files of the same filetype as the
+          -- buffer where live_grep was opened in (except for Lua files)
+          local args_for_ext = {
+            lua = { "-tlua", "-tvim" },
+            python = { "-tpy" },
+            tex = { "-ttex" },
+          }
+          return args_for_ext[vim.bo.filetype] or {}
+        end,
+      },
+      buffers = {
+        theme = "dropdown",
+        previewer = false,
+      },
+    },
   }
 
   vim.keymap.set("n", "<leader>rs", function()

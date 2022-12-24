@@ -21,3 +21,4 @@ require("lazy").setup("plugins", {
 
 vim.keymap.set("n", "<leader>l", "<cmd>:Lazy<cr>")
 vim.keymap.set("n", "<leader>u", "<cmd>:Lazy update<cr>")
+vim.keymap.set("n", "<leader>i", "<cmd>:Lazy install<cr>")
