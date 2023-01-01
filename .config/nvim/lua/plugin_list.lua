@@ -139,7 +139,7 @@ local disabled_plugins = {
   "nvim-navic",
   -- "nvim-treesitter",
   -- "playground",
-  "noice.nvim"
+  "noice.nvim",
   -- "nvim-treesitter-textobjects",
   -- "nvim-ts-context-commentstring",
   -- "nvim-surround",

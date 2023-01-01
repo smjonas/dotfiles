@@ -22,11 +22,11 @@ function safe_require(module_name)
   if not ok then
     -- vim.defer_fn(function()
     --   vim.schedule(function()
-        vim.notify(
-          "utils..safe_require: could not load module: " .. module_name,
-          vim.log.levels.ERROR,
-          { title = "Module Not Found" }
-        )
+    vim.notify(
+      "utils..safe_require: could not load module: " .. module_name,
+      vim.log.levels.ERROR,
+      { title = "Module Not Found" }
+    )
     --   end)
     -- end, 1000)
     -- Ignore any function call on the module
