@@ -51,7 +51,10 @@ plugins=(
 )
 bindkey '^f' autosuggest-accept
 
+# Always update plugins without asking
+export DISABLE_UPDATE_PROMPT=true
 source $ZSH/oh-my-zsh.sh
+
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
