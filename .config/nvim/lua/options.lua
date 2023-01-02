@@ -9,7 +9,7 @@ o.cmdheight = 2
 -- o.completeopt = "menuone,noselect,preview"
 o.completeopt = "menu,menuone"
 o.cursorline = true
-o.diffopt = o.diffopt + "linematch:60"
+-- o.diffopt = o.diffopt + "linematch:60"
 o.expandtab = true
 -- Don't make all windows the same size when resizing (also required for windows.nvim)
 o.equalalways = false
