@@ -15,7 +15,9 @@ return function(client, bufnr)
         vim.cmd("cfirst")
       end,
     }
-    vim.cmd("norm zz")
+    vim.schedule(function()
+      vim.cmd("norm zz")
+    end)
   end, opts)
 
   safe_require("lsp_signature").on_attach({

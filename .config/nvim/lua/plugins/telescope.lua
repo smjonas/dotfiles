@@ -1,6 +1,7 @@
 local M = {
   "nvim-telescope/telescope.nvim",
-  commit = "5c7db4055d8",
+  -- commit = "5c7db4055d8",
+  dev = true,
   -- "~/Desktop/NeovimPlugins/telescope.nvim", requires = "nvim-lua/plenary.nvim",
   dependencies = {
     "nvim-lua/plenary.nvim",
