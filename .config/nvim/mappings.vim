@@ -205,7 +205,7 @@ nnoremap <C-w><C-h> <cmd>split<cr>
 nnoremap <C-w><C-^> <C-w><C-^><C-w>t<C-w>H
 
 " Faster file saving and exiting
-nnoremap <leader>w <cmd>w<cr>
+nnoremap <leader>w <cmd>update<cr>
 nnoremap <leader>q <cmd>q<cr>
 
 " Open current file in browser
