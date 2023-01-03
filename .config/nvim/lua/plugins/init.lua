@@ -18,4 +18,5 @@ return {
   "arp242/undofile_warn.vim",
   "tpope/vim-repeat",
   "rmagatti/auto-session",
+  { "Julian/vim-textobj-variable-segment", dependencies = "kana/vim-textobj-user" },
 }
