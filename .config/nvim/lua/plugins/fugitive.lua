@@ -68,6 +68,7 @@ M.config = function()
   local map = vim.keymap.set
   map("n", "<leader>gs", "<cmd>Git<cr>")
   map("n", "<leader>gp", "<cmd>Git push<cr>")
+  map("n", "<leader>gl", "<cmd>Git pull<cr>")
 
   vim.api.nvim_create_autocmd("BufEnter", {
     callback = function()
@@ -89,5 +90,10 @@ M.config = function()
   map("n", "<leader>yp", function()
     M.yadm_command("push")
   end)
+
+  map("n", "<leader>yl", function()
+    M.yadm_command("pull")
+  end)
+
 end
 return M
