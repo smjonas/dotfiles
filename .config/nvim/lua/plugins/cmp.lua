@@ -5,7 +5,7 @@ local M = {
     "hrsh7th/cmp-nvim-lsp",
     "saadparwaiz1/cmp_luasnip",
     "max397574/cmp-greek",
-    "hrsh7th/cmp-buffer",
+    "vE5li/cmp-buffer",
     "hrsh7th/cmp-path",
   },
 }
