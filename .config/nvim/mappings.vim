@@ -1,13 +1,13 @@
 let mapleader = " "
 
-nnoremap ii <Esc>
-xnoremap ii <Esc>gV
-onoremap ii <Esc>
-inoremap ii <Esc>`^
-cno ii <C-C><Esc>
+nnoremap ij <Esc>
+xnoremap ij <Esc>gV
+onoremap ij <Esc>
+inoremap ij <Esc>`^
+cno ij <C-C><Esc>
 
 " Remap exiting terminal mode
-tno ii <C-\><C-n>
+tno ij <C-\><C-n>
 
 " Basic movement in insert mode
 inoremap <C-h> <left>
