@@ -14,6 +14,12 @@ return {
     end,
   },
   -- Misc
+  {
+    "luukvbaal/statuscol.nvim",
+    config = function()
+      require("statuscol").setup { setopt = true }
+    end,
+  },
   { "alvan/vim-closetag", ft = { "html", "php" } },
   "arp242/undofile_warn.vim",
   "tpope/vim-repeat",
