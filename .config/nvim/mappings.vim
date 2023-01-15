@@ -23,20 +23,6 @@ nnoremap k gk
 nnoremap H ^
 nnoremap L $
 
-" Indenting lines
-nnoremap <silent> <A-k> <cmd>move-2<cr>==
-nnoremap <silent> <A-j> <cmd>move+<cr>==
-nnoremap <silent> <A-h> <<
-nnoremap <silent> <A-l> >>
-xnoremap <silent> <A-k> :move-2<cr>gv
-xnoremap <silent> <A-j> :move'>+<cr>gv
-xnoremap <silent> <A-h> <gv
-xnoremap <silent> <A-l> >gv
-inoremap <silent> <A-k> <cmd>move-2<cr>==
-inoremap <silent> <A-j> <cmd>move+<cr>==
-inoremap <silent> <A-h> <cmd>norm<<<cr>
-inoremap <silent> <A-l> <cmd>norm>><cr>
-
 " Managing tabs
 nnoremap <C-left>  <cmd>tabprev<cr>
 nnoremap <C-right> <cmd>tabnext<cr>

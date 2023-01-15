@@ -4,5 +4,6 @@ return {
     require("mini.ai").setup {
       n_lines = 200,
     }
+    require("mini.move").setup()
   end,
 }
