@@ -18,6 +18,13 @@ local M = {
         require("telescope").load_extension("recent_files")
       end,
     },
+    {
+      "danielfalk/smart-open.nvim",
+      config = function()
+        require("telescope").load_extension("smart_open")
+      end,
+      dependencies = { "tami5/sqlite.lua" },
+    },
   },
 }
 
@@ -177,36 +184,35 @@ M.config = function()
     end
   end
 
-  local map = function(lhs, rhs)
-    vim.keymap.set("n", lhs, rhs, { silent = true })
+  local map = function(lhs, rhs, desc)
+    vim.keymap.set("n", lhs, rhs, { silent = true, desc = desc })
   end
 
-  -- map("<leader>rs", "<cmd>Telescope resume<cr>")
-  vim.keymap.set("n", "<leader>rs", function()
-    vim.cmd("Telescope resume")
-  end, { desc = "Telescope ReSume" })
-
-  map("<leader>ff", find_files)
-  map("<leader>fi", find_inacon)
-  map("<leader>fu", find_old_inacon)
-  map("<leader>fp", project_search)
-  map("<leader>fv", find_nvim_plugins)
-  map("<leader>fc", find_config)
-  -- Find Old
-  map("<leader>fo", "<cmd>lua require('telescope').extensions.recent_files.pick()<cr>")
+  map("<leader>rs", "<cmd>Telescope resume<cr>", "telescope ReSume")
+  map("<leader>ff", find_files, "telescope Find Files")
+  map("<leader>fi", find_inacon, "telescope Find Inacon")
+  map("<leader>fu", find_old_inacon, "telescope Find Old inacon")
+  map("<leader>fp", project_search, "telescope Find in Project")
+  map("<leader>fv", find_nvim_plugins, "telescope Find in nVim config")
+  map("<leader>fc", find_config, "telescope Find in Config files")
+  map("<leader>fo", function()
+    vim.cmd.Telescope("smart_open")
+  end, "telescope Find Old files")
+  -- map(
+  --   "<leader>fo",
+  --   "<cmd>lua require('telescope').extensions.recent_files.pick()<cr>",
+  --   "telescope Find Old files"
+  -- )
   -- Requires ripgrep to be installed (sudo apt install ripgrep)
-  map("<leader>fg", grep_git_root(builtin.live_grep))
-  -- Find Word
-  map("<leader>fw", grep_git_root(builtin.grep_string))
+  map("<leader>fg", grep_git_root(builtin.live_grep), "telescope Find with ripGrep")
+  map("<leader>fw", grep_git_root(builtin.grep_string), "telescope Find Word under cursor")
 
-  map("<leader>fb", builtin.buffers)
-  map("<leader>h", builtin.help_tags)
-  map("<leader>fl", builtin.lsp_document_symbols)
-  map("<leader>fq", builtin.quickfix)
-  -- Keybindings
-  map("<leader>fk", builtin.keymaps)
-  -- RefereNces
-  map("<leader>fn", builtin.lsp_references)
+  map("<leader>fb", builtin.buffers, "telescope Find Buffers")
+  map("<leader>h", builtin.help_tags, "telescope Helptags")
+  map("<leader>fl", builtin.lsp_document_symbols, "telescope Find Lsp document symbols")
+  map("<leader>fq", builtin.quickfix, "telescope Find Quickfix list")
+  map("<leader>fk", builtin.keymaps, "telescope Find in Keymaps")
+  map("<leader>fn", builtin.lsp_references, "telescope Find lsp refereNces")
 end
 
 return M
