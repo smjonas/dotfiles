@@ -44,20 +44,20 @@ require("options")
 require("lazyinit")
 
 local function reload_dev_modules()
- for _, plugin in ipairs({
- "plugin_list",
- "plugin_settings",
- "live-command",
- "inc_rename",
- "snippet_converter",
- }) do
- package.loaded[plugin] = nil
- end
+  for _, plugin in ipairs {
+    "plugin_list",
+    "plugin_settings",
+    "live-command",
+    "inc_rename",
+    "snippet_converter",
+  } do
+    package.loaded[plugin] = nil
+  end
 end
 
 local function reload_config()
- reload_dev_modules()
- vim.cmd([[
+  reload_dev_modules()
+  vim.cmd([[
 :luafile ~/.config/nvim/lua/lazyinit.lua
 :luafile ~/.config/nvim/lua/options.lua
 :runtime mappings.vim
@@ -67,7 +67,7 @@ end
 vim.api.nvim_create_user_command("ReloadConfig", reload_config, {})
 
 vim.api.nvim_create_autocmd("BufWritePost", {
- pattern = "*/nvim/*",
- callback = reload_config,
- desc = "Reload config on save",
+  pattern = "*/nvim/*",
+  callback = reload_config,
+  desc = "Reload config on save",
 })

@@ -94,6 +94,5 @@ M.config = function()
   map("n", "<leader>yl", function()
     M.yadm_command("pull")
   end)
-
 end
 return M
