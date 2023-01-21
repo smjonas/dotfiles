@@ -17,9 +17,8 @@ require("lazy").setup("plugins", {
     path = "~/Desktop/NeovimPlugins",
     patterns = { "smjonas" },
   },
-  install = {
-    colorscheme = { "tokyonight" },
-  },
+  install = { colorscheme = { "tokyonight" } },
+  ui = { wrap = true },
 })
 
 vim.keymap.set("n", "<leader>l", "<cmd>:Lazy<cr>")
