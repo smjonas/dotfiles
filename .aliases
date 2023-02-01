@@ -14,7 +14,7 @@ alias stox='clear && cd ~/Desktop/Inacon/Automation/stocks && \
 alias vpn='sudo openvpn --config /media/jonas/Volume/KIT/kit.ovpn'
 
 # JPlag
-alias jplag_build='cd ~/Desktop/JPlag/ && mvn -U -B clean package assembly:single -Dmaven.test.skip=true'
+alias jplag_build='cd ~/Desktop/JPlag/ && mvn -U -B clean package assembly:single -Dmaven.test.skip=true -Dmaven.javadoc.skip=true'
 alias jplag_run='cd ~/Desktop/JPlag/ && java -jar cli/target/jplag-4.1.0-jar-with-dependencies.jar -l scxml'
 
 # git
