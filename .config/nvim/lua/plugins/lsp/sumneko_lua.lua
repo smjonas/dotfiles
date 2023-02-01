@@ -22,6 +22,7 @@ local settings = {
       -- vim.fn.expand("$VIMRUNTIME/lua"),
       -- vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
       -- },
+      checkThirdParty = false,
       maxPreload = 1000,
       preloadFileSize = 150,
     },
