@@ -65,13 +65,6 @@ xnoremap <leader>p <cmd>set paste<cr>"+p<cmd>set nopaste<cr>
 " Remove once #19354 is merged
 xnoremap p P | xnoremap P p
 
-" Duplicate selection in visual mode
-xmap cv y'>p
-" Duplicate paragraph and insert one new line below
-nnoremap cp vip:copy'>+1<cr>o<esc><up>
-" Duplicate tag and insert new line above
-nnoremap cg vat:copy'><cr>vato<esc>O<esc><down>
-
 " Visually select last pasted text
 nnoremap gp `[v`]
 
@@ -123,9 +116,6 @@ nnoremap - g<C-x>
 xnoremap + g<C-a>
 xnoremap - g<C-x>
 
-" Format whole file
-nnoremap <leader>= gg=G""
-
 " Repeat last command in visual mode
 xnoremap . :norm .<cr>
 
@@ -162,9 +152,6 @@ vim.keymap.set("n", "<leader>rn", function()
   end
 end, { expr = true })
 EOF
-
-" Repeat the last substitute command while using the same flags (remove once #19365 is merged)
-nnoremap & :&&<CR>
 
 " Quickfix list mappings
 function! ToggleQfList()
