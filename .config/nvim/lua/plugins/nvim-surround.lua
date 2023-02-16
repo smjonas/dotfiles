@@ -53,9 +53,19 @@ M.config = function()
     },
   }
 
+  local latex = {
+    c = {
+      add = function()
+        local cmd = require("nvim-surround.config").get_input("Command: ")
+        return { { "\\" .. cmd .. "{" }, { "}" } }
+      end,
+    },
+  }
+
   local custom_surrounds = {
     vimwiki = vimwiki,
     markdown = vimwiki,
+    tex = latex,
     lua = {
       p = {
         add = { "vim.pretty_print(", ")" },
