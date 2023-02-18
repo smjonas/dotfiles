@@ -174,6 +174,10 @@ for i = 1, 6 do
 end
 EOF
 
+" Fallback to use with few windows (imo less cognitive overhead in that case)
+nnoremap <Tab> <c-w>w
+nnoremap <S-Tab> <c-w>w
+
 " Remap <Tab> but keep default behavior of <C-I>
 nnoremap <C-I> <C-I>
 
