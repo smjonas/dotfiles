@@ -1,7 +1,6 @@
 local M = {
   "nvim-telescope/telescope.nvim",
-  branch = "fix/additional_arg_parsing",
-  -- "~/Desktop/NeovimPlugins/telescope.nvim", requires = "nvim-lua/plenary.nvim",
+  -- "~/Desktop/NeovimPlugins/telescope.nvim",
   dependencies = {
     "nvim-lua/plenary.nvim",
     {
