@@ -165,9 +165,15 @@ nnoremap <silent> <C-q> <cmd>call ToggleQfList()<cr>
 nnoremap <leader>j <cmd>cprev<cr>
 nnoremap <leader>k <cmd>cnext<cr>
 
-" Circular window movements
-nnoremap <Tab>   <C-w>w
-nnoremap <S-Tab> <C-w>W
+" Moving between windows (from Ben Frain's talk at NeovimConf 2022)
+lua << EOF
+for i = 1, 6 do
+  local lhs = "<leader>" .. i
+  local rhs = i .. "<c-w>w"
+  vim.keymap.set("n", lhs, rhs, { desc = "Move to window " .. i })
+end
+EOF
+
 " Remap <Tab> but keep default behavior of <C-I>
 nnoremap <C-I> <C-I>
 

@@ -27,7 +27,7 @@ if ok then
   o.winbar = " %f %= %{%v:lua.require'nvim-navic'.get_location()%} "
 end
 -- Global status bar
-o.laststatus = 3
+-- o.laststatus = 3
 o.fillchars:append {
   horiz = "━",
   horizup = "┻",

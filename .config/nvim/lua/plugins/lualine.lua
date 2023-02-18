@@ -2,6 +2,10 @@ local M = {
   "nvim-lualine/lualine.nvim",
 }
 
+local window = function()
+    return vim.api.nvim_win_get_number(0)
+end
+
 M.config = function()
   local cur_scheme = vim.api.nvim_exec("colorscheme", true)
   local scheme_map = {
@@ -20,7 +24,7 @@ M.config = function()
       disabled_filetypes = {},
     },
     sections = {
-      lualine_a = { "mode" },
+      lualine_a = { window, --[[ "mode" ]] },
       lualine_b = { "branch" },
       -- 1 = show relative path
       lualine_c = {
@@ -33,8 +37,7 @@ M.config = function()
           symbols = { modified = "[*]" },
         },
       },
-      lualine_x = { --[[ "searchcount" ]]
-      },
+      lualine_x = { --[[ "searchcount" ]] },
       lualine_y = { "filetype" },
       lualine_z = {
         {
@@ -45,7 +48,7 @@ M.config = function()
       },
     },
     inactive_sections = {
-      lualine_a = {},
+      lualine_a = { window },
       lualine_b = {},
       lualine_c = { { "filename", symbols = { modified = "[*]" } } },
       lualine_x = { "location", "progress" },
