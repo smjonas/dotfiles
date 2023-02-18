@@ -60,6 +60,12 @@ M.config = function()
         return { { "\\" .. cmd .. "{" }, { "}" } }
       end,
     },
+    e = {
+      add = function()
+        local env = require("nvim-surround.config").get_input("Environment: ")
+        return { { "\\begin{" .. env .. "}" }, { "\\end{" .. env .. "}" } }
+      end,
+    },
   }
 
   local custom_surrounds = {
