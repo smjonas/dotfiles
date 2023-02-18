@@ -19,7 +19,7 @@ local M = {
 
 M.config = function()
   require("nvim-treesitter.configs").setup {
-    ensure_installed = { "comment", "html", "markdown_inline" },
+    ensure_installed = { "html", "markdown_inline" },
     sync_install = true,
     auto_install = true,
     highlight = {
