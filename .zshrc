@@ -47,6 +47,7 @@ ZSH_THEME="eastwood"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   git
+  zoxide
   zsh-autosuggestions
   zsh-syntax-highlighting
 )

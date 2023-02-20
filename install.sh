@@ -4,8 +4,10 @@ apt install -y zsh git kitty yadm fzf ripgrep python3-pip cargo npm luarocks
 # Make zsh the default shell
 chsh -s $(which zsh)
 
-# Install oh-my-zsh
+# Install oh-my-zsh and plugins
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+# zoxide
+curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 
 # Install homebrew (required for gh)
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -17,7 +19,7 @@ brew install gh
 cargo install --git https://github.com/MordechaiHadad/bob.git
 bob install nightly
 
-# Neovim related packages
+# Neovim-related packages
 luarocks --lua-version=5.1 install vusted
 cargo install stylua
 pip3 install neovim black isort trash-cli
