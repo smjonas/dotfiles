@@ -41,12 +41,6 @@ local live_command = {
     }
     require("live-command").setup {
       debug = true,
-      defaults = {
-        --   -- hl_groups = { deletion = false },
-        enable_highlighting = false,
-        --   -- interline_highlighting = false,
-        -- },
-      },
       commands = commands,
     }
   end,
