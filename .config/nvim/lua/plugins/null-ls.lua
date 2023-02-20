@@ -18,6 +18,7 @@ M.config = function()
       -- formatting.isort.with({ extra_args = { "--profile black" } }),
       formatting.isort,
       formatting.gofmt,
+      formatting.format_r,
     },
   }
 end
