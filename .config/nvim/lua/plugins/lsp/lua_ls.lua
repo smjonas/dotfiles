@@ -3,9 +3,6 @@ local default_on_attach = require("plugins.lsp.on_attach")
 -- See https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json
 local settings = {
   Lua = {
-    runtime = {
-      version = "LuaJIT",
-    },
     completion = {
       callSnippet = "Replace",
       keywordSnippet = "Disable",

@@ -66,12 +66,15 @@ M.config = function()
       single_file_support = true,
     }
     for _, server in ipairs(mason.get_installed_servers()) do
-      local customized_servers = { "sumneko_lua", "pylsp" }
+      local customized_servers = { "lua_ls", "pylsp" }
       if vim.tbl_contains(customized_servers, server) then
         opts = vim.tbl_deep_extend("force", {}, require("plugins.lsp." .. server))
       end
       lsp_config[server].setup(opts)
     end
+    lsp_config.phpactor.setup {
+      single_file_support = true,
+    }
   end
 
   setup_lsp_servers()
