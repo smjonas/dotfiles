@@ -1,9 +1,10 @@
 local M = {
   "nvim-lualine/lualine.nvim",
+  event = "VeryLazy",
 }
 
 local window = function()
-    return vim.api.nvim_win_get_number(0)
+  return vim.api.nvim_win_get_number(0)
 end
 
 M.config = function()
@@ -24,7 +25,9 @@ M.config = function()
       disabled_filetypes = {},
     },
     sections = {
-      lualine_a = { window, --[[ "mode" ]] },
+      lualine_a = {
+        window, --[[ "mode" ]]
+      },
       lualine_b = { "branch" },
       -- 1 = show relative path
       lualine_c = {
@@ -37,7 +40,8 @@ M.config = function()
           symbols = { modified = "[*]" },
         },
       },
-      lualine_x = { --[[ "searchcount" ]] },
+      lualine_x = { --[[ "searchcount" ]]
+      },
       lualine_y = { "filetype" },
       lualine_z = {
         {
