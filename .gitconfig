@@ -8,5 +8,7 @@
 [user]
 	email = jonas.strittmatter@gmx.de
 	name = smjonas
+[push]
+    autoSetupRemote = true
 [pull]
 	rebase = true
