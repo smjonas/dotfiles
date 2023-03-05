@@ -4,7 +4,9 @@
 	st = status
     co = commit -m
     ca = commit --amend --no-edit
+    p = push
     fp = push -f
+    pl = pull
 [user]
 	email = jonas.strittmatter@gmx.de
 	name = smjonas
