@@ -105,4 +105,10 @@ local live_tests_busted = {
   end,
 }
 
-return { duplicate, live_command, inc_rename, snippet_converter, live_tests_busted }
+local zoxide_edit = {
+  "smjonas/zoxide-edit.nvim",
+  dev = true,
+  config = true,
+}
+
+return { duplicate, live_command, inc_rename, snippet_converter, live_tests_busted, zoxide_edit }
