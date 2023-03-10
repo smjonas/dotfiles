@@ -4,6 +4,10 @@ local M = {
 
 M.config = function()
   require("nvim-surround").setup {
+    keymaps = {
+      normal = "s",
+      normal_cur = "ss",
+    },
     aliases = {
       ["b"] = { ")", "]" },
     },
@@ -16,7 +20,7 @@ M.config = function()
     -- word + ysiwl => [word](https://github.com/current_clipboard_contents)
     l = {
       add = function()
-        local clipboard = vim.fn.getreg("+"):gsub("^[%s\n]*(.-)[%s\n]*$", "%1")
+        local clipboard = vim.fn.getreg("+"):gsub("^[%s\n]*(.-)[%s\nvim]*$", "%1")
         if clipboard:find("\n") then
           vim.notify("URL must not contain newline characters", vim.log.levels.WARN)
         else
