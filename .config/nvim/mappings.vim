@@ -68,9 +68,6 @@ xnoremap p P | xnoremap P p
 " Visually select last pasted text
 nnoremap gp `[v`]
 
-" For usage with vim-ReplaceWithRegister: replace from clipboard
-nmap gR "+gr
-
 function! Sort(...) abort
   '[,']sort
   call setpos('.', getpos("''"))
@@ -176,7 +173,7 @@ EOF
 
 " Fallback to use with few windows (imo less cognitive overhead in that case)
 nnoremap <Tab> <c-w>w
-nnoremap <S-Tab> <c-w>w
+nnoremap <S-Tab> <c-w>W
 
 " Remap <Tab> but keep default behavior of <C-I>
 nnoremap <C-I> <C-I>
