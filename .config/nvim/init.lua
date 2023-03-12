@@ -39,7 +39,7 @@ augroup end
 
 -- Load config files
 require("utils")
-require("autocmds")
+-- require("autocmds")
 require("options")
 require("lazyinit")
 
