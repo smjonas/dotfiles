@@ -14,7 +14,7 @@ M.config = function()
   }
 
   -- Surround the current line with a pretty_print statement
-  vim.keymap.set("n", "<C-p>", "<cmd>norm yssp<cr>", {})
+  vim.keymap.set("n", "<C-p>", "<cmd>norm ssp<cr>", {})
 
   local vimwiki = {
     -- word + ysiwl => [word](https://github.com/current_clipboard_contents)
