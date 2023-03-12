@@ -10,13 +10,6 @@ local M = {
         require("telescope").load_extension("fzf")
       end,
     },
-    -- Better :Telescope oldfiles
-    {
-      "smartpde/telescope-recent-files",
-      config = function()
-        require("telescope").load_extension("recent_files")
-      end,
-    },
   },
 }
 
@@ -187,7 +180,8 @@ M.config = function()
   map("<leader>fp", project_search, "telescope Find in Project")
   map("<leader>fv", find_nvim_plugins, "telescope Find in nVim config")
   map("<leader>fc", find_config, "telescope Find in Config files")
-  map("<leader>fo", require("telescope").extensions.recent_files.pick, "telescope Find Old files")
+  -- map("<leader>fo", require("telescope").extensions.recent_files.pick, "telescope Find Old files")
+  map("<leader>fo", builtin.oldfiles, "telescope Find Old files")
   -- Requires ripgrep to be installed (sudo apt install ripgrep)
   map("<leader>fg", grep_git_root(builtin.live_grep), "telescope Find with ripGrep")
   map("<leader>fw", grep_git_root(builtin.grep_string), "telescope Find Word under cursor")
