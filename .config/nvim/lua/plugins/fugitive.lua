@@ -70,15 +70,16 @@ M.config = function()
   map("n", "<leader>gp", "<cmd>Git push<cr>")
   map("n", "<leader>gl", "<cmd>Git pull<cr>")
 
-  vim.api.nvim_create_autocmd("BufEnter", {
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "fugitive",
     callback = function()
-      if vim.bo.filetype == "fugitive" then
-        opts = { buffer = true }
-        map("n", "<leader>gf", "<cmd>Git push -f<cr>", opts)
-        map("n", "<leader>gh", "<cmd>Git stash<cr>", opts)
-        -- Change default behavior of o to open file in vertical split
-        map("n", "o", "gO", { buffer = true, remap = true })
-      end
+      local opts = { buffer = true }
+      map("n", "<leader>gf", "<cmd>Git push -f<cr>", opts)
+      map("n", "<leader>gh", "<cmd>Git stash<cr>", opts)
+
+      opts.remap = true
+      -- Change default behavior of o to open file in vertical split
+      map("n", "o", "gO", opts)
     end,
   })
 
