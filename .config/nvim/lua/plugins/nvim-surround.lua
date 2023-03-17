@@ -4,23 +4,19 @@ local M = {
 
 M.config = function()
   require("nvim-surround").setup {
-    keymaps = {
-      normal = "s",
-      normal_cur = "ss",
-    },
     aliases = {
       ["b"] = { ")", "]" },
     },
   }
 
   -- Surround the current line with a pretty_print statement
-  vim.keymap.set("n", "<C-p>", "<cmd>norm ssp<cr>", {})
+  vim.keymap.set("n", "<C-p>", "<cmd>norm yssp<cr>", {})
 
   local vimwiki = {
     -- word + ysiwl => [word](https://github.com/current_clipboard_contents)
     l = {
       add = function()
-        local clipboard = vim.fn.getreg("+"):gsub("^[%s\n]*(.-)[%s\nvim]*$", "%1")
+        local clipboard = vim.fn.getreg("+"):gsub("^[%s\n]*(.-)[%s\n]*$", "%1")
         if clipboard:find("\n") then
           vim.notify("URL must not contain newline characters", vim.log.levels.WARN)
         else
