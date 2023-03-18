@@ -19,7 +19,7 @@ local M = {
 
 M.config = function()
   require("nvim-treesitter.configs").setup {
-    ensure_installed = { "html", "markdown_inline" },
+    ensure_installed = { "markdown_inline", "luap" },
     ignore_install = { "latex" }, -- VimTex handles this instead
     sync_install = true,
     auto_install = true,
