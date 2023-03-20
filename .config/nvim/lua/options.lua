@@ -20,6 +20,7 @@ o.ignorecase = true
 o.inccommand = "nosplit"
 -- Drag window with mouse
 o.mouse = "a"
+o.mousescroll = "ver:4"
 o.hlsearch = false
 -- Winbar (code context + right-aligned filename)
 local ok, _ = pcall(require, "nvim-navic")
