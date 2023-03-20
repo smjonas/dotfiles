@@ -174,7 +174,7 @@ M.config = function()
   end
 
   map("<leader>rs", "<cmd>Telescope resume<cr>", "telescope ReSume")
-  map("<leader>ff", find_files, "telescope Find Files")
+  -- map("<leader>ff", find_files, "telescope Find Files")
   map("<leader>fi", find_inacon, "telescope Find Inacon")
   map("<leader>fu", find_old_inacon, "telescope Find Old inacon")
   -- map("<leader>fp", project_search, "telescope Find in Project")
