@@ -127,3 +127,5 @@ if ! shopt -oq posix; then
   fi
 fi
 [ -f "/home/jonas/.ghcup/env" ] && source "/home/jonas/.ghcup/env" # ghcup-env
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
