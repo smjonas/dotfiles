@@ -21,6 +21,15 @@ local function project_search()
 end
 
 M.config = function()
+  local fzf = require("fzf-lua")
+  local telescope_profile = require("fzf-lua.profiles.telescope")
+
+  fzf.setup {
+    "default",
+    winopts = telescope_profile.winopts,
+    fzf_colors = telescope_profile.fzf_colors,
+  }
+
   local map = function(lhs, rhs, desc)
     vim.keymap.set("n", lhs, rhs, { silent = true, desc = desc })
   end
