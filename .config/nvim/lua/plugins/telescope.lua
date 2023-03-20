@@ -164,7 +164,6 @@ M.config = function()
     return function()
       grep_fn {
         cwd = get_start_dir(),
-        glob_pattern = "!*plugin/packer_compiled.lua",
       }
     end
   end
@@ -183,7 +182,7 @@ M.config = function()
   -- map("<leader>fo", require("telescope").extensions.recent_files.pick, "telescope Find Old files")
   -- map("<leader>fo", builtin.oldfiles, "telescope Find Old files")
   -- Requires ripgrep to be installed (sudo apt install ripgrep)
-  map("<leader>fg", grep_git_root(builtin.live_grep), "telescope Find with ripGrep")
+  -- map("<leader>fg", grep_git_root(builtin.live_grep), "telescope Find with ripGrep")
   map("<leader>fw", grep_git_root(builtin.grep_string), "telescope Find Word under cursor")
 
   map("<leader>fb", builtin.buffers, "telescope Find Buffers")
