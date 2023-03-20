@@ -4,18 +4,18 @@ apt install -y zsh git kitty yadm fzf ripgrep python3-pip cargo npm luarocks
 # Make zsh the default shell
 chsh -s $(which zsh)
 
-# Install oh-my-zsh and plugins
+# oh-my-zsh and plugins
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 # zoxide
 curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 
-# Install homebrew (required for gh)
+# homebrew (required for gh)
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 # (required: echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.profile)
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 brew install gh
 
-# Install Neovim
+# Neovim
 cargo install --git https://github.com/MordechaiHadad/bob.git
 bob install nightly
 
@@ -25,22 +25,26 @@ cargo install stylua
 pip3 install neovim black isort trash-cli
 npm install --save-dev --save-exact prettier
 
-# Install Spotify
+# fzf
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+
+# Spotify
 sh -c 'echo "deb http://repository.spotify.com stable non-free" > /etc/apt/sources.list.d/spotify.list'
 curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add -
 apt update
 
 apt install -y spotify-client inkscape peek flameshot filezilla openvpn
 
-# Install Discord
+# Discord
 wget -O /tmp/discord.deb "https://discordapp.com/api/download?platform=linux&format=deb"
 apt install -y /tmp/discord.deb
 
-# Install Zoom
+# Zoom
 wget -P /tmp "https://zoom.us/client/latest/zoom_amd64.deb"
 apt install -y /tmp/zoom_amd64.deb
 
-# Install Hamster
+# Hamster
 wget -O /tmp/hamster.deb "http://archive.ubuntu.com/ubuntu/pool/universe/h/hamster-time-tracker/hamster-time-tracker_3.0.2-3_all.deb"
 apt install -y /tmp/hamster.deb
 
