@@ -24,10 +24,17 @@ M.config = function()
   local fzf = require("fzf-lua")
   local telescope_profile = require("fzf-lua.profiles.telescope")
 
+  local opts = { width = 0.75, height = 0.75 }
   fzf.setup {
     "default",
-    winopts = telescope_profile.winopts,
+    winopts = vim.tbl_extend("force", telescope_profile.winopts, opts),
+    keymap = {
+      fzf = {
+        ["ctrl-q"] = "select-all+accept",
+      },
+    },
     fzf_colors = telescope_profile.fzf_colors,
+    fzf_opts = { ["--cycle"] = "" },
   }
 
   local map = function(lhs, rhs, desc)
@@ -35,6 +42,7 @@ M.config = function()
   end
 
   map("<leader>fp", project_search, "fzf Find in Project")
+  map("<leader>fo", fzf.oldfiles, "fzf Find in Project")
 end
 
 return M
