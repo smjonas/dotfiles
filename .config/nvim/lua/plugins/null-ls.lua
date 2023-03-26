@@ -14,6 +14,9 @@ M.config = function()
         extra_args = { "--bracket-same-line", "true", "--print-width", "110" },
         filetypes = { "css", "html", "javascript", "json", "xhtml" },
       },
+      formatting.xq.with {
+        filetypes = { "xml" },
+      },
       formatting.black.with { extra_args = { "--line-length", "130" } },
       -- formatting.isort.with({ extra_args = { "--profile black" } }),
       formatting.isort,
