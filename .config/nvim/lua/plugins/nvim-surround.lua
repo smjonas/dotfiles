@@ -60,6 +60,16 @@ M.config = function()
         return { { "\\" .. cmd .. "{" }, { "}" } }
       end,
     },
+    i = {
+      add = function()
+        return { { "\\textit{" }, { "}" } }
+      end,
+    },
+    b = {
+      add = function()
+        return { { "\\textbf{" }, { "}" } }
+      end,
+    },
     e = {
       add = function()
         local env = require("nvim-surround.config").get_input("Environment: ")
