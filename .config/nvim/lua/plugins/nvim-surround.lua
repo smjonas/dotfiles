@@ -57,7 +57,9 @@ M.config = function()
     c = {
       add = function()
         local cmd = require("nvim-surround.config").get_input("Command: ")
-        return { { "\\" .. cmd .. "{" }, { "}" } }
+        if cmd then
+          return { { "\\" .. cmd .. "{" }, { "}" } }
+        end
       end,
     },
     i = {
@@ -73,7 +75,9 @@ M.config = function()
     e = {
       add = function()
         local env = require("nvim-surround.config").get_input("Environment: ")
-        return { { "\\begin{" .. env .. "}" }, { "\\end{" .. env .. "}" } }
+        if env then
+          return { { "\\begin{" .. env .. "}" }, { "\\end{" .. env .. "}" } }
+        end
       end,
     },
   }
