@@ -66,7 +66,7 @@ end
 
 M.config = function()
   local map = vim.keymap.set
-  map("n", "<leader>gs", "<cmd>Git<cr>")
+  map("n", "<leader>gs", "<cmd>Git<cr>", { desc = "Git status" })
   map("n", "<leader>gp", "<cmd>Git push<cr>")
   map("n", "<leader>gl", "<cmd>Git pull<cr>")
 
@@ -90,14 +90,14 @@ M.config = function()
 
   map("n", "<leader>ys", function()
     M.yadm_command("")
-  end)
+  end, { desc = "Yadm status" })
 
   map("n", "<leader>yp", function()
     M.yadm_command("push")
-  end)
+  end, { desc = "Yadm push" })
 
   map("n", "<leader>yl", function()
     M.yadm_command("pull")
-  end)
+  end, { desc = "Yadm pull" })
 end
 return M

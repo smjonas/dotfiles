@@ -91,10 +91,6 @@ M.config = function()
     },
   }
 
-  vim.keymap.set("n", "<leader>rs", function()
-    vim.cmd("Telescope resume")
-  end, { desc = "Telescope ReSume" })
-
   -- Cyan Telescope borders
   -- vim.cmd [[highlight TelescopeResultsBorder guifg=#56a5e5]]
   -- vim.cmd [[highlight TelescopePreviewBorder guifg=#56a5e5]]
@@ -172,7 +168,7 @@ M.config = function()
     vim.keymap.set("n", lhs, rhs, { silent = true, desc = desc })
   end
 
-  map("<leader>rs", "<cmd>Telescope resume<cr>", "telescope ReSume")
+  map("<leader>fs", "<cmd>Telescope resume<cr>", "telescope reSume")
   -- map("<leader>ff", find_files, "telescope Find Files")
   map("<leader>fi", find_inacon, "telescope Find Inacon")
   map("<leader>fu", find_old_inacon, "telescope Find Old inacon")
