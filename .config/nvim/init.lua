@@ -18,8 +18,6 @@ silent !xset r rate 205 35
 augroup dotfiles
 
  autocmd!
- " Remove trailing whitespace on save (/e to hide errors)
- autocmd BufWritePre * %s/\s\+$//e
  " Enable highlight on yank
  autocmd TextYankPost * silent! lua vim.highlight.on_yank { timeout = 130 }
  " Equalize splits after resizing
@@ -36,6 +34,18 @@ augroup dotfiles
 
 augroup end
 ]])
+
+vim.g.remove_trailing_whitespace = true
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  callback = function()
+    -- Remove trailing whitespace on save (/e to hide errors)
+    if vim.g.remove_trailing_whitespace then
+        print("kekeke")
+      vim.cmd([[%s/\s\+$//e]])
+    end
+  end,
+})
 
 -- Load config files
 require("utils")
