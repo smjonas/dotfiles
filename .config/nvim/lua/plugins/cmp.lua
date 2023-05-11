@@ -90,7 +90,7 @@ M.config = function()
       return not (context.in_treesitter_capture("comment") or context.in_syntax_group("Comment"))
     end,
     experimental = {
-      ghost_text = true,
+      ghost_text = {},
     },
     completion = {
       border = "rounded",
