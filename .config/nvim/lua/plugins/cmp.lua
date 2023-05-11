@@ -4,9 +4,15 @@ local M = {
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",
     "saadparwaiz1/cmp_luasnip",
-    "max397574/cmp-greek",
+    {
+      "zbirenbaum/copilot-cmp",
+      config = function()
+        require("copilot_cmp").setup()
+      end,
+    },
     "vE5li/cmp-buffer",
     "hrsh7th/cmp-path",
+    "max397574/cmp-greek",
   },
 }
 
@@ -75,6 +81,7 @@ M.config = function()
       end,
     },
     sources = {
+      { name = "copilot" },
       { name = "nvim_lsp" },
       { name = "path", priority = 20 },
       { name = "greek" },

@@ -41,7 +41,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   callback = function()
     -- Remove trailing whitespace on save (/e to hide errors)
     if vim.g.remove_trailing_whitespace then
-        print("kekeke")
       vim.cmd([[%s/\s\+$//e]])
     end
   end,
