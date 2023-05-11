@@ -1,6 +1,6 @@
 alias ..='cd ..'
 alias v='nvim'
-alias r='nvim -c "RestoreSession"'
+alias r='nvim -c "SessionRestore"'
 
 alias inet='sudo ~/r8125-9.007.01/autorun.sh'
 # Restart pulseaudio to fix audio issues
@@ -15,7 +15,7 @@ alias vpn='sudo openvpn --config /media/jonas/Volume/KIT/kit.ovpn'
 
 # JPlag
 alias jplag_build='cd ~/Desktop/JPlag/ && mvn -U -B clean package assembly:single -Dmaven.test.skip=true -Dmaven.javadoc.skip=true'
-alias jplag_run='cd ~/Desktop/JPlag/ && java -jar cli/target/jplag-4.1.0-jar-with-dependencies.jar -l scxml'
+alias jplag_run='cd ~/Desktop/JPlag/ && java -jar cli/target/jplag-4.3.0-SNAPSHOT-jar-with-dependencies.jar -l scxml'
 
 # git
 alias g='git'

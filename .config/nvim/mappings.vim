@@ -144,7 +144,6 @@ lua << EOF
 vim.keymap.set("n", "<leader>rn", function()
   -- Fallback to text substitution when LSP is not available
   local cur_word = vim.fn.expand("<cword>")
-  vim.pretty_print(vim.lsp.get_active_clients { bufnr = vim.api.nvim_get_current_buf() })
   if vim.tbl_isempty(vim.lsp.get_active_clients { bufnr = vim.api.nvim_get_current_buf() }) then
     return ":%s/" .. cur_word .. "//gc" .. ("<left>"):rep(3)
   else
@@ -214,8 +213,8 @@ nnoremap <F1> <cmd>silent !kitty @ launch --type=tab --cwd=current --location=ne
 nnoremap <F2> <cmd>ReloadConfig<cr>
 
 " Save and restore sessions
-nnoremap <F5> <cmd>SaveSession<cr>
-nnoremap <F6> <cmd>RestoreSession<cr>
+nnoremap <F5> <cmd>SessionSave<cr>
+nnoremap <F6> <cmd>SessionRestore<cr>
 
 " Open terminal in new window to the right
 nnoremap <leader>to <cmd>vsplit<cr><cmd>term<cr>
