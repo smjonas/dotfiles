@@ -55,26 +55,26 @@ M.config = function()
       vim.notify("Mason was not found: no LSP servers set up", vim.log.levels.ERROR)
       return
     end
+
     mason.setup {
       ensure_installed = { "pylsp", "gopls" },
     }
     local lsp_config = require("lspconfig")
+    local server_list = { "rust_analyzer" }
+    server_list = vim.list_extend(server_list, mason.get_installed_servers())
 
     local opts = {
       on_attach = on_attach,
       capabilities = capabilities,
       single_file_support = true,
     }
-    for _, server in ipairs(mason.get_installed_servers()) do
+    for _, server in ipairs(server_list) do
       local customized_servers = { "lua_ls", "pylsp" }
       if vim.tbl_contains(customized_servers, server) then
         opts = vim.tbl_deep_extend("force", {}, require("plugins.lsp." .. server))
       end
       lsp_config[server].setup(opts)
     end
-    lsp_config.phpactor.setup {
-      single_file_support = true,
-    }
   end
 
   setup_lsp_servers()
@@ -89,10 +89,10 @@ M.config = function()
   }
 
   local diagnostic_symbols = {
-    Error = "",
-    Information = { "", "DiagnosticSignInfo" },
-    Hint = "",
-    Info = "",
+    Error = "󰅙",
+    Information = { "󰋼", "DiagnosticSignInfo" },
+    Hint = "󰌵",
+    Info = "󰋼",
     Warn = "",
   }
 
