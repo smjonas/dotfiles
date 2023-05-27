@@ -37,7 +37,6 @@ local live_command = {
         range = "",
       },
       LSubvert = { cmd = "Subvert" },
-      S = { cmd = "substitute" },
     }
     require("live-command").setup {
       debug = true,
@@ -111,4 +110,26 @@ local zoxide_edit = {
   config = true,
 }
 
-return { duplicate, live_command, inc_rename, snippet_converter, live_tests_busted, zoxide_edit }
+local editree = {
+  "smjonas/editree.nvim",
+  dev = true,
+  config = true,
+  -- enabled = false,
+}
+
+local oil = {
+  "smjonas/oil.nvim",
+  dev = true,
+  config = true,
+}
+
+return {
+  duplicate,
+  live_command,
+  inc_rename,
+  snippet_converter,
+  live_tests_busted,
+  zoxide_edit,
+  editree,
+  oil,
+}

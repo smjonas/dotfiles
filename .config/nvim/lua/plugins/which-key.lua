@@ -15,6 +15,8 @@ return {
       },
       triggers_blacklist = {
         i = { "i", "j", "k" },
+        n = { "i", "z" },
+        c = { "i" },
       },
     }
 

@@ -13,7 +13,7 @@ endif
 vim.cmd([[
 runtime mappings.vim
 " Faster keyboard movement
-silent !xset r rate 205 35
+silent !xset r rate 215 35
 
 augroup dotfiles
 

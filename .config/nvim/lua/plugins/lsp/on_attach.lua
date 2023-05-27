@@ -28,13 +28,14 @@ return function(client, bufnr)
     max_width = 200,
     -- hi_parameter = "DiffAdd",
   }, bufnr)
-  -- map("i", "<C-s>", vim.lsp.buf.signature_help, opts)
+
+  safe_require("lsp-inlayhints").on_attach(client, bufnr)
 
   map("n", "K", vim.lsp.buf.hover, opts)
   -- map("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
   map("n", "<C-j>", vim.diagnostic.goto_prev)
   map("n", "<C-k>", vim.diagnostic.goto_next)
-  map("n", "<leader>a", "<cmd>Lspsaga code_action<cr>", opts)
+  map("n", "<leader>a", vim.lsp.buf.code_action, opts)
 
   -- safe_require("nvim-navic").attach(client, bufnr)
 end

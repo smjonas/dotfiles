@@ -20,8 +20,9 @@ M.config = function()
       formatting.black.with { extra_args = { "--line-length", "130" } },
       -- formatting.isort.with({ extra_args = { "--profile black" } }),
       formatting.isort,
-      formatting.gofmt,
       formatting.format_r,
+      formatting.gofmt,
+      formatting.rustfmt
     },
   }
 end

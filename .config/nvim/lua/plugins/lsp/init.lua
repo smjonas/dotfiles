@@ -4,6 +4,13 @@ local M = {
     "folke/neodev.nvim",
     "ray-x/lsp_signature.nvim",
     {
+      "lvimuser/lsp-inlayhints.nvim",
+      branch = "anticonceal",
+      config = function()
+        require("lsp-inlayhints").setup {}
+      end,
+    },
+    {
       "williamboman/mason.nvim",
       config = function()
         require("mason").setup()
