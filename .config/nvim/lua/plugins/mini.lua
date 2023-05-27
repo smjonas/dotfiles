@@ -14,6 +14,7 @@ return {
         },
       },
     }
+    require("mini.comment").setup()
     require("mini.move").setup()
   end,
 }
