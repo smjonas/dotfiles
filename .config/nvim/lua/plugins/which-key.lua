@@ -2,6 +2,7 @@ return {
   "folke/which-key.nvim",
   config = function()
     require("which-key").setup {
+      ignore_missing = true,
       plugins = {
         presets = {
           operators = false,
@@ -13,11 +14,11 @@ return {
           g = false,
         },
       },
-      triggers_blacklist = {
-        i = { "i", "j", "k" },
-        n = { "i", "z" },
-        c = { "i" },
-      },
+      -- triggers_blacklist = {
+      --   i = { "i", "j", "k" },
+      --   n = { "i", "z" },
+      --   c = { "i" },
+      -- },
     }
 
     require("which-key").register({
