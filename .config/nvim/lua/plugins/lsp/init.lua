@@ -8,6 +8,8 @@ local M = {
       branch = "anticonceal",
       config = function()
         require("lsp-inlayhints").setup {}
+        -- Same as CursorColumn
+        vim.cmd("highlight LspInlayHint guibg=#2f334d")
       end,
     },
     {
