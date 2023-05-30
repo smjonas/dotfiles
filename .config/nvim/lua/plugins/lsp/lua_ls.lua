@@ -3,8 +3,9 @@ local default_on_attach = require("plugins.lsp.on_attach")
 -- See https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json
 local settings = {
   Lua = {
+    single_file_support = true,
     completion = {
-      callSnippet = "Replace",
+      callSnippet = "Both",
       keywordSnippet = "Disable",
     },
     diagnostics = {
@@ -36,5 +37,9 @@ local on_attach = function(client, bufnr)
   client.server_capabilities.documentRangeFormattingProvider = false
 end
 
-require("neodev").setup {}
+require("neodev").setup {
+  library = {
+    plugins = false,
+  },
+}
 return { settings = settings, on_attach = on_attach }
