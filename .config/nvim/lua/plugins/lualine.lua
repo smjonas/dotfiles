@@ -34,7 +34,11 @@ M.config = function()
         {
           "filename",
           fmt = function(str)
-            return vim.bo.filetype == "fern" and "" or str
+            local ft_to_filename = {
+              fern = "",
+              editree = "",
+            }
+            return ft_to_filename[vim.bo.filetype] or str
           end,
           path = 1,
           symbols = { modified = "[*]" },
@@ -42,7 +46,16 @@ M.config = function()
       },
       lualine_x = { --[[ "searchcount" ]]
       },
-      lualine_y = { "filetype" },
+      lualine_y = {
+        {
+          "filetype",
+          color = function(section)
+            local hl = vim.api.nvim_get_hl(0, { name = "WarningMsg" })
+            local fg = bit.tohex(hl.fg, 6)
+            return vim.bo.filetype == "editree" and { fg = fg }
+          end,
+        },
+      },
       lualine_z = {
         {
           "location",
