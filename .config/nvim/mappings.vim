@@ -212,9 +212,5 @@ nnoremap <Plug>reload_my_config <cmd>luafile ~/.config/nvim/lua/packerinit.lua<c
 nnoremap <F1> <cmd>silent !kitty @ launch --type=tab --cwd=current --location=neighbor nvim %<cr>
 nnoremap <F2> <cmd>ReloadConfig<cr>
 
-" Save and restore sessions
-nnoremap <F5> <cmd>SessionSave<cr>
-nnoremap <F6> <cmd>SessionRestore<cr>
-
 " Open terminal in new window to the right
 nnoremap <leader>to <cmd>vsplit<cr><cmd>term<cr>
