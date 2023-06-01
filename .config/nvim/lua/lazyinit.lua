@@ -18,6 +18,7 @@ require("lazy").setup("plugins", {
     patterns = { "smjonas" },
   },
   install = { colorscheme = { "tokyonight" } },
+  git = { timeout = 60 },
   change_detection = { enabled = false },
   ui = { wrap = true },
 })
