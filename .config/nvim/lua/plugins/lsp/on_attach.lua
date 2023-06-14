@@ -29,7 +29,7 @@ return function(client, bufnr)
     -- hi_parameter = "DiffAdd",
   }, bufnr)
 
-  safe_require("lsp-inlayhints").on_attach(client, bufnr)
+  -- safe_require("lsp-inlayhints").on_attach(client, bufnr)
 
   map("n", "K", vim.lsp.buf.hover, opts)
   -- map("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)

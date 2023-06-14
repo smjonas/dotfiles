@@ -3,15 +3,16 @@ local M = {
   dependencies = {
     "folke/neodev.nvim",
     "ray-x/lsp_signature.nvim",
-    {
-      "lvimuser/lsp-inlayhints.nvim",
-      branch = "anticonceal",
-      config = function()
-        require("lsp-inlayhints").setup {}
-        -- Same as CursorColumn
-        vim.cmd("highlight LspInlayHint guibg=#2f334d")
-      end,
-    },
+    -- {
+    --   "lvimuser/lsp-inlayhints.nvim",
+    --   enable = false,
+    --   branch = "anticonceal",
+    --   config = function()
+    --     require("lsp-inlayhints").setup {}
+    --     -- Same as CursorColumn
+    --     vim.cmd("highlight LspInlayHint guibg=#2f334d")
+    --   end,
+    -- },
     {
       "williamboman/mason.nvim",
       config = function()

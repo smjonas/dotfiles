@@ -8,22 +8,25 @@ local duplicate = {
 
 local inc_rename = {
   "smjonas/inc-rename.nvim",
-  branch = "preview",
+  branch = "main",
   -- "smjonas/inc-rename.nvim",
   config = function()
     require("inc_rename").setup {
       async = true,
       hl_group = "IncSearch",
+      input_buffer_type = "dressing",
     }
   end,
+  dependencies = {
+    { "stevearc/dressing.nvim", config = { input = { insert_only = false } } },
+  },
 }
 
 local live_command = {
   "smjonas/live-command.nvim",
-  dependencies = { "tpope/vim-abolish" },
-  -- dev = true,
-  -- branch = "inline_highlights",
-  -- "smjonas/live-command.nvim",
+  dependencies = { "tpope/vim-abolish", "rickhowe/diffchar.vim" },
+  dev = true,
+  branch = "main",
   config = function()
     local commands = {
       Norm = { cmd = "norm" },
@@ -113,14 +116,18 @@ local zoxide_edit = {
 local editree = {
   "smjonas/editree.nvim",
   dev = true,
-  config = true,
-  -- enabled = false,
-}
-
-local oil = {
-  "smjonas/oil.nvim",
-  dev = true,
-  config = true,
+  config = function()
+    require("editree").setup()
+    vim.keymap.set("n", "<F1>", function()
+      if vim.bo.filetype == "fern" or vim.bo.filetype == "editree" then
+        vim.cmd.Editree("toggle")
+      end
+    end, { desc = "Toggle editree" })
+  end,
+  dependencies = {
+    { "stevearc/oil.nvim", config = {} },
+    "fern.vim",
+  },
 }
 
 return {
