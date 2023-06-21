@@ -14,7 +14,9 @@ return {
   "folke/flash.nvim",
   event = "VeryLazy",
   ---@type Flash.Config
-  opts = {},
+  opts = {
+    highlight = { label = { current = true } },
+  },
   keys = {
     { "s", mode = { "n" }, jump_forward },
     { "S", mode = { "n" }, jump_backward },
