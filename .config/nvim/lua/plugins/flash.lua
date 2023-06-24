@@ -15,7 +15,10 @@ return {
   event = "VeryLazy",
   ---@type Flash.Config
   opts = {
+    -- Use a label for the nearest match
     highlight = { label = { current = true } },
+    jump = { autojump = true },
+    modes = { char = { enabled = false } },
   },
   keys = {
     { "s", mode = { "n" }, jump_forward },
