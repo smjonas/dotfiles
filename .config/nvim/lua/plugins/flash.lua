@@ -16,7 +16,7 @@ return {
   ---@type Flash.Config
   opts = {
     -- Use a label for the nearest match
-    highlight = { label = { current = true } },
+    label = { current = true },
     jump = { autojump = true },
     modes = { char = { enabled = false } },
   },
