@@ -7,7 +7,7 @@ local function get_root_dir()
   -- If the picker was opened in any of the Nvim config files,
   -- return ~/.config/nvim as the cwd, otherwise use the Git repo the current file
   -- is located in
-  if path:match("^" .. vim.fn.stdpath("config")) then
+  if vim.startswith(path, vim.fn.stdpath("config")) then
     return vim.fn.stdpath("config"), false
   else
     return require("lspconfig/util").root_pattern(".git")(path), true
@@ -31,6 +31,13 @@ local function grep_git_root(fzf_grep_fn)
   end
 end
 
+local function find_files()
+  local dir = require("oil").get_current_dir()
+  local fzf = require("fzf-lua")
+  -- Use the current file browser directory if available
+  fzf.files { cwd = dir }
+end
+
 M.config = function()
   local fzf = require("fzf-lua")
   local telescope_profile = require("fzf-lua.profiles.telescope")
@@ -52,7 +59,7 @@ M.config = function()
     vim.keymap.set("n", lhs, rhs, { silent = true, desc = desc })
   end
 
-  map("<leader>ff", fzf.files, "fzf Find Files")
+  map("<leader>ff", find_files, "fzf Find Files")
   map("<leader>fp", project_search, "fzf Find in Project")
   map("<leader>fo", fzf.oldfiles, "fzf Find Old Files")
 
