@@ -13,6 +13,8 @@ alias stox='clear && cd ~/Desktop/Inacon/Automation/stocks && \
 
 alias vpn='sudo openvpn --config /media/jonas/Volume/KIT/kit.ovpn'
 
+alias stowall='stow -S git nvim intellij kitty oh-my-zsh pulse-audio misc'
+
 # git
 alias g='git'
 alias gs='git status'
