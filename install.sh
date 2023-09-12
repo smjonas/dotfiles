@@ -1,6 +1,6 @@
 #!/bin/bash
-apt install -y xclip build-essential libnewlib-arm-none-eabi
-apt install -y zsh git kitty yadm fzf ripgrep python3-pip cargo npm luarocks
+apt install -y build-essential libnewlib-arm-none-eabi
+apt install -y xclip stow zsh git kitty fzf ripgrep python3-pip cargo luarocks npm
 # Make zsh the default shell
 chsh -s $(which zsh)
 
