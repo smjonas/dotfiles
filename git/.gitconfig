@@ -1,0 +1,18 @@
+[init]
+    defaultBranch = main
+[alias]
+    st = status
+    co = commit -m
+    ca = commit --amend --no-edit
+    p = push
+    fp = push -f
+    pl = pull
+[pager]
+    branch = false
+[pull]
+    rebase = true
+[push]
+    autoSetupRemote = true
+[user]
+    email = jonas.strittmatter@gmx.de
+    name = smjonas
