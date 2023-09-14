@@ -1,5 +1,5 @@
 alias ..='cd ..'
-alias v='nvim .'
+alias v='nvim'
 alias r='nvim -c "SessionRestore"'
 
 alias inet='sudo ~/r8125-9.007.01/autorun.sh'
