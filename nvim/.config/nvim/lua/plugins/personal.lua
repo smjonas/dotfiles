@@ -1,11 +1,3 @@
-local duplicate = {
-  "smjonas/duplicate.nvim",
-  dev = false,
-  config = function()
-    require("duplicate").setup()
-  end,
-}
-
 local inc_rename = {
   "smjonas/inc-rename.nvim",
   branch = "main",
@@ -132,12 +124,10 @@ local editree = {
 }
 
 return {
-  duplicate,
   live_command,
   inc_rename,
   snippet_converter,
   live_tests_busted,
   zoxide_edit,
   editree,
-  oil,
 }

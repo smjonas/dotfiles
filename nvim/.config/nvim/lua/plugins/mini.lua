@@ -3,6 +3,7 @@ return {
   config = function()
     local ai = require("mini.ai")
     local spec = ai.gen_spec.treesitter
+
     require("mini.ai").setup {
       n_lines = 200,
       ai.setup {
@@ -14,6 +15,8 @@ return {
         },
       },
     }
+
+    require("mini.operators").setup()
     require("mini.comment").setup()
     require("mini.move").setup()
   end,
