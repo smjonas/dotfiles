@@ -7,7 +7,7 @@ M.config = function()
   vim.g["fern#drawer_width"] = 40
   vim.g["fern#renderer"] = "nerdfont"
   local map = vim.keymap.set
-  map("n", "<C-n>", "<cmd>Fern %:h -drawer -toggle -reveal=%<cr>")
+  -- map("n", "<C-n>", "<cmd>Fern %:h -drawer -toggle -reveal=%<cr>")
   map("n", "<M-n>", "<cmd>Fern %:h<cr>")
 
   vim.cmd([[

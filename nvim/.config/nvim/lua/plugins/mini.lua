@@ -16,6 +16,9 @@ return {
       },
     }
 
+    require("mini.files").setup ()
+    vim.keymap.set("n", "<C-n>", "<cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<cr>")
+
     require("mini.operators").setup()
     require("mini.comment").setup()
     require("mini.move").setup()
