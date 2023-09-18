@@ -146,6 +146,8 @@ M.config = function()
     builtin.find_files {
       prompt_title = "Find Config Files",
       search_dirs = { vim.fn.stdpath("config") },
+      -- Follow symlinks
+      follow = true,
     }
   end
 
