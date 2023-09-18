@@ -27,6 +27,8 @@ export NNN_TRASH=1
 setopt hist_ignore_all_dups
 setopt hist_ignore_space
 setopt share_history
+# Complete hidden files
+setopt globdots
 
 HISTSIZE=100000000
 SAVEHIST=$HISTSIZE
