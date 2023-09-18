@@ -52,7 +52,6 @@ local live_command = {
 local snippet_converter = {
   "smjonas/snippet-converter.nvim",
   dev = false,
-  branch = "yasnippet",
   config = function()
     local snippet_converter = require("snippet_converter")
     local ultisnips_to_luasnip = {

@@ -50,6 +50,7 @@
   "playground": { "branch": "master", "commit": "2b81a018a49f8e476341dfcb228b7b808baba68b" },
   "plenary.nvim": { "branch": "master", "commit": "0dbe561ae023f02c2fb772b879e905055b939ce3" },
   "sideways.vim": { "branch": "main", "commit": "eb7f35f6a652f60d3b4f262d64d4846adbd4d104" },
+  "snippet-converter.nvim": { "branch": "main", "commit": "f4e96319a8960e3bdf2b865a4417d8d178b071b1" },
   "telescope-fzf-native.nvim": { "branch": "main", "commit": "9bc8237565ded606e6c366a71c64c0af25cd7a50" },
   "telescope.nvim": { "branch": "master", "commit": "2d92125620417fbea82ec30303823e3cd69e90e8" },
   "tokyonight.nvim": { "branch": "main", "commit": "1ee11019f8a81dac989ae1db1a013e3d582e2033" },

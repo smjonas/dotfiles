@@ -2,22 +2,16 @@ local M = {
   "tpope/vim-fugitive",
 }
 
--- This is a hacky way to trick fugitive into using yadm instead of git from all buffers.
-
--- First, replace the implementation of the FugitiveGitDir function to always return the
--- location of the .yadm git folder regardless of the buffer number.
--- This avoids "file does not belong to a Git repository" messages.
--- After running the yadm command, switch back to the original implementation again.
-function M.yadm_command(cmd)
+-- Hack to temporarily replace fugitive's current Git directory with the root of the
+-- dotfiles folder.
+function M.stow_command(cmd)
   vim.cmd([[
   function! FugitiveGitDir(...) abort
-    return $HOME . "/.config/yadm/repo.git"
+    return $HOME .. "/dotfiles/.git"
   endfunction
   ]])
 
-  vim.g["fugitive_git_executable"] = "yadm"
   vim.cmd("Git " .. (cmd or ""))
-  vim.g["fugitive_git_executable"] = "git"
 
   vim.cmd([[
   if exists('+shellslash')
@@ -83,21 +77,21 @@ M.config = function()
     end,
   })
 
-  -- Defines custom Yadm command
+  -- Defines custom Stow command
   vim.cmd(
-    "command! -nargs=? -complete=customlist,fugitive#Complete Yadm lua require('plugins.fugitive').yadm_command(<f-args>)"
+    "command! -nargs=? -complete=customlist,fugitive#Complete Stow lua require('plugins.fugitive').stow_command(<f-args>)"
   )
 
   map("n", "<leader>ys", function()
-    M.yadm_command("")
-  end, { desc = "Yadm status" })
+    M.stow_command("")
+  end, { desc = "Stow status" })
 
   map("n", "<leader>yp", function()
-    M.yadm_command("push")
-  end, { desc = "Yadm push" })
+    M.stow_command("push")
+  end, { desc = "Stow push" })
 
   map("n", "<leader>yl", function()
-    M.yadm_command("pull")
-  end, { desc = "Yadm pull" })
+    M.stow_command("pull")
+  end, { desc = "Stow pull" })
 end
 return M
