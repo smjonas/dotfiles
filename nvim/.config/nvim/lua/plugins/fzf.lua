@@ -18,10 +18,11 @@ local function project_search()
   local fzf = require("fzf-lua")
   local path, is_git_root = get_root_dir()
 
+  local opts = { cwd = path }
   if is_git_root then
-    return fzf.git_files { cwd = path }
+    return fzf.git_files(opts)
   else
-    fzf.files { cwd = path }
+    fzf.files(opts)
   end
 end
 
@@ -52,7 +53,7 @@ M.config = function()
       },
     },
     fzf_colors = telescope_profile.fzf_colors,
-    fzf_opts = { ["--cycle"] = "" },
+    fzf_opts = { ["--cycle"] = "", ["--keep-right"] = "" },
   }
 
   local map = function(lhs, rhs, desc)
