@@ -1,6 +1,6 @@
 #!/bin/bash
 apt install -y build-essential libnewlib-arm-none-eabi
-apt install -y xclip stow zsh git kitty fzf ripgrep python3-pip cargo luarocks npm
+apt install -y xclip stow zsh git kitty fzf ripgrep python3-pip luarocks npm
 # Make zsh the default shell
 chsh -s $(which zsh)
 
@@ -14,6 +14,11 @@ curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | 
 # (required: echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.profile)
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 brew install gh
+
+# Rust (rustup for cargo)
+curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | sh
+curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.cargo/bin/rust-analyzer
+chmod +x ~/.cargo/bin/rust-analyzer
 
 # Neovim
 cargo install --git https://github.com/MordechaiHadad/bob.git
@@ -47,11 +52,6 @@ apt install -y /tmp/zoom_amd64.deb
 # Hamster
 wget -O /tmp/hamster.deb "http://archive.ubuntu.com/ubuntu/pool/universe/h/hamster-time-tracker/hamster-time-tracker_3.0.2-3_all.deb"
 apt install -y /tmp/hamster.deb
-
-# Rust
-curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | sh
-curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.cargo/bin/rust-analyzer
-chmod +x ~/.cargo/bin/rust-analyzer
 
 echo "Setup GitHub SSH key?";
 select yn in "yes" "no";
