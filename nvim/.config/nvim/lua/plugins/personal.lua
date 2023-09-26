@@ -109,6 +109,7 @@ local zoxide_edit = {
 local editree = {
   "smjonas/editree.nvim",
   dev = false,
+  enabled = false,
   config = function()
     require("editree").setup()
     vim.keymap.set("n", "<F1>", function()
@@ -117,10 +118,10 @@ local editree = {
       end
     end, { desc = "Toggle editree" })
   end,
-  dependencies = {
-    { "stevearc/oil.nvim", config = {} },
-    "fern.vim",
-  },
+  -- dependencies = {
+  --   { "stevearc/oil.nvim", config = {} },
+  --   "fern.vim",
+  -- },
 }
 
 return {

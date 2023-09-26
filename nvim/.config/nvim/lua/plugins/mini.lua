@@ -20,11 +20,16 @@ return {
       mappings = {
         go_in = "",
         go_in_plus = "L",
-        go_out = "",
-        go_out_plus = "H",
+        go_out = "H",
+        go_out_plus = "",
       }
     }
-    vim.keymap.set("n", "<C-n>", "<cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<cr>")
+
+    vim.keymap.set("n", "<C-n>", function()
+      if not MiniFiles.close() then
+        MiniFiles.open(vim.api.nvim_buf_get_name(0))
+      end
+    end)
 
     require("mini.operators").setup()
     require("mini.comment").setup()

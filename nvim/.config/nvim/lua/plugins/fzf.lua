@@ -33,9 +33,13 @@ local function grep_git_root(fzf_grep_fn)
 end
 
 local function find_files()
-  local dir = require("oil").get_current_dir()
-  local fzf = require("fzf-lua")
-  -- Use the current file browser directory if available
+  local ok, files = pcall(require, "mini.files")
+  -- local dir
+  -- if ok then
+  --   -- TODO Use the current file browser directory if available
+  --   dir = oil.cur_dir
+  --   local fzf = require("fzf-lua")
+  -- end
   fzf.files { cwd = dir }
 end
 
