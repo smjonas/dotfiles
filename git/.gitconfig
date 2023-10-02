@@ -9,10 +9,12 @@
     pl = pull
 [pager]
     branch = false
-[pull]
-    rebase = true
 [push]
     autoSetupRemote = true
+[pull]
+    rebase = true
+[merge]
+	tool = nvimdiff
 [user]
     email = jonas.strittmatter@gmx.de
     name = smjonas
