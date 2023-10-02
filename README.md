@@ -4,3 +4,9 @@ The most interesting stuff (my Neovim configuration) can be found [here](https:/
 Feel free to use anything you like from it!
 
 ![Screenshot](https://user-images.githubusercontent.com/40792180/186624041-3cc663b4-71b7-4c38-b985-a31f61aaad2b.png)
+
+## Installation
+Simply run
+```
+bash <(curl -s https://raw.githubusercontent.com/smjonas/dotfiles/main/install.sh)
+```
