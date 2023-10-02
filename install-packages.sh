@@ -10,8 +10,8 @@ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/i
 # zoxide
 curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 
-# Install nodejs
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
+# Install nodejs (for GitHub Copilot)
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.39.5/install.sh | bash
 nvm install node
 
 # Rust (rustup for cargo)
@@ -20,8 +20,12 @@ curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/
 chmod +x ~/.cargo/bin/rust-analyzer
 
 # Neovim
-cargo install --git https://github.com/MordechaiHadad/bob.git
-bob install nightly
+NVIM_APPIMAGE_URL="https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage"
+NVIM_INSTALL_DIR="$HOME/.local/bin"
+mkdir -p "$NVIM_INSTALL_DIR"
+echo "Downloading Nvim appimage..."
+curl -Lo "$NVIM_INSTALL_DIR/nvim" "$NVIM_APPIMAGE_URL"
+chmod +x "$NVIM_INSTALL_DIR/nvim"
 
 # Neovim-related packages
 luarocks --lua-version=5.1 install vusted

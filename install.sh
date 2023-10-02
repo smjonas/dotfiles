@@ -32,6 +32,21 @@ echo "Installing dotfiles..."
 stow -S git nvim intellij kitty oh-my-zsh pulse-audio fonts misc
 # Clear font cache
 fc-cache -f -v;
-./install-packages.sh
+
+while true; do
+  echo "Choose packages to install ('main' or 'work'):"
+  select option in "main" "work"; do
+    case $option in
+      main )
+        ./install-packages.sh
+        break;;
+      work )
+        ./install-packages-work.sh
+        break;;
+      * )
+        echo "Invalid selection. Please choose 'main' or 'work'.";;
+    esac
+  done
+done
 
 echo "Dotfiles installation complete!"
