@@ -1,6 +1,7 @@
 #!/bin/bash
 apt install -y build-essential libnewlib-arm-none-eabi
-apt install -y xclip stow zsh git kitty fzf ripgrep python3-pip luarocks npm
+apt install -y xclip stow zsh git kitty fzf ripgrep python3-pip luarocks
+
 # Make zsh the default shell
 chsh -s $(which zsh)
 
@@ -9,11 +10,9 @@ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/i
 # zoxide
 curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 
-# homebrew (required for gh)
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-# (required: echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.profile)
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-brew install gh
+# Install nodejs
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
+nvm install node
 
 # Rust (rustup for cargo)
 curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | sh
@@ -55,9 +54,6 @@ apt install -y /tmp/zoom_amd64.deb
 # Hamster
 wget -O /tmp/hamster.deb "http://archive.ubuntu.com/ubuntu/pool/universe/h/hamster-time-tracker/hamster-time-tracker_3.0.2-3_all.deb"
 apt install -y /tmp/hamster.deb
-
-
-
 
 echo "Setup GitHub SSH key?";
 select yn in "yes" "no";
