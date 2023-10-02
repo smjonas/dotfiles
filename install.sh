@@ -37,9 +37,12 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 # Spotify
 sh -c 'echo "deb http://repository.spotify.com stable non-free" > /etc/apt/sources.list.d/spotify.list'
 curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add -
-apt update
 
-apt install -y spotify-client inkscape peek flameshot filezilla openvpn
+# KeePassXC
+sudo add-apt-repository ppa:phoerious/keepassxc
+
+apt update
+apt install -y spotify-client inkscape peek flameshot filezilla openvpn keepassxc
 
 # Discord
 wget -O /tmp/discord.deb "https://discordapp.com/api/download?platform=linux&format=deb"
@@ -52,6 +55,9 @@ apt install -y /tmp/zoom_amd64.deb
 # Hamster
 wget -O /tmp/hamster.deb "http://archive.ubuntu.com/ubuntu/pool/universe/h/hamster-time-tracker/hamster-time-tracker_3.0.2-3_all.deb"
 apt install -y /tmp/hamster.deb
+
+
+
 
 echo "Setup GitHub SSH key?";
 select yn in "yes" "no";
