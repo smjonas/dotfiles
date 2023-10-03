@@ -22,8 +22,25 @@ return {
         go_in_plus = "L",
         go_out = "H",
         go_out_plus = "",
-      }
+      },
     }
+
+    -- Confirm file system actions on save, see https://github.com/echasnovski/mini.nvim/issues/391
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "MiniFilesBufferCreate",
+      callback = function()
+        vim.schedule(function()
+          vim.api.nvim_buf_set_option(0, "buftype", "acwrite")
+          vim.api.nvim_buf_set_name(0, require("mini.files").get_fs_entry(0, 1).path)
+          vim.api.nvim_create_autocmd("BufWriteCmd", {
+            buffer = 0,
+            callback = function()
+              require("mini.files").synchronize()
+            end,
+          })
+        end)
+      end,
+    })
 
     vim.keymap.set("n", "<C-n>", function()
       if not MiniFiles.close() then
