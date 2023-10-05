@@ -1,7 +1,9 @@
 # To find pip and luarocks packages
 export PATH=$HOME/.cargo/bin:$PATH
 export PATH=$HOME/.local/bin:$PATH
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+if command -v brew &> /dev/null; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
 
 # Java
 JAVA_HOME="/opt/jdk-19.0.1"
