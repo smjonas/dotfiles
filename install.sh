@@ -24,7 +24,7 @@ do
 done
 
 echo "Downloading dotfiles repository..."
-git clone git@github.com:smjonas/dotfiles.git ~/dotfiles
+git clone --recurse-submodules git@github.com:smjonas/dotfiles.git ~/dotfiles
 
 cd ~/dotfiles
 
