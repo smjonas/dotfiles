@@ -119,6 +119,7 @@ M.config = function()
         },
         { "i", "s" }
       ),
+      ["<C-s>"] = require("piantor").cmp_confirm(cmp),
       ["<Tab>"] = cmp.mapping(function(fallback)
         if luasnip.expand_or_locally_jumpable() then
           luasnip.expand_or_jump()

@@ -35,6 +35,9 @@ augroup dotfiles
 augroup end
 ]])
 
+-- Override some mappings to work better for piantor keyboard
+require("piantor")
+
 vim.g.remove_trailing_whitespace = true
 
 vim.api.nvim_create_autocmd("BufWritePre", {
