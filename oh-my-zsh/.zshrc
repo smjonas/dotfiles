@@ -55,6 +55,7 @@ plugins=(
   zsh-syntax-highlighting
 )
 bindkey '^f' autosuggest-accept
+bindkey '^s' autosuggest-accept
 
 # Always update plugins without asking
 export DISABLE_UPDATE_PROMPT=true
