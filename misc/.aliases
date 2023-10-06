@@ -3,6 +3,11 @@ alias v=nvim
 alias r='nvim -c "SessionRestore"'
 alias python=python3
 
+alias update_nvim='\
+    curl -L https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage -o ~/Downloads/nvim.appimage &&\
+    chmod +x ~/Downloads/nvim.appimage &&\
+    mv ~/Downloads/nvim.appimage ~/.local/bin/nvim'
+
 alias inet='sudo ~/r8125-9.007.01/autorun.sh'
 # Restart pulseaudio to fix audio issues
 alias pk='pulseaudio -k'
