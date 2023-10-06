@@ -11,15 +11,24 @@ M.cmp_confirm = function(cmp)
   )
 end
 
-local function override_mappings()
-  local overrides = {
+local function set_override_mappings()
+  local normal_mode_overrides = {
     ["<leader>ri"] = "<leader>rc",
   }
-  for k, v in pairs(overrides) do
+  local insert_mode_overrides = {
+    ["<a-m>"] = "<left>",
+    ["<a-n>"] = "<down>",
+    ["<a-e>"] = "<up>",
+    ["<a-i>"] = "<right>",
+  }
+  for k, v in pairs(normal_mode_overrides) do
     vim.keymap.set("n", k, v, { remap = true })
+  end
+  for k, v in pairs(insert_mode_overrides) do
+    vim.keymap.set("i", k, v, { remap = true })
   end
 end
 
-override_mappings()
+set_override_mappings()
 
 return M
