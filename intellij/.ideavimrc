@@ -18,6 +18,8 @@ set scrolloff=9
 set showmode
 set sidescroll=1
 set smartcase
+" Vim surround
+set surround
 set timeoutlen=250
 set undolevels=1000
 
