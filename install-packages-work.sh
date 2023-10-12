@@ -10,6 +10,17 @@ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/i
 # zoxide
 curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 
+# IntelliJ
+INTELLIJ_INSTALL_DIR = "/opt/idea"
+wget -c https://www.jetbrains.com/de-de/idea/download/download-thanks.html?platform=linux -P /tmp
+mkdir -p $INTELLIJ_INSTALL_DIR
+tar -xf /tmp/ideaIC-*.tar.gz -C $INTELLIJ_INSTALL_DIR --strip-components=1
+rm /tmp/ideaIC-*.tar.gz
+# Create a symbolic link to make it easier to run IntelliJ
+ln -s "$INTELLIJ_INSTALL_DIR/bin/idea.sh" /usr/local/bin/idea
+# Provide permissions to the installation directory
+chown -R $USER:$USER $INTELLIJ_INSTALL_DIR
+
 # Install nodejs (for GitHub Copilot)
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.39.5/install.sh | bash
 nvm install node
