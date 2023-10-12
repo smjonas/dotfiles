@@ -3,11 +3,6 @@
 " You can find a list of commands here: https://jb.gg/h38q75
 " Find more examples here: https://jb.gg/share-ideavimrc
 
-" Todo:
-" - copy to system clipboard
-" - leader + s
-" - move to next / prev diagnostic
-
 let mapleader = " "
 
 set incsearch
@@ -36,14 +31,28 @@ inoremap <A-k> <up>
 inoremap <A-l> <right>
 
 " Moving lines
-nnoremap <A-j> :m .+1<CR>==
-nnoremap <A-k> :m .-2<CR>==
-xnoremap <A-j> :m '>+1<CR>gv=gv
-xnoremap <A-k> :m '<-2<CR>gv=gv
+nnoremap <A-j> :move .+1<CR>==
+nnoremap <A-k> :move: .-2<CR>==
+xnoremap <A-j> :move '>+1<CR>gv=gv
+xnoremap <A-k> :move '<-2<CR>gv=gv
+
+
+" Search and replace
+nnoremap <leader>s :%s///gc<left><left><left><left>
+xnoremap s :s/\%V//g<left><left><left>
 
 " Insert new line below and above without entering insert mode
 nnoremap <leader>o o<Esc>0"_D
 nnoremap <leader>O O<Esc>0"_D
+
+" Enable copying to system clipboard; simply changing vim.o.clipboard to include
+" unnamedplus would paste from system clipboard with p which I want to use <leader>p for instead
+map y "+y
+map Y "+y$
+
+" Insert from clipboard in paste mode
+nnoremap <leader>p <cmd>set paste<cr>a<C-r>+<Esc><cmd>set nopaste<cr>
+xnoremap <leader>p <cmd>set paste<cr>"+p<cmd>set nopaste<cr>
 
 " Centering
 nnoremap { {zz
@@ -57,17 +66,17 @@ nnoremap <C-i> <C-i>zz
 
 " --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
 
-" Highlight copied text
 Plug 'machakann/vim-highlightedyank'
-" Commentary plugin
 Plug 'tpope/vim-commentary'
 
 "" -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
 
-map <leader>rn <action>(RenameElement)
-map <leader>fg <action>(FindInPath)
-map <leader>fp <action>(GotoClass)
-
 map <A-h> <Action>(EditorUnindentSelection)
 map <A-l> <Action>(EditorIndentLineOrSelection)
 
+map <C-Right> <action>(GotoNextError)
+map <C-Left> <action>(GotoPreviousError)
+
+map <leader>rn <action>(RenameElement)
+map <leader>fg <action>(FindInPath)
+map <leader>fp <action>(GotoClass)
