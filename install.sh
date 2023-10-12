@@ -38,10 +38,10 @@ while true; do
   select option in "main" "work"; do
     case $option in
       main )
-        ./install-packages.sh
+        sudo ./install-packages.sh
         break;;
       work )
-        ./install-packages-work.sh
+        sudo ./install-packages-work.sh
         break;;
       * )
         echo "Invalid selection. Please choose 'main' or 'work'.";;
