@@ -23,12 +23,6 @@ nnoremap k gk
 nnoremap H ^
 nnoremap L $
 
-" Managing tabs
-nnoremap <C-left>  <cmd>tabprev<cr>
-nnoremap <C-right> <cmd>tabnext<cr>
-nnoremap <C-up>    <cmd>tabnew<cr>
-nnoremap <C-down>  <cmd>tabclose<cr>
-
 " Insert new line below and above without entering insert mode
 nnoremap <leader>o o<Esc>0"_D
 nnoremap <leader>O O<Esc>0"_D

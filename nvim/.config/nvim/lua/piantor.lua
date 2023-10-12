@@ -14,6 +14,10 @@ end
 local function set_override_mappings()
   local normal_mode_overrides = {
     ["<leader>ri"] = "<leader>rc",
+    -- Go to definition
+    ["<leader>gt"] = "<leader>gd",
+    ["<C-m>"] = vim.diagnostic.goto_prev,
+    ["<C-i>"] = vim.diagnostic.goto_next,
   }
   local insert_mode_overrides = {
     ["<a-m>"] = "<left>",
