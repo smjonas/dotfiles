@@ -50,9 +50,9 @@ nnoremap <leader>O O<Esc>0"_D
 map y "+y
 map Y "+y$
 
-" Insert from clipboard in paste mode
-nnoremap <leader>p <cmd>set paste<cr>a<C-r>+<Esc><cmd>set nopaste<cr>
-xnoremap <leader>p <cmd>set paste<cr>"+p<cmd>set nopaste<cr>
+" Paste from clipboard
+sethandler <C-v> a:ide
+nmap <leader>p <C-v>
 
 " Centering
 nnoremap { {zz
