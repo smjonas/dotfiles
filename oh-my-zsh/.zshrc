@@ -1,3 +1,4 @@
+source ~/custom_commands.sh
 source ~/openai_api_key.sh
 
 # export PATH=$PATH:/home/jonas/.local/share/neovim/bin
