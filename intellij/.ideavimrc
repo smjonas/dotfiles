@@ -5,11 +5,13 @@
 
 let mapleader = " "
 
+set clipboard+=unnamed
+set ideajoin
 set incsearch
 set number
 set relativenumber
 set nostartofline
-set scrolloff=9
+set scrolloff=2
 set showmode
 set sidescroll=1
 set smartcase
@@ -36,23 +38,17 @@ nnoremap <A-k> :move: .-2<CR>==
 xnoremap <A-j> :move '>+1<CR>gv=gv
 xnoremap <A-k> :move '<-2<CR>gv=gv
 
-
 " Search and replace
 nnoremap <leader>s :%s///gc<left><left><left><left>
 xnoremap s :s/\%V//g<left><left><left>
 
 " Insert new line below and above without entering insert mode
-nnoremap <leader>o o<Esc>0"_D
-nnoremap <leader>O O<Esc>0"_D
-
-" Enable copying to system clipboard; simply changing vim.o.clipboard to include
-" unnamedplus would paste from system clipboard with p which I want to use <leader>p for instead
-map y "+y
-map Y "+y$
+nnoremap <leader>o o<Esc>0\"_D
+nnoremap <leader>O O<Esc>0\"_D
 
 " Paste from clipboard
-sethandler <C-v> a:ide
-nmap <leader>p <C-v>
+" sethandler <C-v> a:ide
+" nmap <leader>p <C-v>
 
 " Centering
 nnoremap { {zz
