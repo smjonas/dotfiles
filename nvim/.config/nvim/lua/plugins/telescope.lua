@@ -135,13 +135,6 @@ M.config = function()
     }
   end
 
-  local function find_old_inacon()
-    builtin.oldfiles {
-      prompt_title = "Find Old Inacon Files",
-      search_dirs = { env.INACON_DIR .. "/Kurse", inacon_dir .. "/Automation" },
-    }
-  end
-
   local function find_config()
     builtin.find_files {
       prompt_title = "Find Config Files",
@@ -173,7 +166,6 @@ M.config = function()
   map("<leader>fs", "<cmd>Telescope resume<cr>", "telescope reSume")
   -- map("<leader>ff", find_files, "telescope Find Files")
   map("<leader>fi", find_inacon, "telescope Find Inacon")
-  map("<leader>fu", find_old_inacon, "telescope Find Old inacon")
   -- map("<leader>fp", project_search, "telescope Find in Project")
   map("<leader>fv", find_nvim_plugins, "telescope Find in nVim config")
   map("<leader>fc", find_config, "telescope Find in Config files")

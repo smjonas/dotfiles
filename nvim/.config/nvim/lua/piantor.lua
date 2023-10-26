@@ -14,6 +14,7 @@ end
 local function set_override_mappings()
   local normal_mode_overrides = {
     ["<leader>ri"] = "<leader>rc",
+    ["<leader>fu"] = "<leader>fc",
     -- Go to definition
     ["<leader>gt"] = "<leader>gd",
     ["<C-m>"] = vim.diagnostic.goto_prev,
