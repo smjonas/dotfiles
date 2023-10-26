@@ -161,6 +161,7 @@ M.config = function()
           fallback()
         end
       end, { "i", "s" }),
+      ["<C-e>"] = require("piantor").cmp_previous(cmp, luasnip),
     },
     sorting = {
       comparators = {

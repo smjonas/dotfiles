@@ -11,6 +11,19 @@ M.cmp_confirm = function(cmp)
   )
 end
 
+-- <C-e>
+M.cmp_previous = function(cmp, luasnip)
+  return cmp.mapping(function(fallback)
+    if luasnip.choice_active() and luasnip.expand_or_locally_jumpable() then
+      luasnip.change_choice(-1)
+    elseif cmp.visible() then
+      cmp.select_prev_item()
+    else
+      fallback()
+    end
+  end, { "i", "s" })
+end
+
 local function set_override_mappings()
   local normal_mode_overrides = {
     ["<leader>ri"] = "<leader>rc",
