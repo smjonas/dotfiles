@@ -112,13 +112,13 @@ M.config = function()
     mapping = {
       -- mostly keep defaults except use <C-f> instead <C-y>
       -- and overload tab keys for snippet plugins
-      ["<C-f>"] = cmp.mapping(
-        cmp.mapping.confirm {
-          behavior = cmp.ConfirmBehavior.Replace,
-          select = true,
-        },
-        { "i", "s" }
-      ),
+      -- ["<C-f>"] = cmp.mapping(
+      --   cmp.mapping.confirm {
+      --     behavior = cmp.ConfirmBehavior.Replace,
+      --     select = true,
+      --   },
+      --   { "i", "s" }
+      -- ),
       ["<C-s>"] = require("piantor").cmp_confirm(cmp),
       ["<Tab>"] = cmp.mapping(function(fallback)
         if luasnip.expand_or_locally_jumpable() then
