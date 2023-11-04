@@ -63,6 +63,11 @@ M.config = function()
   map("n", "<leader>gs", "<cmd>Git<cr>", { desc = "Git status" })
   map("n", "<leader>gp", "<cmd>Git push<cr>")
   map("n", "<leader>gl", "<cmd>Git pull<cr>")
+  map("n", "<leader>gb", function()
+    vim.ui.input({ prompt = "Enter the branch name:" }, function(branch)
+      vim.cmd("Git checkout -b " .. branch)
+    end)
+  end)
 
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "fugitive",
