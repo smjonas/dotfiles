@@ -24,5 +24,6 @@ alias stowall='stow -S git nvim intellij kitty oh-my-zsh pulse-audio fonts misc'
 # git
 alias g='git'
 alias gs='git status'
+alias gco='git checkout -b'
 alias ga='git add -A'
 alias gp='git push'
