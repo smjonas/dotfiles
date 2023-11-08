@@ -13,4 +13,5 @@ return {
   "rmagatti/auto-session",
   "inkarkat/vim-ReplaceWithRegister",
   { "Julian/vim-textobj-variable-segment", dependencies = "kana/vim-textobj-user" },
+  "kana/vim-textobj-entire",
 }
