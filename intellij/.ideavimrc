@@ -60,6 +60,15 @@ nnoremap <C-d> <C-d>zz
 nnoremap <C-o> <C-o>zz
 nnoremap <C-i> <C-i>zz
 
+" hack since an escaped double in the mapping does not seem to be work
+function! DoubleQuote()
+    return '"'
+endfunction
+
+" make q an alias for "
+omap <expr> iq "i" .. DoubleQuote()
+omap <expr> aq "a" .. DoubleQuote()
+
 " --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
 
 Plug 'machakann/vim-highlightedyank'
@@ -67,7 +76,7 @@ Plug 'tpope/vim-commentary'
 Plug 'kana/vim-textobj-entire'
 Plug 'vim-scripts/argtextobj.vim'
 
-"" -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
+" -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
 
 map <A-h> <Action>(EditorUnindentSelection)
 map <A-l> <Action>(EditorIndentLineOrSelection)
