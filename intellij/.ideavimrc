@@ -65,6 +65,7 @@ nnoremap <C-i> <C-i>zz
 Plug 'machakann/vim-highlightedyank'
 Plug 'tpope/vim-commentary'
 Plug 'kana/vim-textobj-entire'
+Plug 'vim-scripts/argtextobj.vim'
 
 "" -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
 
