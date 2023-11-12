@@ -1,5 +1,8 @@
 source ~/custom_commands.sh
+source ~/zellij_completion.sh
+
 source ~/openai_api_key.sh
+source ~/google_cloud_api_key.sh
 
 # export PATH=$PATH:/home/jonas/.local/share/neovim/bin
 export PATH=$PATH:/home/jonas/.local/share/bob/nightly/nvim-linux64/bin
