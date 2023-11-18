@@ -20,13 +20,6 @@ local M = {
       end,
       dependencies = { "williamboman/mason-lspconfig.nvim" },
     },
-    {
-      "jose-elias-alvarez/null-ls.nvim",
-      dependencies = { "nvim-lua/plenary.nvim" },
-      config = function()
-        require("plugins.lsp.null_ls")
-      end,
-    },
   },
 }
 
@@ -34,9 +27,7 @@ M.config = function()
   local map = vim.keymap.set
 
   -- We don't need the default Ctrl-F, so make the mapping global
-  map("n", "<C-f>", vim.lsp.buf.format, { silent = true })
-  -- Note: not all LSP servers support range formatting
-  -- map("v", "<C-f>", vim.lsp.buf.range_formatting, { silent = true })
+  map("n", "<C-f>", require("conform").format, { silent = true })
 
   -- Modified from hrsh7th/cmp-nvim-lsp/
   -- This avoids a dependency of this module on cmp_nvim_lsp.
