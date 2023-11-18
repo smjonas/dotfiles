@@ -18,8 +18,8 @@ local inc_rename = {
 local live_command = {
   "smjonas/live-command.nvim",
   dependencies = { "tpope/vim-abolish", "rickhowe/diffchar.vim" },
-  dev = false,
-  branch = "main",
+  dev = true,
+  branch = "rewrite",
   config = function()
     local commands = {
       Norm = { cmd = "norm" },
