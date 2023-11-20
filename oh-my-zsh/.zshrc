@@ -65,6 +65,7 @@ bindkey '^s' autosuggest-accept
 export DISABLE_UPDATE_PROMPT=true
 source $ZSH/oh-my-zsh.sh
 
+export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 # Required by fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
