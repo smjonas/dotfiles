@@ -1,8 +1,11 @@
 #!/bin/bash
 apt install -y build-essential libnewlib-arm-none-eabi
-apt install -y zsh kitty fzf ripgrep python3-pip luarocks
+apt install -y zsh kitty fzf ripgrep fdfind python3-pip luarocks
 # htpasswd
 apt install apache2-utils
+
+# https://github.com/sharkdp/fd#on-debian
+ln -s $(which fdfind) ~/.local/bin/fd
 
 # Make zsh the default shell
 chsh -s $(which zsh)

@@ -47,12 +47,31 @@ export ZSH="$HOME/.oh-my-zsh"
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="eastwood"
 
+# zoxide's __zoxide_z does not work with --, so we have to wrap it
+# ("--" is added by fzf's ALT_C_COMMAND)
+cd() {
+    if [[ "$1" == "--" && -n "$2" ]]; then
+        __zoxide_z "$2"
+    else
+        __zoxide_z "$@"
+    fi
+}
+
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
+export FZF_DEFAULT_COMMAND="fd --type=f --hidden --follow --exclude .git"
+# paste selected path in command line
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+# find directory to cd into
+export FZF_ALT_C_COMMAND="fd --type=d --hidden --follow --exclude .git"
+export DISABLE_FZF_KEY_BINDINGS="false"
+
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+  fzf
   git
   zoxide
   zsh-autosuggestions
@@ -65,7 +84,6 @@ bindkey '^s' autosuggest-accept
 export DISABLE_UPDATE_PROMPT=true
 source $ZSH/oh-my-zsh.sh
 
-export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 # Required by fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 

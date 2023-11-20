@@ -23,7 +23,6 @@
   "git-conflict.nvim": { "branch": "main", "commit": "896261933afe2fddf6fb043d9cd4d88301b151a9" },
   "inc-rename.nvim": { "branch": "main", "commit": "ed0f6f2b917cac4eb3259f907da0a481b27a3b7e" },
   "lazy.nvim": { "branch": "main", "commit": "96584866b9c5e998cbae300594d0ccfd0c464627" },
-  "live-command.nvim": { "branch": "main", "commit": "d460067d47948725a6f25b20f31ea8bbfdfe4622" },
   "live-tests-busted.nvim": { "branch": "master", "commit": "393a90234c00721678fbe96dbdba4dec826c4328" },
   "lsp_signature.nvim": { "branch": "master", "commit": "1fba8f477b8c65add5e07cda0504cf7f81a9a4ab" },
   "lualine.nvim": { "branch": "master", "commit": "2248ef254d0a1488a72041cfb45ca9caada6d994" },
