@@ -50,6 +50,9 @@ nnoremap <leader>O O<Esc>0\"_D
 " sethandler <C-v> a:ide
 " nmap <leader>p <C-v>
 
+" Go to previous file
+nnoremap <bs> <C-6>zz
+
 " Centering
 nnoremap { {zz
 nnoremap } }zz
