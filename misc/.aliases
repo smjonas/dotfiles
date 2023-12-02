@@ -2,6 +2,8 @@
 alias ..='cd ..'
 alias v=nvim
 alias r='nvim -c "SessionRestore"'
+# open nvim with fzf and do nothing on cancellation
+alias f='fzf --print0 | xargs -0 -r -o nvim'
 alias python=python3
 
 alias update_nvim='\
