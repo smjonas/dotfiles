@@ -159,6 +159,14 @@ M.config = function()
     end
   end
 
+  local function switch_git_branches()
+    local ok = pcall(builtin.git_branches)
+    if not ok then
+      local x = vim.fn.getcwd()
+      print(x .. " is not a git directory")
+    end
+  end
+
   local map = function(lhs, rhs, desc)
     vim.keymap.set("n", lhs, rhs, { silent = true, desc = desc })
   end
@@ -169,6 +177,7 @@ M.config = function()
   -- map("<leader>fp", project_search, "telescope Find in Project")
   map("<leader>fv", find_nvim_plugins, "telescope Find in nVim config")
   map("<leader>fc", find_config, "telescope Find in Config files")
+  map("<leader>b", switch_git_branches, "telescope switch git Branches")
   -- map("<leader>fo", require("telescope").extensions.recent_files.pick, "telescope Find Old files")
   -- map("<leader>fo", builtin.oldfiles, "telescope Find Old files")
   -- Requires ripgrep to be installed (sudo apt install ripgrep)
