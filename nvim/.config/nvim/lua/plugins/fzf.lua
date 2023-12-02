@@ -18,7 +18,7 @@ local function project_search()
   local fzf = require("fzf-lua")
   local path, is_git_root = get_root_dir()
 
-  local opts = { cwd = path }
+  local opts = { cwd = path, fzf_opts = { ["--keep-right"] = "" } }
   if is_git_root then
     return fzf.git_files(opts)
   else
@@ -28,7 +28,7 @@ end
 
 local function grep_git_root(fzf_grep_fn)
   return function()
-    fzf_grep_fn { cwd = get_root_dir() }
+    fzf_grep_fn { cwd = get_root_dir(), fzf_opts = { ["--keep-right"] = "" }}
   end
 end
 
