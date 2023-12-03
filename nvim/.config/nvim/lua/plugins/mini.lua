@@ -1,21 +1,36 @@
+local function setup_mini_ai()
+  local ai = require("mini.ai")
+  local spec = ai.gen_spec.treesitter
+
+  require("mini.ai").setup {
+    n_lines = 200,
+    ai.setup {
+      custom_textobjects = {
+        f = spec { a = "@function.outer", i = "@function.inner" },
+        c = spec { a = "@class.outer", i = "@class.inner" },
+        i = spec { a = "@conditional.outer", i = "@conditional.inner" },
+        a = spec { a = "@conditional.outer", i = "@parameter.inner" },
+      },
+    },
+  }
+end
+
+local function setup_mini_visits()
+  require("mini.visits").setup()
+  local map_vis = function(keys, call, desc)
+    local rhs = "<Cmd>lua MiniVisits." .. call .. "<CR>"
+    vim.keymap.set("n", keys, rhs, { desc = desc })
+  end
+
+  map_vis("<leader>vv", "add_label()", "Add label")
+  map_vis("<leader>vV", "remove_label()", "Remove label")
+  map_vis("<leader>vl", 'select_label("", "")', "Select label (all)")
+  map_vis("<leader>vL", "select_label()", "Select label (cwd)")
+end
+
 return {
   "echasnovski/mini.nvim",
   config = function()
-    local ai = require("mini.ai")
-    local spec = ai.gen_spec.treesitter
-
-    require("mini.ai").setup {
-      n_lines = 200,
-      ai.setup {
-        custom_textobjects = {
-          f = spec { a = "@function.outer", i = "@function.inner" },
-          c = spec { a = "@class.outer", i = "@class.inner" },
-          i = spec { a = "@conditional.outer", i = "@conditional.inner" },
-          a = spec { a = "@conditional.outer", i = "@parameter.inner" },
-        },
-      },
-    }
-
     require("mini.files").setup {
       mappings = {
         go_in = "",
@@ -50,8 +65,10 @@ return {
       end
     end)
 
-    require("mini.operators").setup()
+    setup_mini_ai()
+    setup_mini_visits()
     require("mini.comment").setup()
     require("mini.move").setup()
+    require("mini.operators").setup()
   end,
 }
