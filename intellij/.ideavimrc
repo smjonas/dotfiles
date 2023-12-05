@@ -63,7 +63,7 @@ nnoremap <C-d> <C-d>zz
 nnoremap <C-o> <C-o>zz
 nnoremap <C-i> <C-i>zz
 
-" hack since an escaped double in the mapping does not seem to be work
+" hack since an escaped double quote in the mapping does not seem to be work
 function! DoubleQuote()
     return '"'
 endfunction
@@ -90,3 +90,5 @@ map <C-Left> <action>(GotoPreviousError)
 map <leader>rn <action>(RenameElement)
 map <leader>fg <action>(FindInPath)
 map <leader>fp <action>(GotoClass)
+map <leader>ff <action>(GotoFile)
+map <leader>fo <action>(RecentFiles)
