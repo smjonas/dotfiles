@@ -12,13 +12,11 @@ local M = {
     },
     "vE5li/cmp-buffer",
     "hrsh7th/cmp-path",
-    "max397574/cmp-greek",
   },
 }
 
 M.config = function()
   local cmp = require("cmp")
-  local compare = cmp.config.compare
 
   local ok, luasnip = pcall(require, "luasnip")
   if not ok then
@@ -53,20 +51,8 @@ M.config = function()
     Variable = "󰈜",
   }
 
-  local under_comparator = function(entry1, entry2)
-    local _, entry1_under = entry1.completion_item.label:find("^_+")
-    local _, entry2_under = entry2.completion_item.label:find("^_+")
-    entry1_under = entry1_under or 0
-    entry2_under = entry2_under or 0
-    if entry1_under > entry2_under then
-      return false
-    elseif entry1_under < entry2_under then
-      return true
-    end
-  end
-
   local function has_any_words_before()
-    if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
+    if vim.api.nvim_get_option_value("buftype", {}) == "prompt" then
       return false
     end
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -80,16 +66,16 @@ M.config = function()
         luasnip.lsp_expand(args.body)
       end,
     },
-    sources = {
-      { name = "copilot" },
+    sources = cmp.config.sources({
       { name = "nvim_lsp" },
-      { name = "path", priority = 20 },
-      { name = "greek" },
-      { name = "luasnip", priority = 10, keyword_length = 1 },
-      { name = "buffer", option = { keyword_pattern = [[\k\+]] }, keyword_length = 1 },
-    },
+      { name = "copilot" },
+      { name = "luasnip", max_item_count = 10 },
+      { name = "path" },
+    }, {
+      { name = "buffer" },
+    }),
     enabled = function()
-      local in_prompt = vim.api.nvim_buf_get_option(0, "buftype") == "prompt"
+      local in_prompt = vim.api.nvim_get_option_value("buftype", {}) == "prompt"
       if in_prompt or vim.bo.filetype == "TelescopePrompt" then
         return false
       end
@@ -97,7 +83,9 @@ M.config = function()
       return not (context.in_treesitter_capture("comment") or context.in_syntax_group("Comment"))
     end,
     experimental = {
-      ghost_text = {},
+      ghost_text = {
+        hl_group = "CmpGhostText",
+      },
     },
     completion = {
       border = "rounded",
@@ -163,23 +151,9 @@ M.config = function()
       end, { "i", "s" }),
       ["<C-e>"] = require("piantor").cmp_previous(cmp, luasnip),
     },
-    sorting = {
-      comparators = {
-        function(...)
-          return require("cmp_buffer"):compare_locality(...)
-        end,
-        compare.locality,
-        compare.recently_used,
-        -- compare.exact,
-        compare.score,
-        under_comparator,
-        compare.kind,
-        compare.sort_text,
-        compare.length,
-        compare.order,
-      },
-    },
     formatting = {
+      dependencies = { "williamboman/mason-lspconfig.nvim" },
+
       fields = { "kind", "abbr", "menu" },
       format = function(_, vim_item)
         vim_item.menu = vim_item.kind

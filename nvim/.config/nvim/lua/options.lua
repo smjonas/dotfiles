@@ -13,20 +13,6 @@ o.cursorline = true
 o.expandtab = true
 -- Don't make all windows the same size when resizing (also required for windows.nvim)
 o.equalalways = false
--- Do not open folds when moving with { or }
-o.foldopen = o.foldopen - "block"
-o.ignorecase = true
--- Show replacement results while typing command
-o.inccommand = "nosplit"
--- Drag window with mouse
-o.mouse = "a"
-o.mousescroll = "ver:4"
-o.hlsearch = false
--- Winbar (code context + right-aligned filename)
-local ok, _ = pcall(require, "nvim-navic")
-if ok then
-  o.winbar = " %f %= %{%v:lua.require'nvim-navic'.get_location()%} "
-end
 -- Global status bar
 -- o.laststatus = 3
 o.fillchars:append {
@@ -38,9 +24,24 @@ o.fillchars:append {
   vertright = "┣",
   verthoriz = "╋",
 }
+-- Do not open folds when moving with { or }
+o.foldopen = o.foldopen - "block"
+o.hlsearch = false
+o.ignorecase = true
+-- Show replacement results while typing command
+o.inccommand = "nosplit"
+-- Drag window with mouse
+o.mouse = "a"
+o.mousescroll = "ver:4"
+-- Winbar (code context + right-aligned filename)
+local ok, _ = pcall(require, "nvim-navic")
+if ok then
+  o.winbar = " %f %= %{%v:lua.require'nvim-navic'.get_location()%} "
+end
 -- Crispy window separators
 -- vim.cmd("highlight WinSeparator guibg=None")
 o.number = true
+o.pumheight = 10
 o.relativenumber = true
 o.scrolloff = 9
 o.sessionoptions = o.sessionoptions + "resize,winpos,terminal"
