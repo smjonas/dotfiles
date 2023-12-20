@@ -84,8 +84,8 @@ Plug 'vim-scripts/argtextobj.vim'
 map <A-h> <Action>(EditorUnindentSelection)
 map <A-l> <Action>(EditorIndentLineOrSelection)
 
-map <C-Right> <action>(GotoNextError)
-map <C-Left> <action>(GotoPreviousError)
+map <C-e> <action>(GotoNextError)
+map <C-n> <action>(GotoPreviousError)
 
 map <leader>rn <action>(RenameElement)
 map <leader>fg <action>(FindInPath)
