@@ -8,6 +8,7 @@ ui {
 keybinds clear-defaults=true {
 	normal {
 		unbind "Ctrl p"
+		unbind "Ctrl t"
 		unbind "Ctrl o"
 		unbind "Ctrl q"
 		// uncomment this and adjust key if using copy_on_select=false
@@ -49,7 +50,7 @@ keybinds clear-defaults=true {
 		bind "r" { SwitchToMode "RenamePane"; PaneNameInput 0;}
 	}
 	tab {
-		bind "Ctrl t" { SwitchToMode "Normal"; }
+		bind "Ctrl b" { SwitchToMode "Normal"; }
 		bind "r" { SwitchToMode "RenameTab"; TabNameInput 0; }
 		bind "h" "Left" "Up" "k" { GoToPreviousTab; SwitchToMode "Normal"; }
 		bind "l" "Right" "Down" "j" { GoToNextTab; SwitchToMode "Normal"; }
@@ -163,6 +164,9 @@ keybinds clear-defaults=true {
 	shared_except "pane" "locked" {
 		bind "Ctrl a" { SwitchToMode "Pane"; }
 	}
+	shared_except "tab" "locked" {
+		bind "Ctrl b" { SwitchToMode "Tab"; }
+	}
 	shared_except "resize" "locked" {
 		bind "Ctrl h" { SwitchToMode "Resize"; }
 	}
@@ -178,9 +182,9 @@ keybinds clear-defaults=true {
 	shared_except "renametab" "locked" {
 		bind "Alt r" { SwitchToMode "RenameTab"; }
 	}
-	shared_except "tmux" "locked" {
-		bind "Ctrl b" { SwitchToMode "Tmux"; }
-	}
+	// shared_except "tmux" "locked" {
+		// bind "Ctrl b" { SwitchToMode "Tmux"; }
+	// }
 }
 
 plugins {
