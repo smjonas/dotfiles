@@ -1,3 +1,6 @@
+export SHELL=/usr/bin/zsh
+source ~/.aliases
+
 source ~/custom_commands.sh
 source ~/zellij_completion.sh
 
@@ -15,9 +18,7 @@ export PATH=$PATH:/home/jonas/go/bin
 export PATH=$PATH:/usr/local/texlive/2022/bin/x86_64-linux
 export INFOPATH=$INFOPATH:/usr/local/texlive/2022/texmf-dist/doc/info
 export MANPATH=$MANPATH:/usr/local/texlive/2022/texmf-dist/doc/man
-
-export SHELL=/usr/bin/zsh
-source ~/.aliases
+export JAVA_HOME="/opt/idea/jbr"
 
 # Set neovim as manpager
 export MANPAGER='nvim --appimage-extract-and-run -c "set ft=man"'
@@ -77,7 +78,6 @@ plugins=(
   zsh-autosuggestions
   zsh-syntax-highlighting
 )
-bindkey '^f' autosuggest-accept
 bindkey '^s' autosuggest-accept
 
 # Always update plugins without asking

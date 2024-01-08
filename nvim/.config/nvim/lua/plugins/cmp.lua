@@ -98,7 +98,7 @@ M.config = function()
       documentation = cmp.config.window.bordered(),
     },
     mapping = {
-      -- mostly keep defaults except use <C-f> instead <C-y>
+      -- mostly keep defaults except use <C-s> instead <C-y>
       -- and overload tab keys for snippet plugins
       -- ["<C-f>"] = cmp.mapping(
       --   cmp.mapping.confirm {
