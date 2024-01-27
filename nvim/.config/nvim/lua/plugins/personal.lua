@@ -100,12 +100,6 @@ local live_tests_busted = {
   end,
 }
 
-local zoxide_edit = {
-  "smjonas/zoxide-edit.nvim",
-  dev = false,
-  config = true,
-}
-
 local editree = {
   "smjonas/editree.nvim",
   dev = false,
@@ -129,6 +123,5 @@ return {
   inc_rename,
   snippet_converter,
   live_tests_busted,
-  zoxide_edit,
   editree,
 }
