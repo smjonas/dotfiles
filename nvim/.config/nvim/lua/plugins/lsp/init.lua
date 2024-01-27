@@ -3,16 +3,20 @@ local M = {
   dependencies = {
     "folke/neodev.nvim",
     "ray-x/lsp_signature.nvim",
-    -- {
-    --   "lvimuser/lsp-inlayhints.nvim",
-    --   enable = false,
-    --   branch = "anticonceal",
-    --   config = function()
-    --     require("lsp-inlayhints").setup {}
-    --     -- Same as CursorColumn
-    --     vim.cmd("highlight LspInlayHint guibg=#2f334d")
-    --   end,
-    -- },
+    {
+      "williamboman/mason.nvim",
+      config = function()
+        local ensure_installed = { "lua_ls", "pylsp" }
+        require("mason").setup()
+        local mason_lspconfig = require("mason-lspconfig")
+        mason_lspconfig.setup()
+
+        vim.api.nvim_create_user_command("MasonInstallAll", function()
+          vim.cmd("MasonInstall " .. table.concat(ensure_installed, " "))
+        end, {})
+      end,
+      dependencies = { "williamboman/mason-lspconfig.nvim" },
+    },
   },
 }
 
@@ -44,16 +48,17 @@ M.config = function()
   local capabilities = update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
   local setup_lsp_servers = function()
-    local ok, mason = pcall(require, "mason-lspconfig")
-    if not ok then
-      vim.notify("Mason was not found: no LSP servers set up", vim.log.levels.ERROR)
-      return
-    end
-    mason.setup()
-
     local lsp_config = require("lspconfig")
     local server_list = { "rust_analyzer" }
-    server_list = vim.list_extend(server_list, mason.get_installed_servers())
+    local ok, mason_lspconfig = pcall(require, "mason-lspconfig")
+    if ok then
+      server_list = vim.list_extend(server_list, mason_lspconfig.get_installed_servers())
+    else
+      vim.notify(
+        "mason-lspconfig is not installed: could not get installed servers",
+        vim.log.levels.ERROR
+      )
+    end
 
     local opts = {
       on_attach = on_attach,
@@ -68,13 +73,7 @@ M.config = function()
       lsp_config[server].setup(opts)
     end
   end
-
   setup_lsp_servers()
-
-  -- Better hover window colors
-  local normal_float_bg = vim.fn.synIDattr(vim.fn.hlID("NormalFloat"), "bg")
-  local normal_fg = vim.fn.synIDattr(vim.fn.hlID("Normal"), "fg")
-  -- vim.cmd("highlight FloatBorder guifg=" .. normal_fg .. " guibg=NONE") --.. normal_float_bg)
 
   vim.diagnostic.config {
     virtual_text = false,
@@ -98,10 +97,11 @@ M.config = function()
     })
   end
 
-  -- Borders around lsp windows
-  -- local popup_opts = { border = "single", focusable = false, max_width = 60 }
-  -- lsp.handlers["textDocument/hover"] = lsp.with(lsp.handlers.hover, popup_opts)
-  -- lsp.handlers["textDocument/signatureHelp"] = lsp.with(lsp.handlers.signature_help, popup_opts)
+  -- Borders around LSP windows
+  local lsp = vim.lsp
+  lsp.handlers["textDocument/hover"] = lsp.with(lsp.handlers.hover, {
+    border = "rounded",
+  })
 end
 
 return M
