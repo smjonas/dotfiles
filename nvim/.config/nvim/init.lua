@@ -28,9 +28,7 @@ augroup dotfiles
  " as a global option (see https://vi.stackexchange.com/a/9366/37072)
  autocmd FileType * set formatoptions-=t
  " Automatically enter insert mode when in terminal mode
- " and change to current directory
  autocmd BufEnter term://* startinsert
- autocmd TermOpen * silent !lcd %:p:h
 
 augroup end
 ]])
