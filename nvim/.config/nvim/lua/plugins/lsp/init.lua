@@ -16,11 +16,6 @@ local M = {
   },
 }
 
-local setup_nvim_java = function()
-    require("java").setup()
-    require('lspconfig').jdtls.setup({})
-end
-
 M.config = function()
   local map = vim.keymap.set
 
@@ -49,7 +44,6 @@ M.config = function()
   local capabilities = update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
   local setup_lsp_servers = function()
-    setup_nvim_java()
     local ok, mason = pcall(require, "mason-lspconfig")
     if not ok then
       vim.notify("Mason was not found: no LSP servers set up", vim.log.levels.ERROR)
