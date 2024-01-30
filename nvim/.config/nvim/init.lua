@@ -39,12 +39,18 @@ require("piantor")
 vim.g.remove_trailing_whitespace = true
 
 vim.api.nvim_create_autocmd("BufWritePre", {
+  desc = "Remove trailing whitespace on save",
   callback = function()
-    -- Remove trailing whitespace on save (/e to hide errors)
     if vim.g.remove_trailing_whitespace then
       vim.cmd([[%s/\s\+$//e]])
     end
   end,
+})
+
+vim.api.nvim_create_autocmd("BufReadPost", {
+  desc = "Open file at the last position it was edited earlier",
+  pattern = "*",
+  command = 'silent! normal! g`"zv',
 })
 
 -- Load config files
