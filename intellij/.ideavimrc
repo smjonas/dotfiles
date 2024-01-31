@@ -7,6 +7,7 @@ let mapleader = " "
 
 set clipboard+=unnamed
 set ideajoin
+set ignorecase
 set incsearch
 set number
 set relativenumber
@@ -14,7 +15,6 @@ set nostartofline
 set scrolloff=2
 set showmode
 set sidescroll=1
-set smartcase
 " Vim surround
 set surround
 set timeoutlen=250
