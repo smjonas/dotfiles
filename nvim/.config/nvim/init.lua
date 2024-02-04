@@ -1,6 +1,3 @@
-vim.env.INACON_DIR = vim.env.HOME .. "/Desktop/Inacon/"
-vim.env.INACON_VENV_ACTIVATE = vim.env.INACON_DIR .. "inacon_env/bin/activate"
-vim.env.INACON_VENV_PYTHON = vim.env.INACON_DIR .. "inacon_env/bin"
 
 -- Fixes wrong terminal colors when using tmux
 vim.cmd([[
@@ -55,7 +52,6 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 -- Load config files
 require("utils")
--- require("autocmds")
 require("options")
 require("lazyinit")
 
@@ -87,3 +83,13 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   callback = reload_config,
   desc = "Reload config on save",
 })
+
+local function smart_dd()
+  if vim.api.nvim_get_current_line():match("^%s*$") then
+    return '"_dd'
+  else
+    return "dd"
+  end
+end
+
+vim.keymap.set("n", "dd", smart_dd, { expr = true })
