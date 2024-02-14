@@ -131,7 +131,7 @@ M.config = function()
   local function find_inacon()
     builtin.find_files {
       prompt_title = "Find Inacon Files",
-      search_dirs = { env.INACON_DIR .. "/Kurse", inacon_dir .. "/Automation" },
+      search_dirs = { "/home/jonas/Desktop/Inacon/Kurse", inacon_dir .. "/Automation" },
     }
   end
 
