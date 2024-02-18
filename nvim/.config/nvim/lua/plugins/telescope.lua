@@ -185,7 +185,7 @@ M.config = function()
   map("<leader>fw", grep_git_root(builtin.grep_string), "telescope Find Word under cursor")
 
   map("<leader>fb", builtin.buffers, "telescope Find Buffers")
-  map("<leader>h", builtin.help_tags, "telescope Helptags")
+  map("<leader>hl", builtin.help_tags, "telescope Helptags")
   map("<leader>fl", builtin.lsp_document_symbols, "telescope Find Lsp document symbols")
   map("<leader>fq", builtin.quickfix, "telescope Find Quickfix list")
   map("<leader>fk", builtin.keymaps, "telescope Find in Keymaps")
