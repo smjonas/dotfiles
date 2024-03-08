@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Open in Neovim with Kitty
+Icon=nvim
+Exec=/bin/bash -c '/home/jonas/dotfiles/kitty/.local/bin/neovim_in_kitty.sh "%f"'
+Categories=Utility;TextEditor;
+MimeType=text/plain;
