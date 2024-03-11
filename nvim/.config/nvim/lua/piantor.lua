@@ -26,6 +26,8 @@ end
 
 local function set_override_mappings()
   local normal_mode_overrides = {
+    ["<leader>n"] = "<cmd>cprev<cr>",
+    ["<leader>e"] = "<cmd>cnext<cr>",
     ["<leader>ri"] = "<leader>rc",
     ["<leader>fu"] = "<leader>fc",
     -- Go to definition
