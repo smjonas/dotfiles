@@ -29,7 +29,7 @@ git clone --recurse-submodules git@github.com:smjonas/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 
 echo "Installing dotfiles..."
-stow -S git nvim intellij kitty oh-my-zsh pulse-audio fonts misc
+stow -S fonts git intellij kitty misc nvim oh-my-zsh pulse-audio zellij
 # Clear font cache
 fc-cache -f -v;
 
