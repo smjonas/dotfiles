@@ -17,7 +17,7 @@ local inc_rename = {
 
 local live_command = {
   "smjonas/live-command.nvim",
-  dependencies = { "tpope/vim-abolish", "rickhowe/diffchar.vim" },
+  dependencies = { "tpope/vim-abolish" },
   dev = true,
   branch = "rewrite",
   config = function()
@@ -102,8 +102,8 @@ local live_tests_busted = {
 
 local editree = {
   "smjonas/editree.nvim",
-  dev = false,
-  enabled = false,
+  dev = true,
+  enabled = true,
   config = function()
     require("editree").setup()
     vim.keymap.set("n", "<F1>", function()
@@ -112,10 +112,9 @@ local editree = {
       end
     end, { desc = "Toggle editree" })
   end,
-  -- dependencies = {
-  --   { "stevearc/oil.nvim", config = {} },
-  --   "fern.vim",
-  -- },
+  dependencies = {
+    { "stevearc/oil.nvim", config = {} },
+  },
 }
 
 return {
