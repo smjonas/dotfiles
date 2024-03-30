@@ -6,7 +6,7 @@ local M = {
     {
       "williamboman/mason.nvim",
       config = function()
-        local ensure_installed = { "lua_ls", "pylsp" }
+        local ensure_installed = { "lua_ls", "pylsp", "pyright" }
         require("mason").setup()
         local mason_lspconfig = require("mason-lspconfig")
         mason_lspconfig.setup()
