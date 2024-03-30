@@ -38,7 +38,7 @@ cargo install --locked zellij
 # Neovim-related packages
 luarocks --lua-version=5.1 install vusted
 cargo install stylua
-pip3 install neovim black isort trash-cli
+pip3 install black isort trash-cli
 npm install --save-dev --save-exact prettier
 
 # fzf
