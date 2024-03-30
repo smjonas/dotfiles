@@ -60,21 +60,23 @@ end
 
 M.config = function()
   local map = vim.keymap.set
-  map("n", "<leader>gs", "<cmd>Git<cr>", { desc = "Git status" })
-  map("n", "<leader>gp", "<cmd>Git push<cr>")
-  map("n", "<leader>gl", "<cmd>Git pull<cr>")
-  map("n", "<leader>gb", function()
+  map("n", "<leader>gs", "<cmd>Git<cr>", { desc = "[g]it [s]tatus" })
+  map("n", "<leader>gp", "<cmd>Git push<cr>", { desc = "[g]it [p]ush" })
+  map("n", "<leader>gl", "<cmd>Git pull<cr>", { desc = "[g]it [l]og" })
+  map("n", "<leader>gn", function()
     vim.ui.input({ prompt = "Enter the branch name:" }, function(branch)
-      vim.cmd("Git checkout -b " .. branch)
+      if branch and branch ~= "" then
+        vim.cmd("Git checkout -b " .. branch)
+      end
     end)
-  end)
+  end, { desc = "[g]it [n]ew branch" })
 
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "fugitive",
     callback = function()
       local opts = { buffer = true }
-      map("n", "<leader>gf", "<cmd>Git push -f<cr>", opts)
-      map("n", "<leader>gh", "<cmd>Git stash<cr>", opts)
+      map("n", "<leader>gf", "<cmd>Git push -f<cr>", { buffer = true, desc = "[g]it [f]orce push" })
+      map("n", "<leader>gh", "<cmd>Git stash<cr>", { buffer = true, desc = "[g]it stas[h]" })
 
       opts.remap = true
       -- Change default behavior of o to open file in vertical split
@@ -89,14 +91,14 @@ M.config = function()
 
   map("n", "<leader>ys", function()
     M.stow_command("")
-  end, { desc = "Stow status" })
+  end, { desc = "stow [s]tatus" })
 
   map("n", "<leader>yp", function()
     M.stow_command("push")
-  end, { desc = "Stow push" })
+  end, { desc = "stow [p]ush" })
 
   map("n", "<leader>yl", function()
     M.stow_command("pull")
-  end, { desc = "Stow pull" })
+  end, { desc = "stow pu[l]l" })
 end
 return M

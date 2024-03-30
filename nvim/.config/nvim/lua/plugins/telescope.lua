@@ -171,7 +171,7 @@ M.config = function()
     vim.keymap.set("n", lhs, rhs, { silent = true, desc = desc })
   end
 
-  map("<leader>gb", switch_git_branches, "switch [G]it [b]ranches")
+  map("<leader>gb", switch_git_branches, "switch [g]it [b]ranches")
   map("<leader>fs", "<cmd>Telescope resume<cr>", "telescope re[s]ume")
   -- map("<leader>ff", find_files, "telescope Find Files")
   map("<leader>fi", find_inacon, "[f]ind in [I]nacon files")

@@ -7,10 +7,10 @@ M.config = function()
     on_attach = function()
       local gitsigns = package.loaded.gitsigns
       local map = vim.keymap.set
-      map("n", "<leader>hs", gitsigns.stage_hunk, { desc = "[gitsigns] Stage hunk" })
-      map("n", "<leader>hu", gitsigns.reset_hunk, { desc = "[gitsigns] Unstage hunk" })
-      map("n", "<leader>ha", gitsigns.stage_buffer, { desc = "[gitsigns] Stage buffer" })
-      map("n", "<leader>hp", gitsigns.preview_hunk, { desc = "[gitsigns] Preview hunk" })
+      map("n", "<leader>ga", gitsigns.stage_hunk, { desc = "[g]it stage / [a]dd hunk" })
+      map("n", "<leader>gr", gitsigns.reset_hunk, { desc = "[g]it unstage / [r]emove hunk" })
+      map("n", "<leader>ge", gitsigns.stage_buffer, { desc = "[g]it stage [e]ntire buffer" })
+      map("n", "<leader>gg", gitsigns.preview_hunk, { desc = '[g]it preview / "[g]et" hunk' })
       -- Navigation
       local next_chunk = "[c"
       local prev_chunk = "]c"
