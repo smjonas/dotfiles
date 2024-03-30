@@ -28,7 +28,7 @@ end
 
 local function grep_git_root(fzf_grep_fn)
   return function()
-    fzf_grep_fn { cwd = get_root_dir(), fzf_opts = { ["--keep-right"] = "" }}
+    fzf_grep_fn { cwd = get_root_dir(), fzf_opts = { ["--keep-right"] = "" } }
   end
 end
 
@@ -64,11 +64,11 @@ M.config = function()
     vim.keymap.set("n", lhs, rhs, { silent = true, desc = desc })
   end
 
-  map("<leader>ff", find_files, "fzf Find Files")
-  map("<leader>fp", project_search, "fzf Find in Project")
-  map("<leader>fo", fzf.oldfiles, "fzf Find Old Files")
+  map("<leader>ff", find_files, "[f]ind [f]iles")
+  map("<leader>fp", project_search, "[f]ind in [p]roject files")
+  map("<leader>fo", fzf.oldfiles, "[f]ind [o]ld files")
 
-  map("<leader>fg", grep_git_root(fzf.live_grep), "fzf Find with ripGrep")
+  map("<leader>fg", grep_git_root(fzf.live_grep), "[f]ind with rip[g]rep")
 end
 
 return M

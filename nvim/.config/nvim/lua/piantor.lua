@@ -29,7 +29,7 @@ local function set_override_mappings()
     ["<leader>n"] = "<cmd>cprev<cr>",
     ["<leader>e"] = "<cmd>cnext<cr>",
     ["<leader>ri"] = "<leader>rc",
-    ["<leader>fu"] = "<leader>fc",
+    ["<leader>fu"] = { "<leader>fc", desc = "[f]ind in Neovim config files" },
     -- Go to definition
     ["<leader>gt"] = "<leader>gd",
     ["<C-m>"] = vim.diagnostic.goto_prev,
@@ -42,7 +42,11 @@ local function set_override_mappings()
     ["<a-i>"] = "<right>",
   }
   for k, v in pairs(normal_mode_overrides) do
-    vim.keymap.set("n", k, v, { remap = true })
+    if type(v) == "table" then
+      vim.keymap.set("n", k, v[1], { remap = true, desc = v.desc })
+    else
+      vim.keymap.set("n", k, v, { remap = true })
+    end
   end
   for k, v in pairs(insert_mode_overrides) do
     vim.keymap.set("i", k, v, { remap = true })
