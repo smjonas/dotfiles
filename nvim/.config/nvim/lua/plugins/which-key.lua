@@ -22,10 +22,10 @@ return {
       --   c = { "i" },
       -- },
     }
-    wk.register({
+    wk.register {
       ["<leader>f"] = { name = "+find" },
       ["<leader>g"] = { name = "+git" },
-      c = {
+      ["<leader>c"] = {
         name = "custom commands",
         w = {
           function()
@@ -35,9 +35,9 @@ return {
                 .. (vim.g.remove_trailing_whitespace == true and "on" or "off")
             )
           end,
-          "Toggle remove trailing whitespace",
+          "Toggle removing trailing whitespace",
         },
       },
-    }, { prefix = "<leader>" })
+    }
   end,
 }
