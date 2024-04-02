@@ -3,6 +3,7 @@ local M = {
   dependencies = {
     "folke/neodev.nvim",
     "ray-x/lsp_signature.nvim",
+    { "mizlan/delimited.nvim", opts = {} },
     {
       "williamboman/mason.nvim",
       config = function()

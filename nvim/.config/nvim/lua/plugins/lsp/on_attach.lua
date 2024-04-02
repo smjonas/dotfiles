@@ -29,12 +29,17 @@ return function(client, bufnr)
     -- hi_parameter = "DiffAdd",
   }, bufnr)
 
-  -- safe_require("lsp-inlayhints").on_attach(client, bufnr)
+  local ok, delimited = pcall(require, "delimited")
+  if not ok then
+    vim.notify("delimited.nvim is not installed, falling back to vim.diagnostic", vim.log.levels.WARN)
+    map("n", "<C-j>", vim.diagnostic.goto_prev)
+    map("n", "<C-k>", vim.diagnostic.goto_next)
+  else
+    map("n", "<C-j>", delimited.goto_prev)
+    map("n", "<C-k>", delimited.goto_next)
+  end
 
   map("n", "K", vim.lsp.buf.hover, opts)
-  -- map("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
-  map("n", "<C-j>", vim.diagnostic.goto_prev)
-  map("n", "<C-k>", vim.diagnostic.goto_next)
   map("n", "<leader>a", vim.lsp.buf.code_action, opts)
 
   -- safe_require("nvim-navic").attach(client, bufnr)
