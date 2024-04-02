@@ -6,7 +6,7 @@ local M = {
     {
       "williamboman/mason.nvim",
       config = function()
-        local ensure_installed = { "lua_ls", "pylsp", "pyright" }
+        local ensure_installed = { "lua_ls", "pylsp" }
         require("mason").setup()
         local mason_lspconfig = require("mason-lspconfig")
         mason_lspconfig.setup()
@@ -49,7 +49,7 @@ M.config = function()
 
   local setup_lsp_servers = function()
     local lsp_config = require("lspconfig")
-    local server_list = { "rust_analyzer" }
+    local server_list = { "rust_analyzer", "basedpyright" }
     local ok, mason_lspconfig = pcall(require, "mason-lspconfig")
     if ok then
       server_list = vim.list_extend(server_list, mason_lspconfig.get_installed_servers())

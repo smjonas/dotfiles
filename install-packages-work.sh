@@ -40,7 +40,7 @@ chmod +x "$NVIM_INSTALL_DIR/nvim"
 cargo install --locked zellij
 
 # Neovim-related packages
-pip3 install black isort
+pip3 install basedpyright black isort
 
 # fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
