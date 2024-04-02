@@ -1,7 +1,9 @@
 return {
   "folke/which-key.nvim",
+  event = "VeryLazy",
   config = function()
-    require("which-key").setup {
+    local wk = require("which-key")
+    wk.setup {
       ignore_missing = true,
       plugins = {
         presets = {
@@ -20,8 +22,9 @@ return {
       --   c = { "i" },
       -- },
     }
-
-    require("which-key").register({
+    wk.register({
+      ["<leader>f"] = { name = "+find" },
+      ["<leader>g"] = { name = "+git" },
       c = {
         name = "custom commands",
         w = {
