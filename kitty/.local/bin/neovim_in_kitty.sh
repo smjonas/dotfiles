@@ -12,6 +12,8 @@ if [ ! -e "$1" ]; then
   exit 1
 fi
 
+KITTY_SOCKET="/tmp/single_instance_kitty"
+
 is_socket_active() {
   if [ -S "$1" ]; then
     # Attempt to list Kitty windows as a test command
@@ -27,11 +29,31 @@ is_socket_active() {
   fi
 }
 
-KITTY_SOCKET="/tmp/single_instance_kitty"
+focus_existing_tab() {
+  local file_path="$1"
+  local tab_id
+
+  # Get the tab ID of the tab containing the file
+  tab_id=$(kitty @ --to "unix:$KITTY_SOCKET" ls | awk -v file="$file_path" '$NF ~ file { print $1 }')
+
+  if [ -n "$tab_id" ]; then
+    # Focus the existing tab
+    kitty @ --to "unix:$KITTY_SOCKET" focus-tab "$tab_id"
+    return 0
+  else
+    return 1
+  fi
+}
+
 # Use the function before deciding to launch a new Kitty instance or connect to an existing one
-if is_socket_active "$KITTY_SOCKET"; then
-  # Open the selected file in a new tab using kitten @
-  kitty @ --to "unix:$KITTY_SOCKET" launch --type=tab --title "Neovim" nvim "$1" &> /dev/null
+if is_socket_active; then
+  # Check if the file is already open in an existing tab
+  if focus_existing_tab "$1"; then
+    exit 0
+  else
+    # Open the selected file in a new tab
+    kitty @ --to "unix:$KITTY_SOCKET" launch --type=tab --title "Neovim" nvim "$1" &> /dev/null
+  fi
 else
   # Remove the stale socket file
   rm -f "$KITTY_SOCKET"
