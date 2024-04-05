@@ -47,7 +47,7 @@ o.scrolloff = 9
 o.sessionoptions = o.sessionoptions + "resize,winpos,terminal"
 o.sessionoptions = o.sessionoptions - "buffers"
 o.shiftround = true
-o.shiftwidth = 4
+o.shiftwidth = 2
 -- Do not display ins-completion-menu messages
 o.shortmess = o.shortmess + "c"
 -- Current mode in insert mode is not necessary when using status line plugin
