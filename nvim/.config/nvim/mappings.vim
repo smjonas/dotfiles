@@ -102,7 +102,8 @@ nnoremap # #zz
 nnoremap <C-u> <C-u>zz
 nnoremap <C-d> <C-d>zz
 nnoremap <C-o> <C-o>zz
-nnoremap <C-i> <C-i>zz
+" Move forwards in jump list
+nnoremap <C-e> <C-i>zz
 
 " Easier incrementing / decrementing
 nnoremap + g<C-a>
@@ -170,9 +171,6 @@ EOF
 " Fallback to use with few windows (imo less cognitive overhead in that case)
 nnoremap <Tab> <c-w>w
 nnoremap <S-Tab> <c-w>W
-
-" Remap <Tab> but keep default behavior of <C-I>
-nnoremap <C-I> <C-I>
 
 " Open new horizontal split (consistent with Ctrl-W + v)
 nnoremap <C-w><C-h> <cmd>split<cr>
