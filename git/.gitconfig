@@ -7,6 +7,18 @@
     p = push
     fp = push -f
     pl = pull
+# Start git-delta settings
+[core]
+    pager = delta
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    navigate = true
+[merge]
+    conflictstyle = diff3
+[diff]
+    colorMoved = default
+# end git-delta settings
 [pager]
     branch = false
 [push]
@@ -14,7 +26,6 @@
     default = current
 [pull]
     rebase = true
-# Nicer git branch output
 [branch]
 	sort = -committerdate
 [merge]

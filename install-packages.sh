@@ -32,18 +32,22 @@ echo "Downloading Nvim appimage..."
 curl -Lo "$NVIM_INSTALL_DIR/nvim" "$NVIM_APPIMAGE_URL"
 chmod +x "$NVIM_INSTALL_DIR/nvim"
 
-# zellij
-cargo install --locked zellij
-
 # Neovim-related packages
 luarocks --lua-version=5.1 install vusted
 cargo install stylua
 pip3 install basedpyright black isort trash-cli
 npm install --save-dev --save-exact prettier
 
+# zellij
+cargo install --locked zellij
+
 # fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
+
+# git delta
+wget -P /tmp https://github.com/dandavison/delta/releases/download/0.17.0/git-delta_0.17.0_amd64.deb
+apt install -y /tmp/git-delta_0.17.0_amd64.deb
 
 # Spotify
 sh -c 'echo "deb http://repository.spotify.com stable non-free" > /etc/apt/sources.list.d/spotify.list'
