@@ -58,7 +58,7 @@ cd() {
     fi
 }
 
-export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --bind='ctrl-u:preview-up' --bind='ctrl-d:preview-down'"
 export FZF_DEFAULT_COMMAND="fd --type=f --hidden --follow --exclude .git"
 # paste selected path in command line
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
