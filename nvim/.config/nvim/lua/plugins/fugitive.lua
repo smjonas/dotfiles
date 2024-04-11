@@ -74,13 +74,14 @@ M.config = function()
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "fugitive",
     callback = function()
-      local opts = { buffer = true }
       map("n", "<leader>gf", "<cmd>Git push -f<cr>", { buffer = true, desc = "[g]it [f]orce push" })
       map("n", "<leader>gh", "<cmd>Git stash<cr>", { buffer = true, desc = "[g]it stas[h]" })
 
-      opts.remap = true
+      local opts = { buffer = true, remap = true }
       -- Change default behavior of o to open file in vertical split
       map("n", "o", "gO", opts)
+      -- Verbose commit by default
+      map("n", "cc", "cvc", opts)
     end,
   })
 
