@@ -10,7 +10,7 @@ create_ssh_key() {
 }
 
 # Custom fzf finder to view diff given NCP number
-fc() {
+fco() {
   local commit_pattern="$1"
   git log --oneline --format="%h %s" |
     grep "$commit_pattern" | fzf \
