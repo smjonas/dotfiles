@@ -12,6 +12,12 @@ local M = {
     },
     "vE5li/cmp-buffer",
     "hrsh7th/cmp-path",
+    {
+      "smjonas/cmp-jira",
+      config = function()
+        require("cmp_jira").setup { file_types = { "gitcommit" } }
+      end,
+    },
   },
 }
 
@@ -68,6 +74,7 @@ M.config = function()
     },
     sources = cmp.config.sources({
       { name = "nvim_lsp" },
+      { name = "cmp_jira" },
       { name = "copilot" },
       { name = "luasnip", max_item_count = 10 },
       { name = "path" },
