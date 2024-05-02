@@ -18,7 +18,12 @@ local function project_search()
   local fzf = require("fzf-lua")
   local path, is_git_root = get_root_dir()
 
-  local opts = { cwd = path, cmd = "git ls-files --cached --others", fzf_opts = { ["--keep-right"] = "" } }
+  local opts = {
+    cwd = path,
+    cmd = "git ls-files --cached --others",
+    formatter = "path.filename_first",
+    fzf_opts = { ["--keep-right"] = "" },
+  }
   if is_git_root then
     return fzf.git_files(opts)
   else
@@ -30,17 +35,6 @@ local function grep_git_root(fzf_grep_fn)
   return function()
     fzf_grep_fn { cwd = get_root_dir(), fzf_opts = { ["--keep-right"] = "" } }
   end
-end
-
-local function find_files()
-  local ok, files = pcall(require, "mini.files")
-  -- local dir
-  -- if ok then
-  --   -- TODO Use the current file browser directory if available
-  --   dir = oil.cur_dir
-  --   local fzf = require("fzf-lua")
-  -- end
-  fzf.files { cwd = dir }
 end
 
 M.config = function()
