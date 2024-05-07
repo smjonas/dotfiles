@@ -20,9 +20,7 @@ local function project_search()
 
   local opts = {
     cwd = path,
-    cmd = "git ls-files --cached --others",
-    formatter = "path.filename_first",
-    fzf_opts = { ["--keep-right"] = "" },
+    cmd = "git ls-files --cached --exclude-standard",
   }
   if is_git_root then
     return fzf.git_files(opts)
@@ -45,6 +43,7 @@ M.config = function()
   fzf.setup {
     "default",
     winopts = vim.tbl_extend("force", telescope_profile.winopts, opts),
+    defaults = { formatter = "path.filename_first" },
     keymap = {
       fzf = {
         ["ctrl-q"] = "select-all+accept",
