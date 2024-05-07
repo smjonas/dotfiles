@@ -1,3 +1,7 @@
+-- Testing editree
+vim.api.nvim_create_user_command("ET", function()
+  vim.cmd("Fern %:h -drawer -toggle -reveal=%")
+end, { nargs = "*", complete = "file" })
 
 -- Fixes wrong terminal colors when using tmux
 vim.cmd([[

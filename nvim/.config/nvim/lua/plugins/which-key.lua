@@ -4,7 +4,7 @@ return {
   config = function()
     local wk = require("which-key")
     wk.setup {
-      ignore_missing = true,
+      ignore_missing = false,
       plugins = {
         presets = {
           operators = false,

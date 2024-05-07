@@ -26,6 +26,9 @@ M.config = function()
     highlight = {
       enable = true,
     },
+    indent = {
+      enable = false,
+    },
     context_commentstring = {
       enable = true,
     },

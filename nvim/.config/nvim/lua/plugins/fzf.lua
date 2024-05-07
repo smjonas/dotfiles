@@ -58,7 +58,7 @@ M.config = function()
     vim.keymap.set("n", lhs, rhs, { silent = true, desc = desc })
   end
 
-  map("<leader>ff", find_files, "[f]ind [f]iles")
+  -- map("<leader>ff", find_files, "[f]ind [f]iles")
   map("<leader>fp", project_search, "[f]ind in [p]roject files")
   map("<leader>fo", fzf.oldfiles, "[f]ind [o]ld files")
 
