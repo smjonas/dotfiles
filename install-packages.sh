@@ -1,4 +1,5 @@
 #!/bin/bash
+apt update
 apt install -y build-essential libnewlib-arm-none-eabi
 apt install -y zsh kitty fzf ripgrep fdfind python3-pip luarocks
 
@@ -55,7 +56,8 @@ cargo install stylua
 pip3 install basedpyright black isort trash-cli
 npm install --save-dev --save-exact prettier
 
-# PHP formatter
+# PHP + formatter
+apt install php-common libapache2-mod-php php-cli
 wget https://cs.symfony.com/download/php-cs-fixer-v3.phar -O php-cs-fixer
 chmod a+x php-cs-fixer
 mv php-cs-fixer /usr/local/bin/php-cs-fixer
@@ -78,7 +80,6 @@ sudo add-apt-repository ppa:phoerious/keepassxc
 sh -c 'echo "deb http://repository.spotify.com stable non-free" > /etc/apt/sources.list.d/spotify.list'
 curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add -
 
-apt update
 apt install -y spotify-client inkscape peek flameshot openvpn keepassxc
 
 # Discord
