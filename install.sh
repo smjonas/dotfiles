@@ -33,20 +33,6 @@ stow -S fonts git intellij kitty misc nvim oh-my-zsh pulse-audio zellij
 # Clear font cache
 fc-cache -f -v;
 
-while true; do
-  echo "Choose packages to install ('main' or 'work'):"
-  select option in "main" "work"; do
-    case $option in
-      main )
-        sudo ./install-packages.sh
-        break;;
-      work )
-        sudo ./install-packages-work.sh
-        break;;
-      * )
-        echo "Invalid selection. Please choose 'main' or 'work'.";;
-    esac
-  done
-done
+sudo ./install-packages.sh
 
 echo "Dotfiles installation complete!"
