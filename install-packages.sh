@@ -55,6 +55,11 @@ cargo install stylua
 pip3 install basedpyright black isort trash-cli
 npm install --save-dev --save-exact prettier
 
+# PHP formatter
+wget https://cs.symfony.com/download/php-cs-fixer-v3.phar -O php-cs-fixer
+chmod a+x php-cs-fixer
+mv php-cs-fixer /usr/local/bin/php-cs-fixer
+
 # zellij
 cargo install --locked zellij
 
