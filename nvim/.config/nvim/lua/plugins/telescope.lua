@@ -173,7 +173,7 @@ M.config = function()
 
   map("<leader>gb", switch_git_branches, "switch [g]it [b]ranches")
   map("<leader>fs", "<cmd>Telescope resume<cr>", "telescope re[s]ume")
-  -- map("<leader>ff", find_files, "telescope Find Files")
+  map("<leader>ff", "<cmd>Telescope smart_open<cr>", "telescope smart open")
   map("<leader>fi", find_inacon, "[f]ind in [I]nacon files")
   -- map("<leader>fp", project_search, "Find in Project")
   map("<leader>fv", find_nvim_plugins, "[f]ind in n[v]im plugins")
