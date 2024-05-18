@@ -32,11 +32,20 @@ inoremap <A-j> <down>
 inoremap <A-k> <up>
 inoremap <A-l> <right>
 
-" Moving lines
-nnoremap <A-j> :move .+1<CR>==
-nnoremap <A-k> :move: .-2<CR>==
-xnoremap <A-j> :move '>+1<CR>gv=gv
-xnoremap <A-k> :move '<-2<CR>gv=gv
+let g:piantor_mappings = 1
+if g:piantor_mappings
+  " Moving lines down and up
+  nnoremap <A-n> :move .+1<CR>==
+  nnoremap <A-e> :move: .-2<CR>==
+  xnoremap <A-n> :move '>+1<CR>gv=gv
+  xnoremap <A-e> :move '<-2<CR>gv=gv
+else
+  " Moving lines
+  nnoremap <A-j> :move .+1<CR>==
+  nnoremap <A-k> :move: .-2<CR>==
+  xnoremap <A-j> :move '>+1<CR>gv=gv
+  xnoremap <A-k> :move '<-2<CR>gv=gv
+endif
 
 " Search and replace
 nnoremap <leader>s :%s///gc<left><left><left><left>
