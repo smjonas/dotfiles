@@ -34,17 +34,22 @@ inoremap <A-l> <right>
 
 let g:piantor_mappings = 1
 if g:piantor_mappings
-  " Moving lines down and up
+  " Moving lines vertically
   nnoremap <A-n> :move .+1<CR>==
   nnoremap <A-e> :move: .-2<CR>==
   xnoremap <A-n> :move '>+1<CR>gv=gv
   xnoremap <A-e> :move '<-2<CR>gv=gv
+  " Moving lines horizontally
+  map <A-m> <Action>(EditorUnindentSelection)
+  map <A-i> <Action>(EditorIndentLineOrSelection)
 else
   " Moving lines
   nnoremap <A-j> :move .+1<CR>==
   nnoremap <A-k> :move: .-2<CR>==
   xnoremap <A-j> :move '>+1<CR>gv=gv
   xnoremap <A-k> :move '<-2<CR>gv=gv
+  map <A-h> <Action>(EditorUnindentSelection)
+  map <A-l> <Action>(EditorIndentLineOrSelection)
 endif
 
 " Search and replace
@@ -89,9 +94,6 @@ Plug 'kana/vim-textobj-entire'
 Plug 'vim-scripts/argtextobj.vim'
 
 " -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
-
-map <A-h> <Action>(EditorUnindentSelection)
-map <A-l> <Action>(EditorIndentLineOrSelection)
 
 map <C-e> <action>(GotoNextError)
 map <C-n> <action>(GotoPreviousError)
