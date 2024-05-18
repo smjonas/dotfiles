@@ -1,13 +1,14 @@
 local inc_rename = {
   "smjonas/inc-rename.nvim",
   branch = "main",
-  dev = false,
+  dev = true,
   -- "smjonas/inc-rename.nvim",
   config = function()
     require("inc_rename").setup {
       async = true,
       hl_group = "IncSearch",
       input_buffer_type = "dressing",
+      save_in_cmdline_history = false,
     }
   end,
   dependencies = {

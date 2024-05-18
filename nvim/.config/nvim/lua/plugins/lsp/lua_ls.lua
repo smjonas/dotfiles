@@ -1,4 +1,4 @@
-local default_on_attach = require("plugins.lsp.on_attach")
+local default_on_attach = require("plugins.lsp.on_attach").attach
 
 -- See https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json
 local settings = {

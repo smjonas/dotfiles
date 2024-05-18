@@ -1,4 +1,4 @@
-local default_on_attach = require("plugins.lsp.on_attach")
+local default_on_attach = require("plugins.lsp.on_attach").attach
 
 -- Only use null-ls for formatting
 local on_attach = function(client, bufnr)

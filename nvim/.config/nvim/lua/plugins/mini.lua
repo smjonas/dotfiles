@@ -68,7 +68,7 @@ return {
     setup_mini_ai()
     setup_mini_visits()
     require("mini.comment").setup()
-    require("mini.move").setup()
+    require("mini.move").setup(require("config").get_effective_config("mini-move"))
     require("mini.operators").setup()
   end,
 }

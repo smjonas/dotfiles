@@ -24,35 +24,75 @@ M.cmp_previous = function(cmp, luasnip)
   end, { "i", "s" })
 end
 
-local function set_override_mappings()
-  local normal_mode_overrides = {
-    ["<leader>n"] = "<cmd>cprev<cr>",
-    ["<leader>e"] = "<cmd>cnext<cr>",
-    ["<leader>ri"] = "<leader>rc",
-    ["<leader>fu"] = { "<leader>fc", desc = "[f]ind in Neovim config files" },
-    -- Go to definition
-    ["<leader>gt"] = "<leader>gd",
-    ["<C-m>"] = vim.diagnostic.goto_prev,
-    ["<C-i>"] = vim.diagnostic.goto_next,
+function M.mini_move_mappings()
+  local mappings = {
+    left = { "<M-h>", "<M-m>" },
+    right = { "<M-j>", "<M-i>" },
+    down = { "<M-k>", "<M-n>" },
+    up = { "<M-l>", "<M-e>" },
+    line_left = { "<M-h>", "<M-m>" },
+    line_right = { "<M-j>", "<M-i>" },
+    line_down = { "<M-k>", "<M-n>" },
+    line_up = { "<M-l>", "<M-e>" },
   }
-  local insert_mode_overrides = {
-    ["<a-m>"] = "<left>",
-    ["<a-n>"] = "<down>",
-    ["<a-e>"] = "<up>",
-    ["<a-i>"] = "<right>",
-  }
-  for k, v in pairs(normal_mode_overrides) do
-    if type(v) == "table" then
-      vim.keymap.set("n", k, v[1], { remap = true, desc = v.desc })
-    else
-      vim.keymap.set("n", k, v, { remap = true })
-    end
+  local effective_mappings = {}
+  for k, v in pairs(mappings) do
+    effective_mappings[k] = v[1]
   end
-  for k, v in pairs(insert_mode_overrides) do
-    vim.keymap.set("i", k, v, { remap = true })
-  end
+  return { mappings = effective_mappings }
 end
 
-set_override_mappings()
+local config_root = vim.fn.stdpath("config")
+
+local override_mappings = {
+  { "n", default_lhs = "<leader>j", piantor_lhs = "<leader>l", cmd = "<cmd>cprev<cr>" },
+  { "n", default_lhs = "<leader>k", piantor_lhs = "<leader>e", cmd = "<cmd>cnext<cr>" },
+  { "n", default_lhs = "<C-j>", piantor_lhs = "<C-m>", cmd = vim.diagnostic.goto_prev },
+  { "n", default_lhs = "<C-k>", piantor_lhs = "<C-i>", cmd = vim.diagnostic.goto_next },
+  {
+    "n",
+    default_lhs = "<leader>gd",
+    piantor_lhs = "<leader>gt",
+    cmd = function()
+      require("plugins.lsp.on_attach").go_to_definition()
+    end,
+    desc = "Go to definition",
+  },
+  {
+    "n",
+    default_lhs = "<leader>rc",
+    piantor_lhs = "<leader>ri",
+    cmd = function()
+      vim.cmd.edit(("%s/init.lua"):format(config_root))
+    end,
+    desc = "Edit init.lua",
+  },
+  {
+    "n",
+    default_lhs = "<leader>fc",
+    piantor_lhs = "<leader>fu",
+    cmd = function()
+      require("plugins.telescope").find_config()
+    end,
+    desc = "[f]ind in Neovim [c]onfig files",
+  },
+  { "i", default_lhs = "<C-h>", piantor_lhs = "<C-m>", cmd = "<left>" },
+  { "i", default_lhs = "<C-l>", piantor_lhs = "<C-i>", cmd = "<right>" },
+  { "i", default_lhs = "<C-j>", piantor_lhs = "<C-e>", cmd = "<up>" },
+  { "i", default_lhs = "<C-k>", piantor_lhs = "<C-n>", cmd = "<down>" },
+}
+
+M.apply_mappings = function(do_override_mappings)
+  if not do_override_mappings then
+    -- Mappings are already applied in the respective config files,
+    -- "hot reloading" is not currently supported
+    return
+  end
+
+  for _, mapping in ipairs(override_mappings) do
+    local lhs = mapping.piantor_lhs
+    vim.keymap.set(mapping[1], lhs, mapping.cmd, { silent = true, desc = mapping.desc })
+  end
+end
 
 return M

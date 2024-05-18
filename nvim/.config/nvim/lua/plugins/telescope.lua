@@ -135,7 +135,7 @@ M.config = function()
     }
   end
 
-  local function find_config()
+  function M.find_config()
     builtin.find_files {
       prompt_title = "Find Config Files",
       search_dirs = { vim.fn.stdpath("config") },
@@ -177,7 +177,7 @@ M.config = function()
   map("<leader>fi", find_inacon, "[f]ind in [I]nacon files")
   -- map("<leader>fp", project_search, "Find in Project")
   map("<leader>fv", find_nvim_plugins, "[f]ind in n[v]im plugins")
-  map("<leader>fc", find_config, "[f]ind in Neovim [c]onfig files")
+  map("<leader>fc", M.find_config, "[f]ind in Neovim [c]onfig files")
   -- map("<leader>fo", require("telescope").extensions.recent_files.pick, "telescope Find Old files")
   -- map("<leader>fo", builtin.oldfiles, "telescope Find Old files")
   -- Requires ripgrep to be installed (sudo apt install ripgrep)

@@ -29,11 +29,7 @@ return {
         name = "custom commands",
         w = {
           function()
-            vim.g.remove_trailing_whitespace = not vim.g.remove_trailing_whitespace
-            print(
-              "Removing trailing whitespace: "
-                .. (vim.g.remove_trailing_whitespace == true and "on" or "off")
-            )
+            require("global_settings").toggle("remove_trailing_whitespace")
           end,
           "Toggle removing trailing whitespace",
         },

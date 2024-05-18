@@ -45,7 +45,7 @@ M.config = function()
   end
 
   -- Contain keymappings to set when server attached
-  local on_attach = require("plugins.lsp.on_attach")
+  local on_attach = require("plugins.lsp.on_attach").attach
   local capabilities = update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
   local setup_lsp_servers = function()

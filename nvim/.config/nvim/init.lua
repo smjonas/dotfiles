@@ -34,19 +34,7 @@ augroup dotfiles
 augroup end
 ]])
 
--- Override some mappings to work better for piantor keyboard
-require("piantor")
-
-vim.g.remove_trailing_whitespace = true
-
-vim.api.nvim_create_autocmd("BufWritePre", {
-  desc = "Remove trailing whitespace on save",
-  callback = function()
-    if vim.g.remove_trailing_whitespace then
-      vim.cmd([[%s/\s\+$//e]])
-    end
-  end,
-})
+require("global_settings").apply_defaults()
 
 vim.api.nvim_create_autocmd("BufReadPost", {
   desc = "Open file at the last position it was edited earlier",

@@ -1,12 +1,12 @@
+local M = {}
+
 local map = vim.keymap.set
 
 local opts = {
   silent = true,
 }
 
-return function(client, bufnr)
-  opts.buffer = bufnr
-  map("n", "gd", function()
+M.go_to_definition = function()
     vim.lsp.buf.definition {
       on_list = function(items)
         -- Do not open the quickfix list (very annoying with sumneko lua),
@@ -18,7 +18,11 @@ return function(client, bufnr)
     vim.schedule(function()
       vim.cmd("norm zz")
     end)
-  end, opts)
+end
+
+M.attach = function(client, bufnr)
+  opts.buffer = bufnr
+  map("n", "gd", M.go_to_definition, opts)
 
   safe_require("lsp_signature").on_attach({
     doc_lines = 0,
@@ -44,3 +48,5 @@ return function(client, bufnr)
 
   -- safe_require("nvim-navic").attach(client, bufnr)
 end
+
+return M
