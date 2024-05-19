@@ -9,6 +9,14 @@ return {
   -- Misc
   { "alvan/vim-closetag", ft = { "html", "php" } },
   "arp242/undofile_warn.vim",
+  {
+    "max397574/better-escape.nvim",
+    config = function()
+      require("better_escape").setup {
+        mapping = { "ij" },
+      }
+    end,
+  },
   "tpope/vim-repeat",
   "rmagatti/auto-session",
   "inkarkat/vim-ReplaceWithRegister",
