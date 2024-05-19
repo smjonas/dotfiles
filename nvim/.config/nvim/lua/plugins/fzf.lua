@@ -1,5 +1,6 @@
 local M = {
   "ibhagwan/fzf-lua",
+  keys = { "<leader>fp", "<leader>fo", "<leader>fg" },
 }
 
 local function get_root_dir()

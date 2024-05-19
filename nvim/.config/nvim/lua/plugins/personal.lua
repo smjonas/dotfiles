@@ -3,6 +3,8 @@ local inc_rename = {
   branch = "main",
   dev = true,
   -- "smjonas/inc-rename.nvim",
+  cmd = "IncRename",
+  keys = "<leader>rn",
   config = function()
     require("inc_rename").setup {
       async = true,
@@ -18,9 +20,9 @@ local inc_rename = {
 
 local live_command = {
   "smjonas/live-command.nvim",
-  dependencies = { "tpope/vim-abolish" },
   dev = true,
   branch = "rewrite",
+  cmd = "LiveCommand",
   config = function()
     local commands = {
       Norm = { cmd = "norm" },

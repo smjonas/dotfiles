@@ -1,5 +1,6 @@
 return {
   "codethread/qmk.nvim",
+  cmd = "QMKFormat",
   config = function()
     require("qmk").setup {
       name = "LAYOUT_split_3x6_3",

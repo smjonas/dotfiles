@@ -1,5 +1,7 @@
 return {
   "rmagatti/auto-session",
+  keys = { "<F5>", "<F6>" },
+  cmd = "Autosession",
   config = function()
     require("auto-session").setup {
       auto_restore_enabled = false,

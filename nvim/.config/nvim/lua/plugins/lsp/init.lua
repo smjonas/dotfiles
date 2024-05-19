@@ -6,6 +6,7 @@ local M = {
     { "mizlan/delimited.nvim", opts = {} },
     {
       "williamboman/mason.nvim",
+      cmd = "Mason",
       config = function()
         local ensure_installed = { "lua_ls", "pylsp" }
         require("mason").setup()
