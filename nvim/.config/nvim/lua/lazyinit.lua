@@ -12,7 +12,11 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.runtimepath:prepend(lazypath)
 
-require("lazy").setup("plugins", {
+require("lazy").setup {
+  spec = {
+    { import = "plugins" },
+    { import = "plugins/git" },
+  },
   dev = {
     path = "~/Desktop/NeovimPlugins",
     patterns = { "smjonas" },
@@ -21,7 +25,7 @@ require("lazy").setup("plugins", {
   git = { timeout = 60 },
   change_detection = { enabled = false },
   ui = { wrap = true },
-})
+}
 
 vim.keymap.set("n", "<leader>l", "<cmd>:Lazy<cr>")
 vim.keymap.set("n", "<leader>u", "<cmd>:Lazy update<cr>")
