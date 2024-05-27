@@ -53,7 +53,7 @@ chmod +x "$NVIM_INSTALL_DIR/nvim"
 # Neovim-related packages
 luarocks --lua-version=5.1 install vusted
 cargo install stylua
-pip3 install basedpyright black isort trash-cli
+pip3 install basedpyright ruff trash-cli
 npm install --save-dev --save-exact prettier
 
 # PHP + formatter

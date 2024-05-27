@@ -8,12 +8,6 @@ local add_prettier = function(formatters_by_ft)
   end
 end
 
-local configure_black = function(formatters_by_ft)
-  require("conform").formatters.black = {
-    prepend_args = { "--line-length", "130" },
-  }
-end
-
 return {
   "stevearc/conform.nvim",
   config = function()
@@ -21,12 +15,11 @@ return {
       go = { "gofmt" },
       php = { "php_cs_fixer" },
       lua = { "stylua" },
-      python = { "isort", "black" },
+      python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
       rust = { "rustfmt" },
       xml = { "xmlformat" },
     }
     add_prettier(formatters_by_ft)
-    configure_black(formatters_by_ft)
     require("conform").setup {
       formatters_by_ft = formatters_by_ft,
     }
