@@ -7,20 +7,25 @@ local opts = {
 }
 
 M.go_to_definition = function()
-    vim.lsp.buf.definition {
-      on_list = function(items)
-        -- Do not open the quickfix list (very annoying with sumneko lua),
-        -- but simply jump to the first item
-        vim.fn.setqflist({}, "r", items)
-        vim.cmd("cfirst")
-      end,
-    }
-    vim.schedule(function()
-      vim.cmd("norm zz")
-    end)
+  vim.lsp.buf.definition {
+    on_list = function(items)
+      -- Do not open the quickfix list (very annoying with sumneko lua),
+      -- but simply jump to the first item
+      vim.fn.setqflist({}, "r", items)
+      vim.cmd("cfirst")
+    end,
+  }
+  vim.schedule(function()
+    vim.cmd("norm zz")
+  end)
 end
 
 M.attach = function(client, bufnr)
+  if client.name == "ruff" then
+    -- Disable hover in favor of Pyright
+    client.server_capabilities.hoverProvider = false
+  end
+
   opts.buffer = bufnr
   map("n", "gd", M.go_to_definition, opts)
 
@@ -35,7 +40,10 @@ M.attach = function(client, bufnr)
 
   local ok, delimited = pcall(require, "delimited")
   if not ok then
-    vim.notify("delimited.nvim is not installed, falling back to vim.diagnostic", vim.log.levels.WARN)
+    vim.notify(
+      "delimited.nvim is not installed, falling back to vim.diagnostic",
+      vim.log.levels.WARN
+    )
     map("n", "<C-j>", vim.diagnostic.goto_prev)
     map("n", "<C-k>", vim.diagnostic.goto_next)
   else
