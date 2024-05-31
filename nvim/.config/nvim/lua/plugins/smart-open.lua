@@ -3,7 +3,6 @@ return {
   dev = true,
   config = function()
     require("telescope").load_extension("smart_open")
-    vim.api.nvim_set_hl(0, "SmartOpenDirectory", { link = "Comment" })
   end,
   dependencies = {
     "kkharji/sqlite.lua",
