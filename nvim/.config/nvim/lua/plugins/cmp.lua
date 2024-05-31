@@ -86,8 +86,7 @@ M.config = function()
       if in_prompt or vim.bo.filetype == "TelescopePrompt" then
         return false
       end
-      local context = require("cmp.config.context")
-      return not (context.in_treesitter_capture("comment") or context.in_syntax_group("Comment"))
+      return true
     end,
     experimental = {
       ghost_text = {
