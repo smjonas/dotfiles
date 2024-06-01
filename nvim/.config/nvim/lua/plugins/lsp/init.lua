@@ -1,7 +1,7 @@
 local M = {
   "neovim/nvim-lspconfig",
   dependencies = {
-    "folke/neodev.nvim",
+    { "folke/lazydev.nvim", ft = "lua", opts = {} },
     "ray-x/lsp_signature.nvim",
     { "mizlan/delimited.nvim", opts = {} },
     {

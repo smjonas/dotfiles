@@ -37,9 +37,4 @@ local on_attach = function(client, bufnr)
   client.server_capabilities.documentRangeFormattingProvider = false
 end
 
-require("neodev").setup {
-  library = {
-    plugins = false,
-  },
-}
 return { settings = settings, on_attach = on_attach }
