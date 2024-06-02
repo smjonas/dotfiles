@@ -87,7 +87,7 @@ M.config = function()
 
   -- Defines custom Stow command
   vim.cmd(
-    "command! -nargs=? -complete=customlist,fugitive#Complete Stow lua require('plugins.fugitive').stow_command(<f-args>)"
+    "command! -nargs=? -complete=customlist,fugitive#Complete Stow lua require('plugins.git.fugitive').stow_command(<f-args>)"
   )
 
   map("n", "<leader>ys", function()
