@@ -77,27 +77,27 @@ M.config = function()
   end
   setup_lsp_servers()
 
+  local hint = vim.diagnostic.severity.HINT
+  local info = vim.diagnostic.severity.INFO
+  local warn = vim.diagnostic.severity.WARN
+  local error = vim.diagnostic.severity.ERROR
   vim.diagnostic.config {
     virtual_text = false,
+    signs = {
+      text = {
+        [hint] = "󰌵",
+        [info] = "󰋼",
+        [warn] = "",
+        [error] = "󰅙",
+      },
+      linehl = {
+        [hint] = "DiagnosticHint",
+        [info] = "DiagnosticInfo",
+        [warn] = "DiagnosticWarn",
+        [error] = "DiagnosticError",
+      },
+    },
   }
-
-  local diagnostic_symbols = {
-    Error = "󰅙",
-    Information = { "󰋼", "DiagnosticSignInfo" },
-    Hint = "󰌵",
-    Info = "󰋼",
-    Warn = "",
-  }
-
-  for prefix, icon in pairs(diagnostic_symbols) do
-    local is_table = type(icon) == "table"
-    local hl = is_table and icon[2] or "DiagnosticSign" .. prefix
-    vim.fn.sign_define("DiagnosticSign" .. prefix, {
-      text = is_table and icon[1] or icon,
-      texthl = hl,
-      numhl = "Comment",
-    })
-  end
 
   -- Borders around LSP windows
   local lsp = vim.lsp
