@@ -51,7 +51,7 @@ M.config = function()
 
   local setup_lsp_servers = function()
     local lsp_config = require("lspconfig")
-    local server_list = { "rust_analyzer", "basedpyright", "ruff" }
+    local server_list = { "rust_analyzer", "ruff" }
     local ok, mason_lspconfig = pcall(require, "mason-lspconfig")
     if ok then
       server_list = vim.list_extend(server_list, mason_lspconfig.get_installed_servers())
@@ -68,7 +68,7 @@ M.config = function()
       single_file_support = true,
     }
     for _, server in ipairs(server_list) do
-      local customized_servers = { "lua_ls", "pylsp" }
+      local customized_servers = { "lua_ls", "pylsp", "ruff" }
       if vim.tbl_contains(customized_servers, server) then
         opts = vim.tbl_deep_extend("force", {}, require("plugins.lsp." .. server))
       end

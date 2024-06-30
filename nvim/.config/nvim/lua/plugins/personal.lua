@@ -15,7 +15,7 @@ local inc_rename = {
     vim.keymap.set("n", "<leader>rn", function()
       -- Fallback to text substitution when LSP is not available
       local cur_word = vim.fn.expand("<cword>")
-      if vim.tbl_isempty(vim.lsp.get_active_clients { bufnr = vim.api.nvim_get_current_buf() }) then
+      if vim.tbl_isempty(vim.lsp.get_clients { bufnr = vim.api.nvim_get_current_buf() }) then
         return ":%s/" .. cur_word .. "//gc" .. ("<left>"):rep(3)
       else
         return ":IncRename " .. cur_word

@@ -1,6 +1,6 @@
 local default_on_attach = require("plugins.lsp.on_attach").attach
 
--- Only use null-ls for formatting
+-- Only use ruff for formatting
 local on_attach = function(client, bufnr)
   default_on_attach(client, bufnr)
   client.server_capabilities.documentFormattingProvider = false
