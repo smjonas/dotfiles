@@ -15,6 +15,10 @@ export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:/home/jonas/.local/bin
 export PATH=$PATH:/home/jonas/go/bin
 
+# deno (for peek.nvim)
+export DENO_INSTALL="/home/jonas/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
+
 # TeX Live
 export PATH=$PATH:/usr/local/texlive/2022/bin/x86_64-linux
 export INFOPATH=$INFOPATH:/usr/local/texlive/2022/texmf-dist/doc/info
