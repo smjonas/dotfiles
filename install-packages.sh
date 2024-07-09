@@ -55,6 +55,7 @@ luarocks --lua-version=5.1 install vusted
 cargo install stylua
 pip3 install basedpyright ruff trash-cli
 npm install --save-dev --save-exact prettier
+curl -fsSL https://deno.land/install.sh | sh
 
 # PHP + formatter
 apt install php-common libapache2-mod-php php-cli
