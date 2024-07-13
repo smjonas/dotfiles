@@ -18,11 +18,4 @@ return {
       vim.keymap.set("n", "<leader>m", require("peek").open, {})
     end,
   },
-  {
-    "OXY2DEV/markview.nvim",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-tree/nvim-web-devicons",
-    },
-  },
 }
