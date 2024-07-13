@@ -74,6 +74,11 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 wget -P /tmp https://github.com/dandavison/delta/releases/download/0.17.0/git-delta_0.17.0_amd64.deb
 apt install -y /tmp/git-delta_0.17.0_amd64.deb
 
+# thefuck
+apt update
+apt install python3-dev python3-pip python3-setuptools
+pip3 install thefuck --user
+
 # KeePassXC
 sudo add-apt-repository ppa:phoerious/keepassxc
 

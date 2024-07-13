@@ -28,6 +28,9 @@ export JAVA_HOME="/opt/idea/jbr"
 # Set neovim as manpager
 export MANPAGER='nvim --appimage-extract-and-run -c "set ft=man"'
 
+# thefuck setup
+eval $(thefuck --alias fk)
+
 # nnn config
 export EDITOR=nvim
 # x: copy file path after selecting entry with space
