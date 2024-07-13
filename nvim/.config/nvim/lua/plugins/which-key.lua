@@ -22,18 +22,17 @@ return {
       --   c = { "i" },
       -- },
     }
-    wk.register {
-      ["<leader>f"] = { name = "+find" },
-      ["<leader>g"] = { name = "+git" },
-      ["<leader>c"] = {
-        name = "custom commands",
-        w = {
-          function()
-            require("global_settings").toggle("remove_trailing_whitespace")
-          end,
-          "Toggle removing trailing whitespace",
-        },
+    wk.add {
+      { "<leader>c", group = "custom commands" },
+      {
+        "<leader>cw",
+        function()
+          require("global_settings").toggle("remove_trailing_whitespace")
+        end,
+        desc = "Toggle removing trailing whitespace",
       },
+      { "<leader>f", group = "find" },
+      { "<leader>g", group = "git" },
     }
   end,
 }
