@@ -1,7 +1,7 @@
 local M = {}
 
 M.config = {
-  ["mini-move"] = {
+  ["mini.move"] = {
     default_config = {
       mappings = {
         left = "<M-h>",
@@ -26,9 +26,24 @@ M.config = {
         line_up = "<M-e>",
       },
     },
-    apply_config = function(config)
-      require("mini-move").setup(config)
-    end,
+  },
+  ["mini.files"] = {
+    default_config = {
+      mappings = {
+        go_in = "L",
+        go_in_plus = "",
+        go_out = "H",
+        go_out_plus = "",
+      },
+    },
+    piantor_config = {
+      mappings = {
+        go_in = "I",
+        go_in_plus = "",
+        go_out = "M",
+        go_out_plus = "",
+      },
+    },
   },
 }
 

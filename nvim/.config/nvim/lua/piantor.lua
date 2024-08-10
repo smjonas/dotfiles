@@ -24,24 +24,6 @@ M.cmp_previous = function(cmp, luasnip)
   end, { "i", "s" })
 end
 
-function M.mini_move_mappings()
-  local mappings = {
-    left = { "<M-h>", "<M-m>" },
-    right = { "<M-j>", "<M-i>" },
-    down = { "<M-k>", "<M-n>" },
-    up = { "<M-l>", "<M-e>" },
-    line_left = { "<M-h>", "<M-m>" },
-    line_right = { "<M-j>", "<M-i>" },
-    line_down = { "<M-k>", "<M-n>" },
-    line_up = { "<M-l>", "<M-e>" },
-  }
-  local effective_mappings = {}
-  for k, v in pairs(mappings) do
-    effective_mappings[k] = v[1]
-  end
-  return { mappings = effective_mappings }
-end
-
 local config_root = vim.fn.stdpath("config")
 
 local override_mappings = {
