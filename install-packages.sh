@@ -53,7 +53,7 @@ chmod +x "$NVIM_INSTALL_DIR/nvim"
 # Neovim-related packages
 luarocks --lua-version=5.1 install vusted
 cargo install stylua
-pip3 install basedpyright ruff mypy trash-cli
+pip3 install basedpyright mypy trash-cli "ruff>=0.5.3"
 npm install --save-dev --save-exact prettier
 curl -fsSL https://deno.land/install.sh | sh
 
