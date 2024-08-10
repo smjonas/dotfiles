@@ -11,7 +11,7 @@ local settings = {
   pylsp = {
     plugins = {
       pycodestyle = {
-        maxLineLength = 110,
+        ignore = { "E501" },
       },
     },
   },
