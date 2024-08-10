@@ -13,6 +13,15 @@ local M = {
   },
 }
 
+function M.find_config()
+  require("telescope.builtin").find_files {
+    prompt_title = "Find Config Files",
+    search_dirs = { vim.fn.stdpath("config") },
+    -- Follow symlinks
+    follow = true,
+  }
+end
+
 M.config = function()
   local actions = require("telescope.actions")
 
@@ -132,15 +141,6 @@ M.config = function()
     builtin.find_files {
       prompt_title = "Find Inacon Files",
       search_dirs = { "/home/jonas/Desktop/Inacon/Kurse", inacon_dir .. "/Automation" },
-    }
-  end
-
-  function M.find_config()
-    builtin.find_files {
-      prompt_title = "Find Config Files",
-      search_dirs = { vim.fn.stdpath("config") },
-      -- Follow symlinks
-      follow = true,
     }
   end
 
