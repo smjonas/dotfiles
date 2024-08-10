@@ -33,6 +33,7 @@ return {
       },
       { "<leader>f", group = "find" },
       { "<leader>g", group = "git" },
+      { "<leader>y", group = "stow" },
     }
   end,
 }
