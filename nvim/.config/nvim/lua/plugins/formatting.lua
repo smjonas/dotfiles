@@ -15,7 +15,8 @@ return {
       go = { "gofmt" },
       php = { "php_cs_fixer" },
       lua = { "stylua" },
-      python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
+      -- Omit "ruff_format", as it is part of the LSP server
+      python = { "ruff_fix", "ruff_organize_imports" },
       rust = { "rustfmt" },
       xml = { "xmlformat" },
     }

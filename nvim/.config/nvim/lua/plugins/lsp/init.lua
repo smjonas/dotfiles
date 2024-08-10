@@ -26,7 +26,9 @@ M.config = function()
   local map = vim.keymap.set
 
   -- We don't need the default Ctrl-F, so make the mapping global
-  map("n", "<C-f>", require("conform").format, { silent = true })
+  map("n", "<C-f>", function()
+    require("conform").format { lsp_format = "last" }
+  end, { silent = true })
 
   -- Modified from hrsh7th/cmp-nvim-lsp/
   -- This avoids a dependency of this module on cmp_nvim_lsp.
@@ -68,7 +70,7 @@ M.config = function()
       single_file_support = true,
     }
     for _, server in ipairs(server_list) do
-      local customized_servers = { "lua_ls", "pylsp", "ruff" }
+      local customized_servers = { "lua_ls", "pylsp" }
       if vim.tbl_contains(customized_servers, server) then
         opts = vim.tbl_deep_extend("force", {}, require("plugins.lsp." .. server))
       end
