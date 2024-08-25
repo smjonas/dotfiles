@@ -1,4 +1,11 @@
-# My configuration (Linux Mint 20.1)
+# My configuration (Linux Mint)
+
+## Auto-mount with sshfs
+`sudoedit /etc/fstab`:
+```
+user@servername1:/directory/ /mnt/s1/ fuse.sshfs noauto,x-systemd.automount,_netdev,reconnect,identityfile=/home/jonas/.ssh/id,allow_other,default_permissions 0 0
+user@servername2:/directory/ /mnt/s2/ fuse.sshfs noauto,x-systemd.automount,_netdev,reconnect,identityfile=/home/jonas/.ssh/id,allow_other,default_permissions 0 0
+```
 
 ## Fix crackling audio when Firefox is opened ([link](https://forums.linuxmint.com/viewtopic.php?t=288263)):
 - run `xed admin:///etc/pulse/default.pa`
