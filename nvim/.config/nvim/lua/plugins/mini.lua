@@ -62,5 +62,6 @@ return {
     setup_mini_visits()
     require("mini.move").setup(require("config").get_effective_config("mini.move"))
     require("mini.operators").setup()
+    vim.keymap.set({ "n", "v" }, "gR", "\"+gr", { remap = true, desc = "Replace from clipboard" })
   end,
 }

@@ -62,9 +62,6 @@ xnoremap p P | xnoremap P p
 " Visually select last pasted text
 nnoremap gp `[v`]
 
-" For usage with vim-ReplaceWithRegister: replace from clipboard
-nmap gR "+gr
-
 function! Sort(...) abort
   '[,']sort
   call setpos('.', getpos("''"))
