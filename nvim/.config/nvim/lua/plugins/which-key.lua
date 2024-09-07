@@ -22,6 +22,7 @@ return {
       -- },
     }
     wk.add {
+      { "<leader>a", group = "ai" },
       { "<leader>c", group = "custom commands" },
       {
         "<leader>cw",
