@@ -32,7 +32,7 @@ end
 
 local function grep_git_root(fzf_grep_fn)
   return function()
-    fzf_grep_fn { cwd = get_root_dir(), fzf_opts = { ["--keep-right"] = "" } }
+    fzf_grep_fn { cwd = get_root_dir(), fzf_opts = { ["--keep-right"] = "" }, resume = true }
   end
 end
 
