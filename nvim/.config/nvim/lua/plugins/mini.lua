@@ -31,7 +31,7 @@ end
 return {
   "echasnovski/mini.nvim",
   config = function()
-    require("mini.files").setup(require("config").get_effective_config("mini.files"))
+    require("mini.files").setup(KB["mini.files"])
 
     -- Confirm file system actions on save, see https://github.com/echasnovski/mini.nvim/issues/391
     vim.api.nvim_create_autocmd("User", {
@@ -60,7 +60,7 @@ return {
 
     setup_mini_ai()
     setup_mini_visits()
-    require("mini.move").setup(require("config").get_effective_config("mini.move"))
+    require("mini.move").setup(KB["mini.move"])
     require("mini.operators").setup()
     vim.keymap.set({ "n", "v" }, "gR", "\"+gr", { remap = true, desc = "Replace from clipboard" })
   end,

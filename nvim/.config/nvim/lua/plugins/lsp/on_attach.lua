@@ -27,7 +27,7 @@ M.attach = function(client, bufnr)
   end
 
   opts.buffer = bufnr
-  map("n", "gd", M.go_to_definition, opts)
+  map("n", KB["goto.definition"], M.go_to_definition, opts)
 
   safe_require("lsp_signature").on_attach({
     doc_lines = 0,
@@ -44,11 +44,11 @@ M.attach = function(client, bufnr)
       "delimited.nvim is not installed, falling back to vim.diagnostic",
       vim.log.levels.WARN
     )
-    map("n", "<C-j>", vim.diagnostic.goto_prev)
-    map("n", "<C-k>", vim.diagnostic.goto_next)
+    map("n", KB["diagnostic.prev"], vim.diagnostic.prev)
+    map("n", KB["diagnostic.next"], vim.diagnostic.next)
   else
-    map("n", "<C-j>", delimited.goto_prev)
-    map("n", "<C-k>", delimited.goto_next)
+    map("n", KB["diagnostic.prev"], delimited.goto_prev)
+    map("n", KB["diagnostic.next"], delimited.goto_next)
   end
 
   map("n", "K", vim.lsp.buf.hover, opts)

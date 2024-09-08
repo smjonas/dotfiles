@@ -11,6 +11,8 @@ if exists('+termguicolors')
 endif
 ]])
 
+require("global_settings").apply_defaults()
+
 vim.cmd([[
 runtime mappings.vim
 " Faster keyboard movement
@@ -33,8 +35,6 @@ augroup dotfiles
 
 augroup end
 ]])
-
-require("global_settings").apply_defaults()
 
 vim.api.nvim_create_autocmd("BufReadPost", {
   desc = "Open file at the last position it was edited earlier",

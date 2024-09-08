@@ -9,11 +9,14 @@ cno ij <C-C><Esc>
 " Remap exiting terminal mode
 tno ij <C-\><C-n>
 
-" Basic movement in insert mode
-inoremap <C-h> <left>
-inoremap <C-l> <right>
-inoremap <C-j> <down>
-inoremap <C-k> <up>
+lua << EOF
+-- Basic movement in insert mode
+local map = vim.keymap.set
+map("i", KB["insert.left"], "<left>")
+map("i", KB["insert.right"], "<right>")
+map("i", KB["insert.up"], "<up>")
+map("i", KB["insert.down"], "<down>")
+EOF
 
 " Movement when wrap option is enabled
 nnoremap j gj
@@ -141,15 +144,16 @@ function! ToggleQfList()
   endif
 endfunction
 nnoremap <silent> <C-q> <cmd>call ToggleQfList()<cr>
-nnoremap <leader>j <cmd>cprev<cr>
-nnoremap <leader>k <cmd>cnext<cr>
-
-" Moving between windows (from Ben Frain's talk at NeovimConf 2022)
 lua << EOF
+local map = vim.keymap.set
+map("n", KB["quickfix.prev"], "<cmd>cprev<cr>")
+map("n", KB["quickfix.next"], "<cmd>cnext<cr>")
+
+-- Moving between windows (from Ben Frain's talk at NeovimConf 2022)
 for i = 1, 6 do
   local lhs = "<leader>" .. i
   local rhs = i .. "<c-w>w"
-  vim.keymap.set("n", lhs, rhs, { desc = "Move to window " .. i })
+  map("n", lhs, rhs, { desc = "Move to window " .. i })
 end
 EOF
 
@@ -172,7 +176,10 @@ nnoremap <silent> <F3> <cmd>!firefox %<cr>
 
 let nvim_config_root = stdpath('config')
 " Edit lua config files
-nnoremap <leader>rc <cmd>execute 'e ' . nvim_config_root . '/init.lua'<cr>
+lua << EOF
+local nvim_config_root = vim.fn.stdpath("config")
+vim.keymap.set("n", KB["edit.init"], ("<cmd>e %s/init.lua"):format(nvim_config_root), { desc="Edit init.lua" })
+EOF
 nnoremap <leader>rp <cmd>execute 'e ' . nvim_config_root . '/lua/plugins/init.lua'<cr>
 nnoremap <leader>ro <cmd>execute 'e ' . nvim_config_root . '/lua/options.lua'<cr>
 nnoremap <leader>rm <cmd>execute 'e ' . nvim_config_root . '/mappings.vim'<cr>

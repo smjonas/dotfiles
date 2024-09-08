@@ -104,16 +104,13 @@ M.config = function()
       documentation = cmp.config.window.bordered(),
     },
     mapping = {
-      -- mostly keep defaults except use <C-s> instead <C-y>
-      -- and overload tab keys for snippet plugins
-      -- ["<C-f>"] = cmp.mapping(
-      --   cmp.mapping.confirm {
-      --     behavior = cmp.ConfirmBehavior.Replace,
-      --     select = true,
-      --   },
-      --   { "i", "s" }
-      -- ),
-      ["<C-s>"] = require("piantor").cmp_confirm(cmp),
+      [KB["cmp.confirm"]] = cmp.mapping(
+        cmp.mapping.confirm {
+          behavior = cmp.ConfirmBehavior.Replace,
+          select = true,
+        },
+        { "i", "s" }
+      ),
       ["<Tab>"] = cmp.mapping(function(fallback)
         if luasnip.expand_or_locally_jumpable() then
           luasnip.expand_or_jump()
@@ -155,7 +152,15 @@ M.config = function()
           fallback()
         end
       end, { "i", "s" }),
-      ["<C-e>"] = require("piantor").cmp_previous(cmp, luasnip),
+      [KB["cmp.previous"]] = cmp.mapping(function(fallback)
+        if luasnip.choice_active() and luasnip.expand_or_locally_jumpable() then
+          luasnip.change_choice(-1)
+        elseif cmp.visible() then
+          cmp.select_prev_item()
+        else
+          fallback()
+        end
+      end, { "i", "s" }),
     },
     formatting = {
       dependencies = { "williamboman/mason-lspconfig.nvim" },

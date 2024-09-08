@@ -2,11 +2,11 @@ local M = {}
 
 ---@class GlobalSettings
 ---@field remove_trailing_whitespace boolean
----@field override_mappings_for_piantor boolean
+---@field use_piantor_mappings boolean
 
 local settings = {
   remove_trailing_whitespace = { default = true, desc = "Remove trailing whitespace on save" },
-  override_mappings_for_piantor = { default = true, desc = "Override mappings for piantor" },
+  use_piantor_mappings = { default = true, desc = "Use mappings for piantor keyboard" },
 }
 
 M.apply_defaults = function()
@@ -14,7 +14,7 @@ M.apply_defaults = function()
   for setting, value in pairs(settings) do
     GlobalSettings[setting] = value.default
   end
-  require("piantor").apply_mappings(GlobalSettings.override_mappings_for_piantor)
+  require("mappings").init(GlobalSettings.use_piantor_mappings)
 end
 
 M.toggle = function(setting)
