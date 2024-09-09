@@ -31,7 +31,6 @@ local live_command = {
   "smjonas/live-command.nvim",
   dev = true,
   branch = "rewrite",
-  cmd = "LiveCommand",
   config = function()
     local commands = {
       Norm = { cmd = "norm" },
