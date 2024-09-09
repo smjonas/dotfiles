@@ -178,7 +178,7 @@ let nvim_config_root = stdpath('config')
 " Edit lua config files
 lua << EOF
 local nvim_config_root = vim.fn.stdpath("config")
-vim.keymap.set("n", KB["edit.init"], ("<cmd>e %s/init.lua"):format(nvim_config_root), { desc="Edit init.lua" })
+vim.keymap.set("n", KB["edit.init"], ("<cmd>e %s/init.lua<cr>"):format(nvim_config_root), { desc="Edit init.lua" })
 EOF
 nnoremap <leader>rp <cmd>execute 'e ' . nvim_config_root . '/lua/plugins/init.lua'<cr>
 nnoremap <leader>ro <cmd>execute 'e ' . nvim_config_root . '/lua/options.lua'<cr>
