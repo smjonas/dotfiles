@@ -30,7 +30,7 @@ local inc_rename = {
 local live_command = {
   "smjonas/live-command.nvim",
   dev = true,
-  branch = "rewrite",
+  branch = "main",
   config = function()
     local commands = {
       Norm = { cmd = "norm" },
