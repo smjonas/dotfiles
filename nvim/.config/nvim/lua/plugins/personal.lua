@@ -52,6 +52,18 @@ local live_command = {
   end,
 }
 
+local ssh_tools = {
+  "smjonas/ssh-tools.nvim",
+  dev = true,
+  config = function()
+    require("ssh-tools").setup {
+      projects = {
+        internal = { host = "internal", local_path = "~/Desktop/NeoCargo/internal-matcher", remote_path = "/root/internal-matcher/" }
+      }
+    }
+  end
+}
+
 local snippet_converter = {
   "smjonas/snippet-converter.nvim",
   dev = false,
@@ -131,6 +143,7 @@ local editree = {
 return {
   live_command,
   inc_rename,
+  ssh_tools,
   snippet_converter,
   live_tests_busted,
   editree,
