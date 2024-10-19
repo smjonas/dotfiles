@@ -8,8 +8,8 @@ local settings = {
   remove_trailing_whitespace = { default = true, desc = "Remove trailing whitespace on save" },
   use_piantor_mappings = {
     default = function()
-      local obj = vim.system({ "lsusb" }, { text = true }):wait()
-      local piantor_plugged_in = obj.stdout:find("beekeeb piantor")
+      local obj = vim.system({ "lsusb", "-d", "beeb:0001" }, { text = true }):wait()
+      local piantor_plugged_in = obj.stdout ~= ""
       if piantor_plugged_in then
         print("[global settings] ⌨️ piantor keyboard plugged in")
       else
