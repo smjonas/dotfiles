@@ -6,13 +6,25 @@ local M = {}
 
 local settings = {
   remove_trailing_whitespace = { default = true, desc = "Remove trailing whitespace on save" },
-  use_piantor_mappings = { default = true, desc = "Use mappings for piantor keyboard" },
+  use_piantor_mappings = {
+    default = function()
+      local obj = vim.system({ "lsusb" }, { text = true }):wait()
+      local piantor_plugged_in = obj.stdout:find("beekeeb piantor")
+      if piantor_plugged_in then
+        print("[global settings] ⌨️ piantor keyboard plugged in")
+      else
+        print("[global settings] 🔌 piantor keyboard not plugged in")
+      end
+      return piantor_plugged_in
+    end,
+    desc = "Use mappings for piantor keyboard",
+  },
 }
 
 M.apply_defaults = function()
   GlobalSettings = {}
   for setting, value in pairs(settings) do
-    GlobalSettings[setting] = value.default
+    GlobalSettings[setting] = type(value.default) == "boolean" and value.default or value.default()
   end
   require("mappings").init(GlobalSettings.use_piantor_mappings)
 end
