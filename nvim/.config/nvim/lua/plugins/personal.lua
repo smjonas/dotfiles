@@ -36,13 +36,6 @@ local live_command = {
       Norm = { cmd = "norm" },
       G = { cmd = "g" },
       D = { cmd = "d" },
-      Reg = {
-        cmd = "norm",
-        args = function(opts)
-          return (opts.count == -1 and "" or opts.count) .. "@" .. opts.args
-        end,
-        range = "",
-      },
       LSubvert = { cmd = "Subvert" },
     }
     require("live-command").setup {
