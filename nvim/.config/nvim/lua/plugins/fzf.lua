@@ -46,6 +46,10 @@ M.config = function()
     winopts = vim.tbl_extend("force", telescope_profile.winopts, opts),
     defaults = { formatter = "path.filename_first" },
     keymap = {
+      builtin = {
+        ["<C-u>"] = "preview-page-up",
+        ["<C-d>"] = "preview-page-down",
+      },
       fzf = {
         ["ctrl-q"] = "select-all+accept",
       },
