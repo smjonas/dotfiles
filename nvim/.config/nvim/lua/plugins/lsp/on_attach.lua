@@ -47,8 +47,12 @@ M.attach = function(client, bufnr)
     map("n", KB["diagnostic.prev"], vim.diagnostic.prev)
     map("n", KB["diagnostic.next"], vim.diagnostic.next)
   else
-    map("n", KB["diagnostic.prev"], delimited.goto_prev)
-    map("n", KB["diagnostic.next"], delimited.goto_next)
+    map("n", KB["diagnostic.prev"], function()
+      delimited.goto_prev({}, {})
+    end)
+    map("n", KB["diagnostic.next"], function()
+      delimited.goto_next({}, {})
+    end)
   end
 
   map("n", "K", vim.lsp.buf.hover, opts)
