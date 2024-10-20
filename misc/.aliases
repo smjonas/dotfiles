@@ -1,5 +1,5 @@
-
 alias ..='cd ..'
+alias vim=nvim
 alias v=nvim
 alias r='nvim -c "SessionRestore"'
 # open nvim with fzf and do nothing on cancellation
