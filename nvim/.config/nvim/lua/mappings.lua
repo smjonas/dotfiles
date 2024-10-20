@@ -20,13 +20,13 @@ local mappings = {
     default = {
       mappings = {
         left = "<M-h>",
-        right = "<M-j>",
-        down = "<M-k>",
-        up = "<M-l>",
+        right = "<M-l>",
+        down = "<M-j>",
+        up = "<M-k>",
         line_left = "<M-h>",
-        line_right = "<M-j>",
-        line_down = "<M-k>",
-        line_up = "<M-l>",
+        line_right = "<M-l>",
+        line_down = "<M-j>",
+        line_up = "<M-k>",
       },
     },
     piantor = {
