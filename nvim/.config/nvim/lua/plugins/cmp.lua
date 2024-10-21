@@ -104,7 +104,7 @@ M.config = function()
       documentation = cmp.config.window.bordered(),
     },
     mapping = {
-      [KB["cmp.confirm"]] = cmp.mapping(
+      ["<C-s>"] = cmp.mapping(
         cmp.mapping.confirm {
           behavior = cmp.ConfirmBehavior.Replace,
           select = true,
