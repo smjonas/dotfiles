@@ -1,0 +1,16 @@
+{
+    "editor.fontFamily": "JetBrains Mono",
+    "editor.fontLigatures": true,
+    "editor.lineNumbers": "relative",
+    "workbench.colorTheme": "Catppuccin Frappé",
+    // vscode-neovim settings
+    "vscode-neovim.neovimInitVimPaths.linux": "$HOME/.config/Code/User/init.lua",
+    "vscode-neovim.compositeKeys": {
+        "ij": {
+            "command": "vscode-neovim.escape",
+        }
+    },
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1
+    },
+}

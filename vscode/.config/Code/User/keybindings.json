@@ -1,0 +1,56 @@
+// Place your key bindings in this file to override the defaults
+[
+    // Movement in insert mode
+    {
+        "command": "vscode-neovim.send",
+        // the key sequence to activate the binding
+        "key": "alt+h",
+        // only activate in insert mode
+        "when": "editorTextFocus && neovim.mode == insert",
+        // the input to send to Neovim
+        "args": "<A-h>",
+    },
+    {
+        "command": "vscode-neovim.send",
+        "key": "alt+l",
+        "when": "editorTextFocus && neovim.mode == insert",
+        "args": "<A-l>",
+    },
+    {
+        "command": "vscode-neovim.send",
+        "key": "alt+j",
+        "when": "editorTextFocus && neovim.mode == insert",
+        "args": "<A-j>",
+    },
+    {
+        "command": "vscode-neovim.send",
+        "key": "alt+k",
+        "when": "editorTextFocus && neovim.mode == insert",
+        "args": "<A-k>",
+    },
+    // Indenting lines
+    {
+        "command": "vscode-neovim.send",
+        "key": "alt+h",
+        "when": "editorTextFocus && neovim.mode != insert",
+        "args": "<A-h>",
+    },
+    {
+        "command": "vscode-neovim.send",
+        "key": "alt+j",
+        "when": "editorTextFocus && neovim.mode != insert",
+        "args": "<A-j>",
+    },
+    {
+        "command": "vscode-neovim.send",
+        "key": "alt+k",
+        "when": "editorTextFocus && neovim.mode != insert",
+        "args": "<A-k>",
+    },
+    {
+        "command": "vscode-neovim.send",
+        "key": "alt+l",
+        "when": "editorTextFocus && neovim.mode != insert",
+        "args": "<A-l>",
+    },
+]
