@@ -58,9 +58,33 @@ function M.stow_command(cmd)
   ]])
 end
 
+local open_status_and_focus_current_file = function(open_status_command)
+  return function()
+    local api = vim.api
+    local cur_file = api.nvim_buf_get_name(0)
+    open_status_command()
+    local root_dir = require("lspconfig/util").root_pattern(".git")(cur_file)
+    local rel_path = cur_file:gsub(root_dir, ""):gsub("^/", "")
+    local lines = api.nvim_buf_get_lines(0, 0, -1, false)
+    for line_nr, line in ipairs(lines) do
+      if line:find(rel_path) then
+        api.nvim_win_set_cursor(0, { line_nr, 0 })
+        break
+      end
+    end
+  end
+end
+
 M.config = function()
   local map = vim.keymap.set
-  map("n", "<leader>gs", "<cmd>Git<cr>", { desc = "[g]it [s]tatus" })
+  map(
+    "n",
+    "<leader>gs",
+    open_status_and_focus_current_file(function()
+      vim.cmd("Git status")
+    end),
+    { desc = "[g]it [s]tatus" }
+  )
   map("n", "<leader>gp", "<cmd>Git push<cr>", { desc = "[g]it [p]ush" })
   map("n", "<leader>gl", "<cmd>Git pull<cr>", { desc = "[g]it [l]og" })
   map("n", "<leader>gn", function()
@@ -90,9 +114,14 @@ M.config = function()
     "command! -nargs=? -complete=customlist,fugitive#Complete Stow lua require('plugins.git.fugitive').stow_command(<f-args>)"
   )
 
-  map("n", "<leader>ys", function()
-    M.stow_command("")
-  end, { desc = "stow [s]tatus" })
+  map(
+    "n",
+    "<leader>ys",
+    open_status_and_focus_current_file(function()
+      M.stow_command("")
+    end),
+    { desc = "stow [s]tatus" }
+  )
 
   map("n", "<leader>yp", function()
     M.stow_command("push")
