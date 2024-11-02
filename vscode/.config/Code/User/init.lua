@@ -39,8 +39,20 @@ map({ "n", "x" }, "<A-k>", "<Esc>:call MoveVisualSelection('Up')<CR>")
 map("n", "<leader>o", 'o<Esc>0"_D')
 map("n", "<leader>O", 'O<Esc>0"_D')
 
+-- Use black hole register to delete/change without yanking
+map("n", "dd", '"_dd')
+map("n", "D", '"_D')
+map("n", "cc", '"_cc')
+map("n", "C", '"_C')
+map("n", "x", '"_x')
+-- To use default behavior of x
+map("n", "<leader>z", "x")
+
 -- Go to previous file
 map("n", "<bs>", "<C-6>zz")
+
+-- Unmap space
+map("n", "<space>", "")
 
 -- IDE actions
 -- Search and replace
