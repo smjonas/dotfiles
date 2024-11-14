@@ -63,6 +63,9 @@ local open_status_and_focus_current_file = function(open_status_command)
     local api = vim.api
     local cur_file = api.nvim_buf_get_name(0)
     open_status_command()
+    if cur_file == "" then
+      return
+    end
     local root_dir = require("lspconfig/util").root_pattern(".git")(cur_file)
     local rel_path = cur_file:gsub(root_dir, ""):gsub("^/", "")
     local lines = api.nvim_buf_get_lines(0, 0, -1, false)
@@ -81,7 +84,7 @@ M.config = function()
     "n",
     "<leader>gs",
     open_status_and_focus_current_file(function()
-      vim.cmd("Git status")
+      vim.cmd("Git")
     end),
     { desc = "[g]it [s]tatus" }
   )
