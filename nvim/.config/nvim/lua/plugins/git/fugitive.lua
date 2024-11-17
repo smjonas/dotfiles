@@ -67,6 +67,9 @@ local open_status_and_focus_current_file = function(open_status_command)
       return
     end
     local root_dir = require("lspconfig/util").root_pattern(".git")(cur_file)
+    if root_dir == nil then
+      return
+    end
     local rel_path = cur_file:gsub(root_dir, ""):gsub("^/", "")
     local lines = api.nvim_buf_get_lines(0, 0, -1, false)
     for line_nr, line in ipairs(lines) do
