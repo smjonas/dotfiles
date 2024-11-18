@@ -7,6 +7,7 @@
     p = push
     fp = push -f
     pl = pull
+    su = git branch --set-upstream-to=origin/`git symbolic-ref --short HEAD`
 # Start git-delta settings
 [core]
     pager = delta
