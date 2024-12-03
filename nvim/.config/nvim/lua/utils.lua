@@ -21,7 +21,7 @@ function safe_require(module_name)
   local ok, module = pcall(require, module_name)
   if not ok then
     vim.notify(
-      "utils..safe_require: could not load module: " .. module_name,
+      "utils.safe_require: could not load module: " .. module_name,
       vim.log.levels.ERROR,
       { title = "Module Not Found" }
     )

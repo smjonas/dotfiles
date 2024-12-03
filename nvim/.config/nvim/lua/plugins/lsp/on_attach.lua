@@ -29,15 +29,6 @@ M.attach = function(client, bufnr)
   opts.buffer = bufnr
   map("n", KB["goto.definition"], M.go_to_definition, opts)
 
-  safe_require("lsp_signature").on_attach({
-    doc_lines = 0,
-    hint_enable = false,
-    toggle_key = "<C-s>",
-    -- floating_window = false,
-    max_width = 200,
-    -- hi_parameter = "DiffAdd",
-  }, bufnr)
-
   local ok, delimited = pcall(require, "delimited")
   if not ok then
     vim.notify(
