@@ -1,8 +1,7 @@
 local inc_rename = {
   "smjonas/inc-rename.nvim",
-  branch = "tests",
+  branch = "prepareRename",
   dev = true,
-  -- "smjonas/inc-rename.nvim",
   cmd = "IncRename",
   keys = "<leader>rn",
   config = function()
@@ -51,10 +50,14 @@ local ssh_tools = {
   config = function()
     require("ssh-tools").setup {
       projects = {
-        internal = { host = "internal", local_path = "~/Desktop/NeoCargo/internal-matcher", remote_path = "/root/internal-matcher/" }
-      }
+        internal = {
+          host = "internal",
+          local_path = "~/Desktop/NeoCargo/internal-matcher",
+          remote_path = "/root/internal-matcher/",
+        },
+      },
     }
-  end
+  end,
 }
 
 local snippet_converter = {
@@ -110,7 +113,8 @@ local snippet_converter = {
 
 local live_tests_busted = {
   "smjonas/live-tests-busted.nvim",
-  dev = false,
+  dev = true,
+  ft = "lua",
   config = function()
     require("live_tests_busted")
   end,
