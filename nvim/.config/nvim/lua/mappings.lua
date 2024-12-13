@@ -11,7 +11,7 @@ local mappings = {
   ["insert.right"] = { default = "<C-l>", piantor = "<C-i>" },
   ["insert.up"] = { default = "<C-j>", piantor = "<C-e>" },
   ["insert.down"] = { default = "<C-k>", piantor = "<C-n>" },
-  ["telescope.find_config"] = { default = "<leader>fc", piantor = "<leader>fu" },
+  ["telescope.find_config"] = { default = "<leader>fu", piantor = "<leader>fu" },
   -- nvim-cmp
   ["cmp.previous"] = { default = "<C-p>", piantor = "<C-e>" },
   -- mini
