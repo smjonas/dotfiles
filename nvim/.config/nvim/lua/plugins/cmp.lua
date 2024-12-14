@@ -6,8 +6,15 @@ local M = {
     "saadparwaiz1/cmp_luasnip",
     {
       "zbirenbaum/copilot-cmp",
+      enabled = false,
       config = function()
         require("copilot_cmp").setup()
+      end,
+    },
+    {
+      "supermaven-inc/supermaven-nvim",
+      config = function()
+        require("supermaven-nvim").setup {}
       end,
     },
     "vE5li/cmp-buffer",
@@ -75,7 +82,7 @@ M.config = function()
     },
     sources = cmp.config.sources({
       { name = "nvim_lsp" },
-      { name = "copilot" },
+      { name = "supermaven" },
       { name = "luasnip", max_item_count = 10 },
       { name = "path" },
     }, {
