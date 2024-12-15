@@ -29,27 +29,8 @@ M.config = function()
     require("conform").format { lsp_format = "last" }
   end, { silent = true })
 
-  -- Modified from hrsh7th/cmp-nvim-lsp/
-  -- This avoids a dependency of this module on cmp_nvim_lsp.
-  local update_capabilities = function(capabilities)
-    local completionItem = capabilities.textDocument.completion.completionItem
-    completionItem.snippetSupport = true
-    completionItem.preselectSupport = true
-    completionItem.insertReplaceSupport = true
-    completionItem.labelDetailsSupport = true
-    completionItem.deprecatedSupport = true
-    completionItem.commitCharactersSupport = true
-    completionItem.tagSupport = { valueSet = { 1 } }
-    completionItem.resolveSupport = {
-      properties = { "documentation", "detail", "additionalTextEdits" },
-    }
-    return capabilities
-  end
-
   -- Contain keymappings to set when server attached
   local on_attach = require("plugins.lsp.on_attach").attach
-  local capabilities = update_capabilities(vim.lsp.protocol.make_client_capabilities())
-
   local setup_lsp_servers = function()
     local lsp_config = require("lspconfig")
     local server_list = { "rust_analyzer", "ruff" }
@@ -63,6 +44,7 @@ M.config = function()
       )
     end
 
+    local capabilities = require("blink-cmp").get_lsp_capabilities()
     local opts = {
       on_attach = on_attach,
       capabilities = capabilities,
