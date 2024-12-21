@@ -21,9 +21,7 @@ return {
         accept = { auto_brackets = { enabled = true } },
       },
       sources = {
-        completion = {
-          enabled_providers = { "lsp", "path", "luasnip", "buffer", "cmp_jira" },
-        },
+        default = { "lsp", "path", "luasnip", "buffer", "cmp_jira" },
         providers = {
           cmp_jira = {
             name = "cmp_jira",
