@@ -11,6 +11,7 @@ return {
     dependencies = {
       { "L3MON4D3/LuaSnip", version = "v2.*" },
       { "smjonas/cmp-jira" },
+      { "supermaven-inc/supermaven-nvim", config = true },
     },
     config = {
       keymap = {
@@ -21,10 +22,14 @@ return {
         accept = { auto_brackets = { enabled = true } },
       },
       sources = {
-        default = { "lsp", "path", "snippets", "buffer", "cmp_jira" },
+        default = { "lsp", "path", "snippets", "buffer", "cmp_jira", "supermaven" },
         providers = {
           cmp_jira = {
             name = "cmp_jira",
+            module = "blink.compat.source",
+          },
+          supermaven = {
+            name = "supermaven",
             module = "blink.compat.source",
           },
         },
