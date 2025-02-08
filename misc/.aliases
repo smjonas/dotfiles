@@ -7,7 +7,7 @@ alias f='fzf --print0 | xargs -0 -r -o nvim'
 alias python=python3
 
 alias update_nvim='\
-    curl -L https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage -o ~/Downloads/nvim.appimage &&\
+    curl -L https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.appimage -o ~/Downloads/nvim.appimage &&\
     chmod +x ~/Downloads/nvim.appimage &&\
     mv ~/Downloads/nvim.appimage ~/.local/bin/nvim'
 
