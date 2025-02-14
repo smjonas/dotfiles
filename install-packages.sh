@@ -92,6 +92,10 @@ apt install -y spotify-client inkscape peek flameshot openvpn keepassxc
 wget -O /tmp/discord.deb "https://discordapp.com/api/download?platform=linux&format=deb"
 apt install -y /tmp/discord.deb
 
+# Obsidian
+wget -O /tmp/obsidian.deb "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.8.4/obsidian_1.8.4_amd64.deb"
+apt install -y /tmp/obsidian.deb
+
 echo "Install Inacon-specific stuff (htpasswd, Zoom, FileZilla)?";
 select yn in "yes" "no";
 do
