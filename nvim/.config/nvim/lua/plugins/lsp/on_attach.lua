@@ -46,7 +46,6 @@ M.attach = function(client, bufnr)
     end)
   end
 
-  map("n", "K", vim.lsp.buf.hover, opts)
   map("n", "<leader>a", vim.lsp.buf.code_action, opts)
 
   -- safe_require("nvim-navic").attach(client, bufnr)
