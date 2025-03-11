@@ -1,7 +1,12 @@
 #!/bin/bash
 apt update
 apt install -y build-essential libnewlib-arm-none-eabi
-apt install -y zsh kitty fzf ripgrep fdfind python3-pip luarocks
+apt install -y zsh fzf ripgrep fdfind python3-pip luarocks
+
+# Kitty
+mkdir -p /usr/local/kitty
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin dest=/usr/local/kitty launch=n
+ln -s /usr/local/kitty/kitty.app/bin/kitt* /usr/bin
 
 # https://github.com/sharkdp/fd#on-debian
 ln -s $(which fdfind) ~/.local/bin/fd
