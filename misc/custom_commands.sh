@@ -1,3 +1,14 @@
+update_nvim() {
+    curl -L https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.appimage -o ~/Downloads/nvim.appimage
+    chmod +x ~/Downloads/nvim.appimage
+    mv ~/Downloads/nvim.appimage ~/.local/bin/nvim
+}
+
+update_discord() {
+  wget -O /tmp/discord.deb "https://discordapp.com/api/download?platform=linux&format=deb"
+  apt install -y /tmp/discord.deb
+}
+
 create_ssh_key() {
     read "email?Enter your email address to use: "
     read "key_file_name?Enter the key file name (default: id_ed25519): "
