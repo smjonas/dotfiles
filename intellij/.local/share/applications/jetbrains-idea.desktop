@@ -2,8 +2,8 @@
 Version=1.0
 Type=Application
 Name=IntelliJ IDEA Ultimate Edition
-Icon=/opt/idea/bin/idea.svg
-Exec="/opt/idea/bin/idea.sh" %f
+Icon=/home/jonas/Downloads/idea-IU-232.9559.62/bin/idea.svg
+Exec="/home/jonas/Downloads/idea-IU-232.9559.62/bin/idea.sh" %f
 Comment=Capable and Ergonomic IDE for JVM
 Categories=Development;IDE;
 Terminal=false
