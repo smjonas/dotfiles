@@ -75,6 +75,10 @@ cargo install --locked zellij
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
 
+# Ulauncher
+wget -O /tmp/ulauncher.deb "https://github.com/Ulauncher/Ulauncher/releases/download/5.15.7/ulauncher_5.15.7_all.deb"
+apt install -y /tmp/ulauncher.deb
+
 # git delta
 wget -P /tmp https://github.com/dandavison/delta/releases/download/0.17.0/git-delta_0.17.0_amd64.deb
 apt install -y /tmp/git-delta_0.17.0_amd64.deb
