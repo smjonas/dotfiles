@@ -23,7 +23,7 @@ export PATH="$DENO_INSTALL/bin:$PATH"
 export PATH=$PATH:/usr/local/texlive/2022/bin/x86_64-linux
 export INFOPATH=$INFOPATH:/usr/local/texlive/2022/texmf-dist/doc/info
 export MANPATH=$MANPATH:/usr/local/texlive/2022/texmf-dist/doc/man
-export JAVA_HOME="/opt/idea/jbr"
+export JAVA_HOME="/usr/lib/jvm/jdk-24.0.1-oracle-x64"
 
 # Set neovim as manpager
 export MANPAGER='nvim --appimage-extract-and-run -c "set ft=man"'
