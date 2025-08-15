@@ -1,7 +1,7 @@
 #!/bin/bash
 apt update
 apt install -y build-essential libnewlib-arm-none-eabi
-apt install -y zsh fzf ripgrep fdfind python3-pip luarocks
+apt install -y zsh ripgrep fdfind python3-pip luarocks
 
 # Kitty
 mkdir -p /usr/local/kitty
