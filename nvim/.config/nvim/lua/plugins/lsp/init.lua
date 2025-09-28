@@ -32,7 +32,6 @@ M.config = function()
   -- Contain keymappings to set when server attached
   local on_attach = require("plugins.lsp.on_attach").attach
   local setup_lsp_servers = function()
-    local lsp_config = require("lspconfig")
     local server_list = { "rust_analyzer", "ruff" }
     local ok, mason_lspconfig = pcall(require, "mason-lspconfig")
     if ok then
@@ -55,7 +54,8 @@ M.config = function()
       if vim.tbl_contains(customized_servers, server) then
         opts = vim.tbl_deep_extend("force", {}, require("plugins.lsp." .. server))
       end
-      lsp_config[server].setup(opts)
+      vim.lsp.config(server, opts)
+      vim.lsp.enable(server)
     end
   end
   setup_lsp_servers()
