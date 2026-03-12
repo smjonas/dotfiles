@@ -13,6 +13,10 @@ local M = {
   build = ":TSUpdate",
   dependencies = {
     "nvim-treesitter/nvim-treesitter-textobjects",
+    {
+      "nvim-treesitter/nvim-treesitter-context",
+      config = { max_lines = 1 },
+    },
   },
 }
 
