@@ -18,6 +18,9 @@ return {
         preset = "default",
         ["<C-s>"] = { "select_and_accept" },
       },
+      enabled = function()
+        return not vim.tbl_contains({ "minifiles" }, vim.bo.filetype)
+      end,
       completion = {
         accept = { auto_brackets = { enabled = true } },
       },
