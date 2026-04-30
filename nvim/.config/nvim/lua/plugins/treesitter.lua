@@ -20,9 +20,51 @@ local M = {
   },
 }
 
+M.init = function()
+  print("init")
+  vim.api.nvim_create_autocmd("FileType", {
+    callback = function()
+      -- Enable treesitter highlighting and disable regex syntax
+      pcall(vim.treesitter.start)
+    end,
+  })
+
+  local ensureInstalled = {
+    "markdown_inline",
+    "luap",
+    "luadoc",
+    "lua",
+    "python",
+    "javascript",
+    "typescript",
+    "tsx",
+    "rust",
+    "go",
+    "c",
+    "cpp",
+    "bash",
+    "json",
+    "yaml",
+    "toml",
+    "html",
+    "css",
+    "markdown",
+    "vim",
+    "vimdoc",
+    "query",
+  }
+  local alreadyInstalled = require("nvim-treesitter.config").get_installed()
+  local parsersToInstall = vim
+    .iter(ensureInstalled)
+    :filter(function(parser)
+      return not vim.tbl_contains(alreadyInstalled, parser)
+    end)
+    :totable()
+  require("nvim-treesitter").install(parsersToInstall)
+end
+
 M.config = function()
-  require("nvim-treesitter.configs").setup {
-    ensure_installed = { "markdown_inline", "luap", "luadoc" },
+  require("nvim-treesitter").setup {
     ignore_install = { "latex" }, -- VimTex handles this instead
     sync_install = true,
     auto_install = true,
