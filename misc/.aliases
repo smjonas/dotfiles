@@ -22,8 +22,13 @@ alias stowall='stow -S git nvim vscode intellij kitty oh-my-zsh pulse-audio font
 # git
 alias g='git'
 alias gs='git status'
-alias gco='git checkout -b'
+alias gc='git checkout'
+alias gb='git checkout -b'
 alias ga='git add -A'
 alias gp='git push'
 alias gh='git stash'
 alias ghh='git stash pop'
+
+# Claude Code
+alias cc='claude'
+alias cu='claude "/usage"'
