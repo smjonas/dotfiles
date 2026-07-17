@@ -28,6 +28,12 @@ zsh_history_fix() {
     rm ~/.zsh_history_bad
 }
 
+# Sync current branch with dev: checkout dev, pull, checkout back, merge dev in
+syncdev() {
+  local branch=$(git branch --show-current)
+  git checkout dev && git pull && git checkout "$branch" && git merge dev
+}
+
 # Custom fzf finder to view diff given NCP number
 fco() {
   local commit_pattern="$1"
