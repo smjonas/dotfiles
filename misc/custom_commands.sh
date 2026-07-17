@@ -34,6 +34,19 @@ syncdev() {
   git checkout dev && git pull && git checkout "$branch" && git merge dev
 }
 
+# Create a GitLab MR from the current branch into dev, using this org's "DEV NCP-xxxx: <desc>" title convention
+createmr() {
+  local branch=$(git branch --show-current)
+  local ticket=$(grep -oE 'NCP-[0-9]+' <<< "$branch")
+  if [[ -z "$ticket" ]]; then
+    echo "Current branch '$branch' has no NCP-xxxx ticket number" >&2
+    return 1
+  fi
+  local desc=$(python3 scripts/fetch_jira_ticket.py "$ticket" 2>/dev/null | grep '^Summary:' | sed 's/^Summary:  *//')
+  vared -p "Short description: " desc
+  glab mr create --source-branch "$branch" --target-branch dev --title "DEV ${ticket}: ${desc}" --description "" --push --yes --remove-source-branch --squash-before-merge
+}
+
 # Custom fzf finder to view diff given NCP number
 fco() {
   local commit_pattern="$1"
