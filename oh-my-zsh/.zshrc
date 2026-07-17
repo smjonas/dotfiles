@@ -1,5 +1,4 @@
 export SHELL=/usr/bin/zsh
-source ~/.aliases
 
 source ~/custom_commands.sh
 source ~/zellij_completion.sh
@@ -91,7 +90,9 @@ bindkey '^s' autosuggest-accept
 
 # Always update plugins without asking
 export DISABLE_UPDATE_PROMPT=true
+
 source $ZSH/oh-my-zsh.sh
+source ~/.aliases
 
 # Required by fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
