@@ -29,9 +29,16 @@ zsh_history_fix() {
 }
 
 # Sync current branch with dev: checkout dev, pull, checkout back, merge dev in
+# In a worktree where dev is checked out elsewhere, fetch + merge origin/dev instead
 syncdev() {
   local branch=$(git branch --show-current)
-  git checkout dev && git pull && git checkout "$branch" && git merge dev
+  if [[ "$branch" == "dev" ]]; then
+    git pull
+  elif git worktree list --porcelain | grep -q '^branch refs/heads/dev$'; then
+    git fetch origin dev && git merge origin/dev
+  else
+    git checkout dev && git pull && git checkout "$branch" && git merge dev
+  fi
 }
 
 # Create a GitLab MR from the current branch into dev, using this org's "DEV NCP-xxxx: <desc>" title convention
