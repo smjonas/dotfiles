@@ -12,3 +12,6 @@ export PATH=$JAVA_HOME/bin:$PATH
 # Maven
 M2_HOME="/opt/apache-maven-3.8.6"
 export PATH=$M2_HOME/bin:$PATH
+
+# Deno (for peek.nvim)
+export PATH=$HOME/.deno/bin:$PATH
