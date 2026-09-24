@@ -25,7 +25,7 @@ return {
         accept = { auto_brackets = { enabled = true } },
       },
       sources = {
-        default = { "lsp", "path", "snippets", "buffer", "cmp_jira", "copilot" },
+        default = { "lsp", "path", "snippets", "buffer", "cmp_jira" },
         providers = {
           cmp_jira = {
             name = "cmp_jira",
