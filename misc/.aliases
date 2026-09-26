@@ -38,5 +38,5 @@ alias lg='git log --oneline -n 20'
 alias l1='git log -n 1'
 
 # Claude Code
-alias cc='claude'
-alias cu='claude "/usage"'
+alias cc='claude-neocargo'
+alias cu='claude-neocargo "/usage"'
