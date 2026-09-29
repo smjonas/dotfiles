@@ -70,4 +70,5 @@ o.undofile = true
 o.virtualedit = o.virtualedit + "block"
 o.wildignorecase = true
 o.winminwidth = 10
+o.winborder = "rounded"
 o.wrap = false
