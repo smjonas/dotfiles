@@ -31,7 +31,9 @@ end
 return {
   "echasnovski/mini.nvim",
   config = function()
-    require("mini.files").setup(KB["mini.files"])
+    require("mini.files").setup(vim.tbl_deep_extend("force", KB["mini.files"], {
+      options = { use_as_default_explorer = false },
+    }))
 
     -- Confirm file system actions on save, see https://github.com/echasnovski/mini.nvim/issues/391
     vim.api.nvim_create_autocmd("User", {
