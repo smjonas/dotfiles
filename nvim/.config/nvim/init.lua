@@ -1,3 +1,7 @@
+-- Disable netrw so no file explorer opens when starting with a directory
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- Testing editree
 vim.api.nvim_create_user_command("ET", function()
   vim.cmd("Fern %:h -drawer -toggle -reveal=%")
