@@ -17,7 +17,7 @@
     "image_source":{
         "type":"generic",
         "default":"image_set",
-        "value":"image_set"
+        "value":"source_folder"
     },
     "selected_image_set":{
         "type":"generic",
@@ -27,7 +27,7 @@
     "source_folder":{
         "type":"generic",
         "default":"",
-        "value":"/home/jonas/.local/share/cinnamon/extensions/cinnamon-dynamic-wallpaper@TobiZog/5.4/res/images/included_image_sets/aurora/"
+        "value":"/home/jonas/.local/share/daily-wallpaper/current/"
     },
     "period_0_image":{
         "type":"generic",

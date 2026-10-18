@@ -1,0 +1,10 @@
+[Unit]
+Description=Pick a new dynamic wallpaper set every morning
+
+[Timer]
+OnCalendar=*-*-* 05:00
+# Run after boot or resume if the laptop was off or asleep at 05:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

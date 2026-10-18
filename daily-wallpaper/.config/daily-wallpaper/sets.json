@@ -1,0 +1,17 @@
+{
+  "_comment": "Image sets Claude picks from. {builtin} is the dynamic wallpaper extension's included_image_sets folder. Folders in ~/.local/share/daily-wallpaper/sets/ are picked up too (description from description.txt).",
+  "sets": [
+    {"name": "aurora", "path": "{builtin}/aurora", "description": "Flat illustration: pine trees on a ridge above layered misty mountain valleys, birds in the sky; pink dawn, pale blue day, orange dusk, northern lights at night. Calm, Nordic, cool."},
+    {"name": "beach", "path": "{builtin}/beach", "description": "Flat illustration of a rocky cove with a sandy beach, turquoise water and red flowers; bright summery noon, purple evening. Mediterranean, warm, holiday mood."},
+    {"name": "bitday", "path": "{builtin}/bitday", "description": "Pixel art: green meadow at the sea, big sun and small clouds, red sunset, crescent moon and stars at night. Minimal, playful, retro game look."},
+    {"name": "cliffs", "path": "{builtin}/cliffs", "description": "Big Sur style coastal road winding along steep cliffs above the ocean, low-poly illustration in purples and warm sandstone. Road trip, dramatic, colourful."},
+    {"name": "desert", "path": "{builtin}/desert", "description": "Low-poly desert valley with dunes, rocks, agaves and distant mountains; sandy orange by day, violet at dusk and night. Dry, warm, spacious."},
+    {"name": "earth", "path": "{builtin}/earth", "description": "Photo of planet Earth from space on black; fully lit at noon, crescent at dawn and dusk, a thin rim at night. Very dark, minimal, cosmic."},
+    {"name": "gradient", "path": "{builtin}/gradient", "description": "Plain colour gradients with no motif: teal morning, yellow-orange noon, purple-pink evening, navy night. Most minimal and least distracting."},
+    {"name": "island", "path": "{builtin}/island", "description": "Painted fantasy island with jungle, wooden huts and a lighthouse on calm sea, fluffy clouds. Adventurous, cosy, Ghibli-like."},
+    {"name": "lake", "path": "{builtin}/lake", "description": "Low-poly mountain gorge with a lake, pine forest and a leaning tree; turquoise water by day, vivid violet at dusk and night. Fresh, outdoorsy."},
+    {"name": "lakeside", "path": "{builtin}/lakeside", "description": "Flat illustration of a deer by a small lake in a fir forest clearing with mountains; pink dawn, blue day with a glowing sun, starry night. Quiet, wintry, peaceful."},
+    {"name": "mountains", "path": "{builtin}/mountains", "description": "Firewatch-style layered forest and mountain ridges, golden-green sunrise and sunset, misty blue day, very dark starry night. Hiking, autumnal, atmospheric."},
+    {"name": "sahara", "path": "{builtin}/sahara", "description": "Minimal dunes under a big sky: deep blue dawn, coral-pink day with a pale sun, purple night with a crescent moon. Warm, soft, dreamy."}
+  ]
+}
