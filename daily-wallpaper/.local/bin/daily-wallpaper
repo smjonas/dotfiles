@@ -1,10 +1,7 @@
-#!/usr/bin/env -S uv run --quiet --script
-# /// script
-# requires-python = ">=3.10"
-# dependencies = ["anthropic"]
-# ///
+#!/usr/bin/env python3
 """daily-wallpaper: once a day, Claude picks an image set for the Cinnamon Dynamic Wallpaper
-extension, based on the Karlsruhe weather forecast, the season and recent picks.
+extension, based on the Karlsruhe weather forecast, the season and recent picks. Claude runs
+through the `claude-neocargo` wrapper (alias `cc`), so it uses that Claude Code login.
 
   daily-wallpaper              pick today's set (does nothing if today's set is already picked)
   daily-wallpaper --force      pick again, avoiding today's set
@@ -27,11 +24,8 @@ import time
 import urllib.request
 from pathlib import Path
 
-import anthropic
-
+CLAUDE_CMD = "claude-neocargo"
 MODEL = "claude-sonnet-5-5"
-# USD per million tokens (input, output), for the cost line in the log
-PRICE = (2.00, 10.00)
 LAT, LON = 49.0069, 8.4037  # Karlsruhe
 HISTORY_SHOWN = 14
 
@@ -40,8 +34,6 @@ CATALOG = HOME / ".config/daily-wallpaper/sets.json"
 CUSTOM_SETS = HOME / ".local/share/daily-wallpaper/sets"
 CURRENT = HOME / ".local/share/daily-wallpaper/current"
 HISTORY = HOME / ".local/state/daily-wallpaper/history.jsonl"
-# Optional, not in git: ANTHROPIC_API_KEY=sk-ant-... (otherwise the usual SDK credential lookup)
-ENV_FILE = HOME / ".config/daily-wallpaper/env"
 EXT_UUID = "cinnamon-dynamic-wallpaper@TobiZog"
 EXT_DIR = HOME / ".local/share/cinnamon/extensions" / EXT_UUID
 EXT_PREFS = HOME / ".config/cinnamon/spices" / EXT_UUID / f"{EXT_UUID}.json"
@@ -159,54 +151,42 @@ def build_prompt(sets: list[dict], history: list[dict], weather: str | None, tod
     return "\n".join(lines)
 
 
-def load_env_file() -> None:
-    if not ENV_FILE.exists():
-        return
-    for line in ENV_FILE.read_text().splitlines():
-        key, sep, value = line.strip().partition("=")
-        if sep and not key.startswith("#"):
-            os.environ.setdefault(key.strip(), value.strip().strip("'\""))
-
-
 def ask_claude(sets: list[dict], prompt: str) -> tuple[str, str, dict]:
-    load_env_file()
-    client = anthropic.Anthropic()
-    response = client.beta.messages.create(
-        model=MODEL,
-        max_tokens=4000,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": prompt}],
-        output_config={
-            "effort": "low",
-            "format": {
-                "type": "json_schema",
-                "schema": {
-                    "type": "object",
-                    "properties": {
-                        "set": {"type": "string", "enum": [s["name"] for s in sets]},
-                        "reason": {"type": "string"},
-                    },
-                    "required": ["set", "reason"],
-                    "additionalProperties": False,
-                },
-            },
+    schema = {
+        "type": "object",
+        "properties": {
+            "set": {"type": "string", "enum": [s["name"] for s in sets]},
+            "reason": {"type": "string"},
         },
-        # On a safety decline, the API retries on Anthropic's recommended fallback model
-        betas=["server-side-fallback-2026-07-01"],
-        fallbacks="default",
-    )
-    if response.stop_reason != "end_turn":
-        raise RuntimeError(f"unexpected stop_reason {response.stop_reason}")
-    text = next(b.text for b in response.content if b.type == "text")
-    choice = json.loads(text)
-    usage = {
-        "model": response.model,
-        "input_tokens": response.usage.input_tokens,
-        "output_tokens": response.usage.output_tokens,
+        "required": ["set", "reason"],
+        "additionalProperties": False,
     }
-    usage["cost_usd"] = round(
-        (usage["input_tokens"] * PRICE[0] + usage["output_tokens"] * PRICE[1]) / 1e6, 5
-    )
+    # One answer, no tools, MCP servers, skills or saved session: keeps the call around 1-2k tokens
+    cmd = [
+        CLAUDE_CMD, "-p", prompt,
+        "--model", MODEL, "--effort", "low",
+        "--system-prompt", SYSTEM_PROMPT,
+        "--json-schema", json.dumps(schema),
+        "--output-format", "json",
+        "--tools", "", "--strict-mcp-config", "--disable-slash-commands",
+        "--setting-sources", "", "--no-session-persistence",
+    ]
+    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600, stdin=subprocess.DEVNULL)
+    try:
+        result = json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        raise RuntimeError(f"{CLAUDE_CMD} exited with {proc.returncode}: {(proc.stderr or proc.stdout).strip()[-500:]}")
+    if result.get("is_error") or not result.get("structured_output"):
+        raise RuntimeError(f"{CLAUDE_CMD} failed: {result.get('subtype')} {result.get('result', '')[:300]}")
+    choice = result["structured_output"]
+    u = result.get("usage", {})
+    usage = {
+        "model": MODEL,
+        "input_tokens": u.get("input_tokens", 0) + u.get("cache_read_input_tokens", 0)
+        + u.get("cache_creation_input_tokens", 0),
+        "output_tokens": u.get("output_tokens", 0),
+        "cost_usd": round(result.get("total_cost_usd", 0), 5),
+    }
     return choice["set"], choice["reason"], usage
 
 
@@ -263,7 +243,7 @@ def notify(title: str, body: str) -> None:
 
 def show_log(history: list[dict]) -> None:
     for h in history[-30:]:
-        cost = f"${h['usage']['cost_usd']:.4f}" if h.get("usage") else "random"
+        cost = f"${h['usage']['cost_usd']:.4f}" if h.get("usage") else "random"  # API-equivalent cost
         print(f"{h['date']}  {h['set']:<10} {cost:>8}  {h['reason']}")
     costs = [h["usage"]["cost_usd"] for h in history if h.get("usage")]
     if costs:
@@ -306,7 +286,7 @@ def main() -> None:
     else:
         try:
             name, reason, usage = ask_claude(sets, prompt)
-        except (anthropic.AnthropicError, RuntimeError, StopIteration, json.JSONDecodeError) as e:
+        except (OSError, RuntimeError, subprocess.TimeoutExpired) as e:
             log(f"Claude unavailable ({e}), picking at random")
             recent = {h["set"] for h in history[-5:]}
             name = random.choice([s for s in sets if s["name"] not in recent] or sets)["name"]
