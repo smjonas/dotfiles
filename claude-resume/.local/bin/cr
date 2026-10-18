@@ -1,0 +1,608 @@
+#!/usr/bin/env python3
+"""cr: claude resume. fzf picker over all Claude Code sessions, host (~/.claude) and
+container (~/.claude-neocargo), that searches the conversation text, not only the title.
+
+  cr [query...]     open the picker (query is prefilled), enter resumes the session in its folder
+  cr .              only sessions of the current folder's project
+  cr -p             pick project(s) first
+
+Query: words must all match (title, project, branch or conversation text; smart case),
+"exact phrase", -word excludes, @proj restricts to a project, :h / :c host / container only.
+"""
+import json
+import os
+import re
+import shlex
+import shutil
+import subprocess
+import sys
+import time
+from collections import Counter
+from datetime import datetime
+from pathlib import Path
+
+HOME = Path.home()
+SOURCES = {  # origin -> (projects dir, resume command)
+    "h": (HOME / ".claude/projects", ["claude"]),
+    "c": (HOME / ".claude-neocargo/projects", ["claude-neocargo"]),
+}
+# Folders whose subfolders are projects (shown relative to it, e.g. "consignment-service")
+ROOTS = [Path(os.path.expanduser(p)) for p in
+         os.environ.get("CR_ROOTS", "~/Desktop/NeoCargo").split(":") if p]
+CACHE = Path(os.environ.get("XDG_CACHE_HOME", HOME / ".cache")) / "claude-resume"
+INDEX = CACHE / "index.json"
+TEXT = CACHE / "text"
+INDEX_VERSION = 1
+SELF = os.path.realpath(__file__)
+
+# ---------------------------------------------------------------------------- colors
+def sgr(code): return lambda s: f"\033[{code}m{s}\033[0m"
+BOLD, DIM, ITAL = sgr("1"), sgr("2"), sgr("3")
+ORIGIN_COLOR = {"h": sgr("33"), "c": sgr("36")}  # host yellow, container cyan
+ORIGIN_NAME = {"h": "host", "c": "container"}
+ORIGIN_TAG = {"h": "H", "c": "C"}
+
+
+# ---------------------------------------------------------------------------- indexing
+def project_name(cwd):
+    p = Path(cwd)
+    for root in ROOTS:
+        if p == root:
+            return root.name
+        if root in p.parents:
+            return str(p.relative_to(root))
+    return "~" if p == HOME else p.name
+
+
+def prompt_text(msg):
+    """The text of a typed user prompt, or None for tool results, meta and system messages."""
+    content = msg.get("content")
+    if isinstance(content, list):
+        parts = [b.get("text", "") if b.get("type") == "text" else "[Image]"
+                 for b in content if b.get("type") in ("text", "image")]
+        content = " ".join(p for p in parts if p)
+    if not isinstance(content, str) or not content.strip():
+        return None
+    content = content.strip()
+    if content.startswith("<command-name>"):
+        name = re.search(r"<command-name>(.*?)</command-name>", content)
+        args = re.search(r"<command-args>(.*?)</command-args>", content, re.S)
+        return " ".join(x for x in [name and name.group(1), args and args.group(1).strip()] if x)
+    if content.startswith("<") or content.startswith("[Request interrupted"):
+        return None
+    return content
+
+
+def tool_line(block):
+    inp = block.get("input") or {}
+    if block.get("name") == "Bash" and inp.get("command"):
+        return "$ " + inp["command"]
+    if inp.get("file_path"):
+        return f"[{block.get('name')}] {inp['file_path']}"
+    return None
+
+
+def parse_session(path, origin):
+    meta = {"origin": origin, "id": path.stem, "path": str(path), "cwd": None, "branches": [],
+            "first": None, "last": None, "prompts": 0, "replies": 0, "ai_title": None,
+            "name": None, "first_prompt": None, "last_prompt": None, "models": Counter(),
+            "cost": {}, "lines": {}, "prs": [], "continued_in": None}
+    out = []
+    for line in path.open(encoding="utf-8", errors="replace"):
+        # Cheap prefilters: skip the big records nothing here needs
+        if '"toolUseResult"' in line or '"type":"api-request' in line or '"type":"attachment"' in line:
+            continue
+        try:
+            r = json.loads(line)
+        except ValueError:
+            continue
+        t = r.get("type")
+        ts = r.get("timestamp")
+        if t in ("user", "assistant"):
+            if r.get("isSidechain"):
+                continue
+            meta["cwd"] = meta["cwd"] or r.get("cwd")
+            b = r.get("gitBranch")
+            if b and b != "HEAD" and b not in meta["branches"]:
+                meta["branches"].append(b)
+        if t == "user" and not r.get("isMeta") and (r.get("origin") or {}).get("kind", "human") == "human":
+            text = prompt_text(r.get("message") or {})
+            if text is None:
+                continue
+            meta["prompts"] += 1
+            meta["first_prompt"] = meta["first_prompt"] or text[:600]
+            meta["last_prompt"] = text[:600]
+            out.append(f"━━ you · {local(ts):%Y-%m-%d %H:%M}\n{text}\n" if ts else f"━━ you\n{text}\n")
+        elif t == "assistant":
+            msg = r.get("message") or {}
+            model = msg.get("model")
+            if model and not model.startswith("<"):
+                meta["models"][model.replace("claude-", "")] += 1
+            texts = []
+            for b in msg.get("content") or []:
+                if b.get("type") == "text" and b.get("text", "").strip():
+                    texts.append(b["text"].strip())
+                elif b.get("type") == "tool_use" and (tl := tool_line(b)):
+                    texts.append(tl)
+            if texts:
+                if not out or not out[-1].startswith("━━ claude"):
+                    meta["replies"] += 1
+                    out.append("━━ claude\n")
+                out[-1] += "\n".join(texts) + "\n"
+        elif t == "ai-title":
+            meta["ai_title"] = r.get("aiTitle")
+        elif t == "agent-name":
+            meta["name"] = r.get("agentName")
+        elif t == "cost-state":
+            # cumulative per process; a resumed session starts a new process with its own startTime
+            key = str(r.get("startTime"))
+            meta["cost"][key] = r.get("totalCostUSD") or 0
+            meta["lines"][key] = [r.get("totalLinesAdded") or 0, r.get("totalLinesRemoved") or 0]
+        elif t == "pr-link" and r.get("prUrl") and r["prUrl"] not in [p["url"] for p in meta["prs"]]:
+            meta["prs"].append({"n": r.get("prNumber"), "url": r["prUrl"]})
+        elif t == "continued-in":
+            meta["continued_in"] = r.get("continuedInSessionId")
+        if ts and t in ("user", "assistant"):
+            meta["first"] = meta["first"] or ts
+            meta["last"] = ts
+    meta["models"] = [m for m, _ in meta["models"].most_common()]
+    meta["cost"] = round(sum(meta["cost"].values()), 2)
+    meta["lines"] = [sum(v[0] for v in meta["lines"].values()), sum(v[1] for v in meta["lines"].values())]
+    return meta, "\n".join(out)
+
+
+def update_index(quiet=False):
+    # transcripts can hold secrets (the session files themselves are 0600)
+    CACHE.mkdir(parents=True, exist_ok=True)
+    CACHE.chmod(0o700)
+    TEXT.mkdir(exist_ok=True)
+    try:
+        old = json.loads(INDEX.read_text())
+        if old.get("version") != INDEX_VERSION:
+            old = {}
+    except (OSError, ValueError):
+        old = {}
+    old_sessions = old.get("sessions", {})
+    sessions, todo = {}, []
+    for origin, (pdir, _) in SOURCES.items():
+        if not pdir.is_dir():
+            continue
+        for f in pdir.glob("*/*.jsonl"):  # top level only: subfolders hold subagent transcripts
+            st = f.stat()
+            key = f"{origin}:{f.stem}"
+            prev = old_sessions.get(key)
+            if prev and prev["stamp"] == [st.st_mtime, st.st_size] and prev["path"] == str(f):
+                sessions[key] = prev
+            else:
+                todo.append((key, origin, f, st))
+    if todo and not quiet and len(todo) > 10:
+        print(f"cr: indexing {len(todo)} sessions…", file=sys.stderr)
+    for key, origin, f, st in todo:
+        meta, text = parse_session(f, origin)
+        meta["stamp"] = [st.st_mtime, st.st_size]
+        if meta["prompts"] == 0:
+            meta["empty"] = True
+        (TEXT / f"{key.replace(':', '-')}.txt").write_text(text)
+        sessions[key] = meta
+    for key in set(old_sessions) - set(sessions):
+        (TEXT / f"{key.replace(':', '-')}.txt").unlink(missing_ok=True)
+    if todo or set(old_sessions) != set(sessions):
+        tmp = INDEX.with_suffix(".tmp")
+        tmp.write_text(json.dumps({"version": INDEX_VERSION, "sessions": sessions}))
+        tmp.replace(INDEX)
+    return sessions
+
+
+def load_index():
+    try:
+        return json.loads(INDEX.read_text())["sessions"]
+    except (OSError, ValueError, KeyError):
+        return update_index(quiet=True)
+
+
+def text_file(key):
+    return TEXT / f"{key.replace(':', '-')}.txt"
+
+
+# ---------------------------------------------------------------------------- formatting
+def local(ts):
+    return datetime.fromisoformat(ts.replace("Z", "+00:00")).astimezone()
+
+
+WEEKDAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
+
+
+def days_ago(ts):
+    return (datetime.now().astimezone().date() - local(ts).date()).days
+
+
+def ago(ts):
+    """Short age for the list: 12m, today's time, weekday within the last week, then 9d / 3w / date."""
+    s = time.time() - local(ts).timestamp()
+    if s < 60: return "now"
+    if s < 3600: return f"{int(s // 60)}m"
+    d = days_ago(ts)
+    if d == 0: return local(ts).strftime("%H:%M")
+    if d < 7: return WEEKDAYS[local(ts).weekday()]
+    if s < 14 * 86400: return f"{int(s // 86400)}d"
+    if s < 60 * 86400: return f"{int(s // (7 * 86400))}w"
+    return local(ts).strftime("%b %d")
+
+
+def ago_long(ts):
+    s = time.time() - local(ts).timestamp()
+    if s < 60: return "just now"
+    if s < 3600: return f"{int(s // 60)}m ago"
+    d = days_ago(ts)
+    if d == 0: return "today"
+    if d == 1: return "yesterday"
+    if d < 7: return local(ts).strftime("%A")
+    a = ago(ts)
+    return a + " ago" if a[-1] in "dw" else "on " + a
+
+
+def span(a, b):
+    s = int(local(b).timestamp() - local(a).timestamp())
+    if s < 3600: return f"{s // 60}m"
+    if s < 86400: return f"{s // 3600}h{s % 3600 // 60:02d}m"
+    return f"{s // 86400}d{s % 86400 // 3600}h"
+
+
+def title(m):
+    t = m.get("name") or m.get("ai_title") or m.get("first_prompt") or "(untitled)"
+    return " ".join(t.split())
+
+
+def plural(n, one, many=None):
+    return f"{n} {one if n == 1 else many or one + 's'}"
+
+
+def clip(s, n):
+    return s if len(s) <= n else s[:n - 1] + "…"
+
+
+def project(m):
+    return project_name(m["cwd"]) if m.get("cwd") else "?"
+
+
+def row(key, m, pw, weak=False):
+    color = ORIGIN_COLOR[m["origin"]]
+    branch = m["branches"][-1] if m["branches"] else ""
+    cols = [
+        DIM(f"{ago(m['last']):>6}"),
+        color(BOLD(ORIGIN_TAG[m["origin"]])) + " " + color(f"{clip(project(m), pw):<{pw}}"),
+        f"{m['prompts']:>3}",
+        DIM(f"{clip(branch, 14):<14}"),
+        (DIM if weak or m.get("continued_in") else str)(title(m)) + (DIM(" ~fuzzy") if weak else ""),
+    ]
+    return key + "\t" + "  ".join(cols)
+
+
+# ---------------------------------------------------------------------------- query
+def parse_query(q):
+    try:
+        toks = shlex.split(q)
+    except ValueError:
+        toks = q.split()
+    spec = {"terms": [], "neg": [], "proj": [], "origin": None}
+    for t in toks:
+        if t in (":h", ":c"):
+            spec["origin"] = t[1]
+        elif t.startswith("@") and len(t) > 1:
+            spec["proj"].append(t[1:])
+        elif t.startswith("-") and len(t) > 1:
+            spec["neg"].append(t[1:])
+        elif t:
+            spec["terms"].append(t)
+    return spec
+
+
+def smart_in(needle, hay):
+    return needle in hay if needle != needle.lower() else needle in hay.lower()
+
+
+def rx_escape(t):
+    """Escape for both Python re and ripgrep's regex (which rejects escaping most punctuation)."""
+    return re.sub(r"([\\.+*?()|\[\]{}^$])", r"\\\1", t)
+
+
+def smart_word(needle, hay):
+    """needle at the start of a word (so "translat" counts for "translation")."""
+    flags = 0 if needle != needle.lower() else re.I
+    return re.search(r"(?<!\w)" + rx_escape(needle), hay, flags) is not None
+
+
+def fuzzy_in(needle, hay):
+    """needle's characters in order in hay, not too spread out (like fzf, but stricter)."""
+    if len(needle) < 3:
+        return False
+    hay, needle = hay.lower(), needle.lower()
+    best = None
+    for start in (i for i, c in enumerate(hay) if c == needle[0]):
+        j = start
+        for c in needle[1:]:
+            j = hay.find(c, j + 1)
+            if j < 0:
+                break
+        else:
+            best = min(best or 1 << 30, j - start + 1)
+    return best is not None and best <= 2 * len(needle) + 2
+
+
+def rg_files(term, word=False):
+    """Keys of sessions whose transcript contains term (smart case), with word=True at a word start."""
+    args = ["-e", r"\b" + rx_escape(term)] if word and re.match(r"\w", term) else ["-F", "--", term]
+    out = subprocess.run(["rg", "-l", "-S"] + args + [str(TEXT)], capture_output=True, text=True).stdout
+    return {Path(p).stem.replace("-", ":", 1) for p in out.splitlines()}
+
+
+# How well a term matched; a session ranks by its worst term, then by recency
+TITLE_WORD, WORD, PARTIAL, FUZZY = range(4)
+
+
+def project_matcher(wanted, sessions):
+    names = {project(m) for m in sessions.values()}
+    def match(m):
+        name, cwd = project(m), (m.get("cwd") or "").lower()
+        for w in wanted:
+            # an exact project name (as the picker inserts it) only matches itself
+            if (name == w) if w in names else (w.lower() in name.lower() or w.lower() in cwd):
+                return True
+        return False
+    return match
+
+
+def filter_sessions(sessions, q):
+    spec = parse_query(q)
+    keys = [k for k, m in sessions.items() if not m.get("empty") and m.get("last")]
+    if spec["origin"]:
+        keys = [k for k in keys if sessions[k]["origin"] == spec["origin"]]
+    if spec["proj"]:
+        match = project_matcher(spec["proj"], sessions)
+        keys = [k for k in keys if match(sessions[k])]
+    def meta_hay(m):
+        return " ".join([title(m), project(m), " ".join(m["branches"]), m["id"]])
+    for t in spec["neg"]:
+        hits = rg_files(t)
+        keys = [k for k in keys if k not in hits and not smart_in(t, meta_hay(sessions[k]))]
+    rank = {k: TITLE_WORD for k in keys}
+    for t in spec["terms"]:
+        words, subs = rg_files(t, word=True), rg_files(t)
+        # fuzzy (typos) only as a fallback for a word that matches nothing at all
+        fuzzy = not subs and not any(smart_in(t, meta_hay(m)) for m in sessions.values())
+        for k in list(rank):
+            hay = meta_hay(sessions[k])
+            if smart_word(t, hay): r = TITLE_WORD
+            elif k in words: r = WORD
+            elif k in subs or smart_in(t, hay): r = PARTIAL
+            elif fuzzy and fuzzy_in(t, title(sessions[k]) + " " + project(sessions[k])): r = FUZZY
+            else:
+                del rank[k]
+                continue
+            rank[k] = max(rank[k], r)
+    keys = sorted(rank, key=lambda k: sessions[k]["last"], reverse=True)
+    keys.sort(key=lambda k: rank[k])  # stable: recency within each rank
+    return keys, rank
+
+
+# ---------------------------------------------------------------------------- subcommands
+def cmd_list(q):
+    sessions = load_index()
+    keys, rank = filter_sessions(sessions, q)
+    pw = min(24, max((len(project(sessions[k])) for k in keys), default=8))
+    out = sys.stdout
+    for k in keys:
+        out.write(row(k, sessions[k], pw, weak=rank[k] == FUZZY) + "\n")
+
+
+def cmd_preview(key, q):
+    sessions = load_index()
+    m = sessions.get(key)
+    if not m:
+        return
+    color = ORIGIN_COLOR[m["origin"]]
+    w = int(os.environ.get("FZF_PREVIEW_COLUMNS", 80))
+    p = print
+    p(BOLD(title(m)))
+    branch = " · ".join(m["branches"][-3:])
+    p(color(BOLD(ORIGIN_NAME[m["origin"]])) + " · " + color(project(m)) + (DIM(" · " + branch) if branch else ""))
+    p(DIM(m["cwd"] or "?"))
+    if m.get("cwd") and not Path(m["cwd"]).is_dir():
+        p(sgr("31")("folder no longer exists"))
+    p()
+    f, l = local(m["first"]), local(m["last"])
+    lbl = lambda s: DIM(f"{s:<9}")
+    p(lbl("started") + f"{f:%a %d %b %H:%M}  " + DIM(f"({ago_long(m['first'])})"))
+    p(lbl("last") + f"{l:%a %d %b %H:%M}  " + DIM(f"({ago_long(m['last'])}, span {span(m['first'], m['last'])})"))
+    p(lbl("turns") + plural(m["prompts"], "prompt") + " · " + plural(m["replies"], "reply", "replies") +
+      (DIM(" · " + ", ".join(m["models"][:2])) if m["models"] else ""))
+    if m["cost"] or any(m["lines"]):
+        p(lbl("cost") + f"${m['cost']:.2f}" + (f" · {sgr('32')('+' + str(m['lines'][0]))} "
+                                              f"{sgr('31')('−' + str(m['lines'][1]))} lines" if any(m["lines"]) else ""))
+    if m["prs"]:
+        p(lbl("MRs") + " ".join(f"!{pr['n']}" for pr in m["prs"]) + DIM("  " + m["prs"][-1]["url"]))
+    if m.get("continued_in"):
+        p(lbl("→") + sgr("35")(f"continued in {m['continued_in'][:8]}"))
+    p(lbl("id") + DIM(m["id"]))
+    rule = lambda s: p("\n" + DIM(f"── {s} " + "─" * max(0, w - len(s) - 5)))
+
+    spec = parse_query(q)
+    tf = text_file(key)
+    if spec["terms"] and tf.exists():
+        rule("matches")
+        args = ["rg", "-F", "-S", "-n", "-C1", "--color=always", "--colors", "match:bg:yellow",
+                "--colors", "match:fg:black", "--colors", "line:fg:242", "--max-columns", "200", "--max-columns-preview"]
+        for t in spec["terms"]:
+            args += ["-e", t]
+        res = subprocess.run(args + ["--", str(tf)], capture_output=True, text=True).stdout
+        p(res.rstrip() or DIM("(matched the title / project)"))
+        return
+    rule("prompts")
+    if tf.exists():
+        blocks = re.split(r"^━━ ", tf.read_text(), flags=re.M)
+        n = 0
+        for b in blocks:
+            if not b.startswith("you"):
+                continue
+            n += 1
+            head, _, body = b.partition("\n")
+            when = head.split("· ")[-1][-5:] if "·" in head else ""
+            lines = body.strip().splitlines()
+            first = clip(" ".join(lines[0].split()) if lines else "", 400)
+            p(sgr("34")(f"{n:>3}") + DIM(f" {when}  ") + first + (DIM(f" (+{len(lines) - 1} lines)") if len(lines) > 1 else ""))
+
+
+def resume_cmd(key):
+    m = load_index()[key]
+    return m, SOURCES[m["origin"]][1] + ["--resume", m["id"]]
+
+
+def cmd_copy(key):
+    m, cmd = resume_cmd(key)
+    s = f"cd {shlex.quote(m['cwd'])} && {shlex.join(cmd)}"
+    for clipper in (["xclip", "-selection", "clipboard"], ["wl-copy"]):
+        if shutil.which(clipper[0]):
+            subprocess.run(clipper, input=s, text=True)
+            return
+
+
+def cmd_view(key, q):
+    """alt-o: the transcript in nvim (or $CR_VIEWER), at the first match of the first search word."""
+    tf = str(text_file(key))
+    # fzf's stdout is the pipe main_picker reads, so talk to the terminal directly
+    tty = os.open("/dev/tty", os.O_RDWR)
+    run = lambda cmd: subprocess.run(cmd, stdin=tty, stdout=tty, stderr=tty)
+    if os.environ.get("CR_VIEWER"):
+        return run(shlex.split(os.environ["CR_VIEWER"]) + [tf])
+    if not shutil.which("nvim"):
+        return run(["less", "-R", tf])
+    cmd = ["nvim", "-R", "-c", "setlocal filetype=markdown wrap linebreak"]
+    terms = parse_query(q)["terms"]
+    if terms:
+        t = terms[0]
+        pat = ("\\c" if t == t.lower() else "\\C") + "\\V" + t.replace("\\", "\\\\").replace("/", "\\/")
+        cmd += ["-c", f"silent! /{pat}", "-c", "set hlsearch"]
+    run(cmd + [tf])
+
+
+def cmd_cycle(q):
+    """ctrl-o: all -> host only -> container only -> all, as a :h / :c token in the query."""
+    toks = q.split()
+    cur = next((t for t in toks if t in (":h", ":c")), None)
+    rest = [t for t in toks if t not in (":h", ":c")]
+    nxt = {None: ":h", ":h": ":c", ":c": None}[cur]
+    print(" ".join(([nxt] if nxt else []) + rest) + (" " if rest or nxt else ""))
+
+
+def fzf_base():
+    return ["fzf", "--ansi", "--height=100%", "--layout=reverse", "--info=inline-right",
+            "--delimiter=\t", "--with-nth=2..", "--no-sort", "--no-hscroll"]
+
+
+def pick_projects(q):
+    sessions = load_index()
+    agg = {}
+    for m in sessions.values():
+        if m.get("empty") or not m.get("last"):
+            continue
+        a = agg.setdefault(project(m), {"h": 0, "c": 0, "last": m["last"], "cwd": m["cwd"]})
+        a[m["origin"]] += 1
+        a["last"] = max(a["last"], m["last"])
+    names = sorted(agg, key=lambda n: agg[n]["last"], reverse=True)
+    pw = max(len(n) for n in names)
+    lines = []
+    for n in names:
+        a = agg[n]
+        counts = (ORIGIN_COLOR["h"](f"{a['h']:>3} H") if a["h"] else "     ") + "  " + \
+                 (ORIGIN_COLOR["c"](f"{a['c']:>3} C") if a["c"] else "     ")
+        lines.append(f"{n}\t{BOLD(f'{n:<{pw}}')}  {counts}  {DIM(ago_long(a['last']))}")
+    res = subprocess.run(fzf_base() + ["--multi", "--with-nth=2", "--prompt=project> ",
+                                       "--header=tab select · enter apply · esc back",
+                                       "--border=rounded", "--border-label= cr · projects "],
+                         input="\n".join(lines), capture_output=False, stdout=subprocess.PIPE, text=True)
+    keep = [t for t in shlex.split(q or "") if not t.startswith("@")] if q else []
+    if res.returncode != 0:
+        return q
+    picked = [l.split("\t")[0] for l in res.stdout.splitlines()]
+    return " ".join([f"@{shlex.quote(p) if ' ' in p else p}" for p in picked] + keep) + " "
+
+
+def main_picker(query):
+    if not shutil.which("fzf") or not shutil.which("rg"):
+        sys.exit("cr: needs fzf and rg")
+    me = f"{shlex.quote(sys.executable)} {shlex.quote(SELF)}"
+    legend = (ORIGIN_COLOR["h"](BOLD("H") + " host") + "  " + ORIGIN_COLOR["c"](BOLD("C") + " container") +
+              DIM("   ⏎ resume · M-o open transcript · C-y copy resume cmd · C-/ preview"))
+    hint = DIM('word "phrase" -exclude · @project (M-p pick) · :h/:c (C-o cycle)')
+    while True:
+        sessions = update_index()
+        n = sum(1 for m in sessions.values() if not m.get("empty"))
+        res = subprocess.run(fzf_base() + [
+            "--disabled", "--query", query, "--prompt=resume> ",
+            "--border=rounded", f"--border-label= cr · {n} sessions ", "--border-label-pos=3",
+            "--header", legend + "\n" + hint, "--header-first",
+            "--preview", f"{me} _preview {{1}} {{q}}",
+            "--preview-window=right,50%,wrap,border-left,<60(down,55%,wrap,border-top)",
+            "--bind", f"start:reload({me} _list {{q}})",
+            "--bind", f"change:reload({me} _list {{q}})+first",
+            "--bind", f"ctrl-o:transform-query({me} _cycle {{q}})",
+            "--bind", f"ctrl-y:execute-silent({me} _copy {{1}})",
+            "--bind", f"alt-o:execute({me} _view {{1}} {{q}})",  # not alt-v: fzf 0.42 reads it as page-up
+            "--bind", "ctrl-/:toggle-preview",
+            # print what was chosen; acting on it here keeps the terminal (claude needs a tty)
+            "--bind", "alt-p:become(echo projects; echo {q})",
+            "--bind", "enter:become(echo resume; echo {1})",
+        ], stdout=subprocess.PIPE, text=True)
+        action, _, arg = res.stdout.rstrip("\n").partition("\n")
+        if action == "projects":
+            query = pick_projects(arg)
+            continue
+        if action != "resume" or not arg:
+            return
+        break
+    m, cmd = resume_cmd(arg)
+    cwd = m.get("cwd")
+    if not cwd or not Path(cwd).is_dir():
+        sys.exit(f"cr: folder {cwd} no longer exists, can't resume (sessions are tied to their folder)")
+    print(DIM(f"cd {cwd} && {shlex.join(cmd)}"), file=sys.stderr)
+    os.chdir(cwd)
+    os.execvp(cmd[0], cmd)
+
+
+def main():
+    a = sys.argv[1:]
+    sub = a[0] if a else ""
+    rest = " ".join(a[1:])
+    if sub == "_list": return cmd_list(rest)
+    if sub == "_preview": return cmd_preview(a[1], " ".join(a[2:]))
+    if sub == "_cycle": return cmd_cycle(rest)
+    if sub == "_copy": return cmd_copy(a[1])
+    if sub == "_view": return cmd_view(a[1], " ".join(a[2:]))
+    if sub in ("-h", "--help"):
+        return print(__doc__.strip())
+    if sub == "--reindex":
+        INDEX.unlink(missing_ok=True)
+        update_index()
+        return
+    query = []
+    for t in a:
+        if t == ".":
+            query.append("@" + project_name(os.getcwd()))
+        elif t == "-p":
+            pass
+        else:
+            query.append(shlex.quote(t) if " " in t else t)
+    q = " ".join(query) + (" " if query else "")
+    if "-p" in a:
+        update_index()
+        q = pick_projects(q)
+    main_picker(q)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except BrokenPipeError:
+        pass
+    except KeyboardInterrupt:
+        sys.exit(130)
