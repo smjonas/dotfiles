@@ -40,3 +40,6 @@ alias l1='git log -n 1'
 # Claude Code
 alias cc='claude-neocargo'
 alias cu='claude-neocargo "/usage"'
+
+# Work
+alias worktime="$HOME/Desktop/NeoCargo/worktime/worktime"
