@@ -1,0 +1,1063 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Piantor Typing Lab</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,750&family=Spline+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow column; a sticky top bar holds the views and the keyboard switch; the typing card moves between views */
+:root {
+  --bg: #F1F3F6; --surface: #FFFFFF; --ink: #171B24; --muted: #5E6778; --faint: #A3ABBA; --line: #DCE0E7;
+  --key: #E7EAF0; --piantor: #2E5BD8; --qwerty: #B07A1E; --err: #C42F3A; --err-bg: #FBE3E5;
+  --cool: #2F7FB8; --hot: #D2453A; --on-strong: #FFFFFF; --good: #23824F;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Spline Sans", system-ui, -apple-system, sans-serif;
+  --mono: "Spline Sans Mono", ui-monospace, "DejaVu Sans Mono", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #11141A; --surface: #191D25; --ink: #E5E8EE; --muted: #9AA2B1; --faint: #4B5364; --line: #2A303B;
+  --key: #232833; --piantor: #6F8DF2; --qwerty: #B8852F; --err: #FF7272; --err-bg: #3A1D22;
+  --cool: #4FA3D9; --hot: #F0675A; --on-strong: #0E1015; --good: #4CC285; color-scheme: dark } }
+
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--body); }
+.wrap { max-width: 1000px; margin: 0 auto; padding-inline: 16px; }
+header.bar { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+header.bar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding-block: 12px; }
+.brand { font: 750 20px/1 var(--display); letter-spacing: -0.01em; display: flex; align-items: baseline; gap: 8px }
+.brand small { font: 500 11px var(--mono); color: var(--muted); letter-spacing: .06em; text-transform: uppercase }
+nav.tabs { display: flex; gap: 4px }
+nav.tabs a { color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 6px; font-weight: 500 }
+nav.tabs a[aria-current="page"] { color: var(--ink); background: var(--key) }
+.spacer { flex: 1 }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface) }
+.seg button { font: 500 13px var(--body); border: 0; background: transparent; color: var(--muted); padding: 7px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px }
+.seg button + button { border-left: 1px solid var(--line) }
+.seg button[aria-pressed="true"] { color: var(--ink); background: var(--key) }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none }
+.dot.p { background: var(--piantor) } .dot.q { background: var(--qwerty) }
+button:focus-visible, a:focus-visible, select:focus-visible, .stage:focus-visible { outline: 2px solid var(--piantor); outline-offset: 2px }
+
+main { padding-block: 24px 64px; display: grid; gap: 28px }
+section.view { display: grid; gap: 22px }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0 }
+h2 { font-size: 22px; font-weight: 750; letter-spacing: -0.01em }
+h3 { font-size: 16px; font-weight: 600; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap }
+p { margin: 0 }
+.muted { color: var(--muted) }
+.small { font-size: 13px }
+.label { font: 500 11px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted) }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums }
+
+.controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center }
+.controls select { font: 13px var(--body); padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink) }
+.stagebox { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px 24px 16px; display: grid; gap: 14px }
+.blockhead { display: grid; gap: 4px }
+.livebar { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: baseline; font-family: var(--mono); font-variant-numeric: tabular-nums }
+.livebar .big { font-size: 26px; color: var(--ink); font-weight: 500 }
+.livebar .kbtag { margin-left: auto; font: 500 12px var(--body); display: flex; align-items: center; gap: 6px; color: var(--muted) }
+.livebar .target { font: 500 12px var(--body); color: var(--muted) }
+.livebar .hit { color: var(--good) }
+.stage { position: relative; font: 400 24px/1.6 var(--mono); height: calc(24px * 1.6 * 3); overflow: hidden; cursor: text; color: var(--faint); outline: none; border-radius: 4px }
+.stage .w { display: inline-block; white-space: pre }
+.stage .c.ok { color: var(--ink) }
+.stage .c.bad { color: var(--err); background: var(--err-bg); border-radius: 2px }
+.stage .c.miss { background: var(--err-bg); color: var(--err); border-radius: 2px }
+.stage .c.cur { box-shadow: -2px 0 0 0 var(--piantor) }
+.stage.idle .c.cur { animation: blink 1s steps(1) infinite }
+@keyframes blink { 50% { box-shadow: none } }
+@media (prefers-reduced-motion: reduce) { .stage.idle .c.cur { animation: none } }
+.focushint { position: absolute; inset: 0; display: grid; place-items: center; background: color-mix(in oklab, var(--surface) 70%, transparent); color: var(--ink); font: 500 15px var(--body); backdrop-filter: blur(3px) }
+.hints { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--muted) }
+kbd { font: 500 11.5px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--bg); color: var(--ink) }
+
+.result { display: grid; gap: 16px }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; align-content: start }
+.tile .v { font: 500 28px/1.1 var(--mono); font-variant-numeric: tabular-nums }
+.tile .s { font-size: 12px; color: var(--muted) }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 10px; align-content: start; min-width: 0 }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px }
+th { text-align: left; font: 500 11px var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 4px 8px 6px 0; border-bottom: 1px solid var(--line) }
+td { padding: 5px 8px 5px 0; border-bottom: 1px solid color-mix(in oklab, var(--line) 60%, transparent); vertical-align: middle }
+td.r, th.r { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums }
+.tscroll { overflow-x: auto }
+.bg { font-family: var(--mono); background: var(--key); border-radius: 4px; padding: 0 5px; white-space: pre }
+.pill { font: 500 11px var(--mono); padding: 1px 7px; border-radius: 99px; background: var(--key); color: var(--muted); white-space: nowrap }
+.pill.warn { background: color-mix(in oklab, var(--hot) 18%, var(--surface)); color: var(--ink) }
+.pill.good { background: color-mix(in oklab, var(--good) 20%, var(--surface)); color: var(--ink) }
+.chips { display: flex; flex-wrap: wrap; gap: 6px }
+.chip { font: 500 13px var(--mono); padding: 3px 9px; border-radius: 6px; background: var(--key); white-space: nowrap }
+.chip small { color: var(--muted); font-size: 11px; margin-left: 4px }
+
+.btn { font: 500 13px var(--body); border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 7px 12px; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-block }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink) }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--muted); padding: 4px 8px }
+.btn:disabled { opacity: .5; cursor: default }
+.status { font-size: 12.5px; color: var(--muted) }
+.banner { border: 1px solid color-mix(in oklab, var(--hot) 40%, var(--line)); background: color-mix(in oklab, var(--hot) 8%, var(--surface)); border-radius: 10px; padding: 10px 14px; font-size: 13.5px }
+
+/* plan */
+.plan { display: grid; gap: 0 }
+.step { display: grid; grid-template-columns: 28px 1fr auto; gap: 4px 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid color-mix(in oklab, var(--line) 60%, transparent) }
+.step:last-child { border-bottom: 0 }
+.step .mark { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; font: 600 12px var(--mono); color: var(--muted) }
+.step.done .mark { background: var(--good); border-color: var(--good); color: var(--on-strong) }
+.step.next .mark { border-color: var(--piantor); color: var(--piantor) }
+.step .title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px }
+.step .nm { font-weight: 600 }
+.step .sub { font-size: 12.5px; color: var(--muted); grid-column: 2 }
+.cal { display: grid; grid-template-columns: repeat(14, 1fr); gap: 4px; max-width: 420px }
+.cal i { aspect-ratio: 1; border-radius: 3px; background: var(--key); display: block; max-width: 100% }
+
+/* compare */
+.legend { display: flex; gap: 16px; font-size: 13px; color: var(--muted); align-items: center; flex-wrap: wrap }
+.legend span { display: inline-flex; align-items: center; gap: 6px }
+.headline { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px }
+.ratio { font: 750 44px/1 var(--display); letter-spacing: -0.02em }
+.bars { display: grid; gap: 10px }
+.barrow { display: grid; grid-template-columns: minmax(120px, 210px) 1fr; gap: 4px 12px; align-items: center }
+.barrow .nm { font-size: 13px; line-height: 1.3 }
+.barrow .nm small { display: block; color: var(--muted); font-size: 11.5px }
+.barpair { display: grid; gap: 2px; min-width: 0 }
+.mbar { display: flex; align-items: center; gap: 6px; height: 14px; font: 11.5px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums }
+.mbar i { display: block; height: 10px; border-radius: 0 3px 3px 0; min-width: 2px }
+.mbar.q i { background: var(--qwerty) } .mbar.p i { background: var(--piantor) }
+.kbwrap { overflow-x: auto; padding-bottom: 4px }
+.kb { display: flex; gap: 28px; width: max-content; margin: 0 auto }
+.half { display: grid; grid-template-columns: repeat(5, 46px); gap: 4px }
+.kbq { display: grid; gap: 4px; width: max-content; margin: 0 auto }
+.kbq .row { display: flex; gap: 4px }
+.k { width: 46px; height: 46px; border-radius: 7px; background: var(--key); display: grid; place-items: center; align-content: center; font-family: var(--mono); line-height: 1.1; color: var(--ink); position: relative }
+.k b { font-weight: 500; font-size: 15px }
+.k span { font-size: 10px; opacity: .85; font-variant-numeric: tabular-nums }
+.k.hrm::after { content: ""; position: absolute; bottom: 4px; width: 10px; height: 2px; border-radius: 1px; background: currentColor; opacity: .5 }
+.k.wide { width: 150px }
+.thumbs { display: flex; gap: 4px; justify-content: flex-end; grid-column: 1 / -1; margin-top: 6px }
+.scale { display: flex; align-items: center; gap: 8px; font: 11.5px var(--mono); color: var(--muted); flex-wrap: wrap }
+.scale .grad { width: 160px; height: 8px; border-radius: 4px }
+.empty { border: 1px dashed var(--line); border-radius: 12px; padding: 28px; display: grid; gap: 8px; justify-items: start; background: var(--surface) }
+.trend svg { width: 100%; height: auto; display: block }
+.trend text { fill: var(--muted); font: 11px var(--mono) }
+.confirm { display: inline-flex; gap: 6px; align-items: center; font-size: 12.5px }
+@media (max-width: 560px) {
+  .stage { font-size: 19px; height: calc(19px * 1.6 * 3) }
+  .barrow { grid-template-columns: 1fr }
+  .stagebox { padding: 16px }
+}
+</style>
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <div class="brand">Typing Lab <small>Piantor · Colemak-DH</small></div>
+  <nav class="tabs" aria-label="Views">
+    <a href="#practice" id="tab-practice">Practice</a>
+    <a href="#test" id="tab-test">Test</a>
+    <a href="#compare" id="tab-compare">Compare</a>
+  </nav>
+  <div class="spacer"></div>
+  <div class="seg" role="group" aria-label="Keyboard you are typing on (detected automatically)">
+    <button id="kb-qwerty" data-kb="qwerty" aria-pressed="false"><span class="dot q"></span>QWERTY</button>
+    <button id="kb-piantor" data-kb="piantor" aria-pressed="true"><span class="dot p"></span>Piantor</button>
+  </div>
+</div></header>
+
+<main class="wrap">
+  <div class="banner" id="banner" hidden></div>
+
+  <!-- the typing card; moved into whichever view is active -->
+  <div class="stagebox" id="typing">
+    <div class="blockhead" id="blockhead" hidden></div>
+    <div class="livebar">
+      <span><span class="big" id="lv-time">60</span> <span class="label">sec</span></span>
+      <span><span class="big" id="lv-wpm">–</span> <span class="label">wpm</span></span>
+      <span><span class="big" id="lv-acc">–</span> <span class="label">acc</span></span>
+      <span class="target" id="lv-target"></span>
+      <span class="kbtag" id="lv-kb"></span>
+    </div>
+    <div class="stage idle" id="stage" tabindex="0" aria-label="Typing area. Start typing to begin.">
+      <div id="text"></div>
+      <div class="focushint" id="focushint" hidden>Click here or press any key to focus</div>
+    </div>
+    <div class="hints" id="hints">
+      <span><kbd>Esc</kbd> restart</span>
+      <span><kbd>Ctrl</kbd>+<kbd>⌫</kbd> delete word</span>
+      <span>The keyboard is detected from your typing after a few words.</span>
+    </div>
+  </div>
+
+  <!-- ======================= PRACTICE ======================= -->
+  <section class="view" id="view-practice">
+    <div class="two" id="practice-top"></div>
+    <div id="practice-slot"></div>
+    <div id="practice-result" class="result" hidden></div>
+    <div id="practice-bottom" style="display:grid;gap:16px"></div>
+  </section>
+
+  <!-- ======================= TEST ======================= -->
+  <section class="view" id="view-test" hidden>
+    <div class="controls">
+      <label class="label" for="src">Text</label>
+      <select id="src">
+        <option value="en-words">English · top 200 words</option>
+        <option value="en-prose">English · sentences</option>
+        <option value="de-words">German · common words</option>
+        <option value="de-prose">German · sentences</option>
+      </select>
+      <label class="label" for="dur">Length</label>
+      <select id="dur">
+        <option value="30">30 s</option>
+        <option value="60" selected>60 s</option>
+        <option value="120">120 s</option>
+      </select>
+      <span class="spacer"></span>
+      <span class="status" id="sync">Loading…</span>
+    </div>
+    <div id="test-slot"></div>
+    <div id="test-result" class="result" hidden></div>
+    <div class="panel">
+      <h3>Weekly benchmark</h3>
+      <p class="muted small" style="max-width:72ch">Once a week: one minute of warm-up, then two 60 s English-word tests on each keyboard, alternating. Practice uses these to update your focus letters and words.</p>
+    </div>
+  </section>
+
+  <!-- ======================= COMPARE ======================= -->
+  <section class="view" id="view-compare" hidden>
+    <div class="controls">
+      <h2 style="margin-right:auto">Piantor vs QWERTY</h2>
+      <label class="label" for="f-src">Text</label>
+      <select id="f-src">
+        <option value="all">All texts</option>
+        <option value="en">English only</option>
+        <option value="en-words">English words</option>
+        <option value="en-prose">English sentences</option>
+        <option value="de">German only</option>
+      </select>
+      <label class="label" for="f-n">Use</label>
+      <select id="f-n">
+        <option value="5">last 5 tests per keyboard</option>
+        <option value="10" selected>last 10 tests per keyboard</option>
+        <option value="0">all tests</option>
+      </select>
+    </div>
+    <div id="cmp"></div>
+  </section>
+</main>
+
+<script src="words.js"></script>
+<script>
+"use strict";
+/* ================= corpus ================= */
+// Test-mode lists stay fixed so benchmarks remain comparable over time.
+const EN_WORDS = "the be of and a to in he have it that for they i with as not on she at by this we you do but from or which one would all will there say who make when can more if no man out other so what time up go about than into could state only new year some take come these know see use get like then first any work now may such give over think most even find day also after way many must look before great back through long where much should well people down own just because good each those feel seem how high too place little world very still nation hand old life tell write become here show house both between need mean call develop under last right move thing general school never same another begin while number part turn real leave might want point form off child few small since against ask late home interest large person end open public follow during present without again hold govern around possible head consider word program problem however lead system set order eye plan run keep face fact group play stand increase early course change help line".split(" ");
+const DE_WORDS = "die der und in zu den das nicht von sie ist des sich mit dem dass er es ein ich auf so eine auch als an nach wie im für man aber aus durch wenn nur war noch werden bei hat wir was wird sein einen welche sind oder zur um haben einer mir über ihm diese einem ihr uns da zum kann doch vor dieser mich ihn du hatte seine mehr am denn nun unter sehr selbst schon hier bis habe ihre dann ihnen alle wieder meine zeit gegen vom ganz wo muss ohne eines können sei jahr mann frau tag arbeit leben welt haus kind gut neu groß klein lang viel heute morgen immer jetzt machen sagen gehen sehen kommen wissen geben finden bleiben liegen stehen denken nehmen glauben halten zeigen führen sprechen bringen fahren meinen fragen kennen spielen arbeiten brauchen folgen lernen verstehen setzen bekommen beginnen erzählen versuchen schreiben laufen erklären sitzen ziehen scheinen fallen gehören erhalten treffen suchen woche stadt frage beispiel möglich später natürlich während zwischen größer schön müssen würde".split(" ");
+const EN_PROSE = [
+ "Can you take a look at the failing test and tell me what changed since yesterday?",
+ "I think the problem is in the way we cache the results, not in the query itself.",
+ "Thanks for the quick reply. I will check it tomorrow morning and get back to you.",
+ "Please keep the change small and explain why you chose this approach over the other one.",
+ "The meeting moved to Thursday, so we have a little more time to finish the draft.",
+ "We should write down the decision somewhere, otherwise nobody will remember it next month.",
+ "If the numbers look strange, compare them with last week before you change anything.",
+ "Let me know when the new version is live, and I will tell the customer right away.",
+ "Most of the delay came from waiting on other teams, not from the work itself.",
+ "Could you summarize the main points in three short sentences for the weekly update?",
+ "I tried both options, and the second one is faster but harder to read.",
+ "Before we merge this, let's make sure the old behavior still works for existing users.",
+ "The idea is simple: every order gets one owner, and that person follows it to the end.",
+ "She said the price was fair, but the delivery date was the real problem for them.",
+ "Write a short function that reads the file, skips empty lines, and returns the rest.",
+ "It rained all weekend, so we stayed inside, cooked a lot, and watched old movies.",
+ "Don't worry about the formatting yet; focus on getting the logic right first.",
+ "When you have a minute, please review my comments and resolve the ones you agree with.",
+ "The train was late again, which meant I missed the first ten minutes of the call.",
+ "Our goal for this quarter is to cut the manual work in half without hiring anyone.",
+ "Explain the error message in plain words and suggest two ways to fix it.",
+ "I'm not sure this is a bug; it might be how the system was designed from the start.",
+ "He finally answered the email, but only after three reminders and a phone call.",
+ "Use the existing helper instead of writing a new one, and add a test for the edge case.",
+ "Good writing is mostly rewriting, so the first draft only needs to exist.",
+ "The shipment left the warehouse on Monday and should arrive by Friday at the latest.",
+ "If something feels too complicated, it usually means we are solving the wrong problem.",
+ "Please rename the variable so that its purpose is clear without reading the whole file.",
+ "We can talk about it over lunch; I'm free any day except Wednesday.",
+ "Check whether the user exists before you create a new account with the same email.",
+ "The new keyboard feels strange at first, but my hands are slowly getting used to it.",
+ "Thank you for your patience. The issue is fixed, and your invoice has been corrected.",
+ "Keep a list of what went well and what didn't, and look at it before the next project.",
+ "Which of these three approaches would you choose, and what are the main risks?",
+ "I'll be out of office until Monday, so please send urgent questions to the team."
+];
+// Extra sentences used only in practice, so the benchmark texts don't get memorised.
+const EN_PROSE_PRACTICE = [
+ "Read the logs from last night and tell me which job failed first and why.",
+ "I would rather ship a smaller version on time than a perfect one next month.",
+ "The customer asked for an invoice with the new address, so please send a corrected copy.",
+ "Look through the open issues and group them by how much effort each one needs.",
+ "We already tried that once, and it made the build slower without fixing the bug.",
+ "Let's keep the old endpoint for a while and remove it once nobody calls it anymore.",
+ "My flight lands around six, so I can join the call but probably without video.",
+ "Could you draft a friendly reply that says no but offers another date instead?",
+ "The report looks good overall, but the numbers in the second table don't add up.",
+ "Make a plan with three steps, start with the easiest one, and tell me when it is done.",
+ "If you are unsure about a change, leave a comment instead of guessing what I meant.",
+ "We spent most of the afternoon on a problem that turned out to be a typo.",
+ "Please list every place where we send emails, including the ones from old scripts.",
+ "The weather was perfect, so we walked along the river and had dinner outside.",
+ "I like the second design more, mostly because it is easier to scan quickly.",
+ "Add a short note to the readme that explains how to run the tests locally.",
+ "Ask the driver to call the warehouse before he arrives, otherwise nobody will open the gate.",
+ "Thanks for the feedback; I changed the wording and moved the example to the top.",
+ "This query is slow because it reads the whole table; an index on the date should help.",
+ "Tell me honestly whether this plan makes sense, and what you would do differently.",
+ "The kids were tired after school, so we skipped the shopping and ordered pizza.",
+ "Summarize the thread in a few bullet points and highlight the open questions.",
+ "Our biggest risk is that the data arrives late, not that the model is wrong.",
+ "Remove the unused imports, run the formatter, and then open a pull request.",
+ "Prices went up again this month, so we should check the contract before renewing it."
+];
+const DE_PROSE = [
+ "Kannst du dir bitte den Fehler im Test anschauen und mir sagen, was sich geändert hat?",
+ "Ich glaube, das Problem liegt nicht in der Abfrage, sondern im Zwischenspeicher.",
+ "Danke für die schnelle Antwort, ich schaue es mir morgen früh genauer an.",
+ "Das Meeting wurde auf Donnerstag verschoben, also haben wir etwas mehr Zeit.",
+ "Wir sollten die Entscheidung aufschreiben, sonst weiß nächsten Monat niemand mehr Bescheid.",
+ "Die Lieferung hat das Lager am Montag verlassen und sollte bis Freitag ankommen.",
+ "Bitte halte die Änderung klein und erkläre kurz, warum du diesen Weg gewählt hast.",
+ "Am Wochenende hat es nur geregnet, deshalb sind wir drinnen geblieben und haben gekocht.",
+ "Der Kunde ist mit dem Preis zufrieden, aber der Termin passt ihm überhaupt nicht.",
+ "Fass die wichtigsten Punkte bitte in drei kurzen Sätzen für das Wochenupdate zusammen.",
+ "Ich habe beide Varianten ausprobiert, die zweite ist schneller, aber schwerer zu lesen.",
+ "Wenn dir etwas zu kompliziert vorkommt, lösen wir wahrscheinlich das falsche Problem.",
+ "Der Zug hatte wieder Verspätung, deshalb habe ich den Anfang der Besprechung verpasst.",
+ "Prüfe zuerst, ob der Nutzer existiert, bevor du ein neues Konto anlegst.",
+ "Unser Ziel für dieses Quartal ist es, die manuelle Arbeit ungefähr zu halbieren.",
+ "Ich bin bis Montag nicht im Büro, dringende Fragen bitte direkt an das Team schicken.",
+ "Die neue Tastatur fühlt sich noch ungewohnt an, aber meine Finger gewöhnen sich langsam daran.",
+ "Vielen Dank für deine Geduld, der Fehler ist behoben und die Rechnung wurde korrigiert.",
+ "Wir können morgen beim Mittagessen darüber sprechen, ich habe den ganzen Tag Zeit.",
+ "Schreib eine kurze Funktion, die die Datei liest, leere Zeilen überspringt und den Rest zurückgibt.",
+ "Gute Texte entstehen meistens beim Überarbeiten, der erste Entwurf muss nur existieren.",
+ "Welche der drei Möglichkeiten würdest du wählen, und wo siehst du die größten Risiken?"
+];
+const FREQ = window.FREQ || { en: EN_WORDS.map(w => [w, 5]), de: DE_WORDS.map(w => [w, 5]) };
+
+/* ================= layouts ================= */
+const FINGERS = { L: ["pinky", "ring", "middle", "index", "index"], R: ["index", "index", "middle", "ring", "pinky", "pinky", "pinky"] };
+const ORDER = { pinky: 0, ring: 1, middle: 2, index: 3, thumb: 4 };
+function grid(L, R, extra) {
+  const m = {};
+  L.forEach((row, r) => [...row].forEach((ch, c) => { if (!(ch in m)) m[ch] = { hand: "L", row: r, col: c } }));
+  R.forEach((row, r) => [...row].forEach((ch, c) => { if (!(ch in m)) m[ch] = { hand: "R", row: r, col: c } }));
+  Object.assign(m, extra || {});
+  for (const k in m) m[k].finger = m[k].finger || FINGERS[m[k].hand][m[k].col];
+  return m;
+}
+const LAYOUT = {
+  piantor: {
+    L: ["qwfpb", "arstg", "zxcdv"], R: ["jluy/", "mneio", "kh,./"],
+    hrm: new Set("arstneio"),
+    base: grid(["qwfpb", "arstg", "zxcdv"], ["jluy/", "mneio", "kh,./"]),
+    sym: grid(["!<>$%", "_-+=^", "^~/*\\"], ["&{}'", "$()\"", "|[]@"]),
+    num: grid([" 789", " 456+", " 123-"], []),
+    shifted: { ";": ",", ":": ".", "?": "/" }
+  },
+  qwerty: {
+    L: ["qwert", "asdfg", "zxcvb"], R: ["yuiop", "hjkl;'", "nm,./"],
+    hrm: new Set(),
+    base: grid(["qwert", "asdfg", "zxcvb"], ["yuiop", "hjkl;'", "nm,./"],
+      Object.fromEntries([..."12345"].map((d, i) => [d, { hand: "L", row: -1, col: i }]).concat([..."67890-="].map((d, i) => [d, { hand: "R", row: -1, col: i }])))),
+    shifted: { ":": ";", "\"": "'", "?": "/", "<": ",", ">": ".", "!": "1", "@": "2", "$": "4", "%": "5", "^": "6", "&": "7", "*": "8", "(": "9", ")": "0", "_": "-", "+": "=" }
+  }
+};
+// Keys that only type when released on the Piantor (home-row mods and the Space layer-tap)
+const ON_RELEASE = new Set("arstneio ");
+const UMLAUT = { "ä": "q", "ö": "p", "ü": "y", "ß": "s" };
+function keyInfo(kb, ch) {
+  const L = LAYOUT[kb];
+  if (ch === " ") return { hand: kb === "piantor" ? "L" : "T", finger: "thumb", row: 3, col: 9, space: true };
+  let shift = false, altgr = false, layer = null, base = ch;
+  if (UMLAUT[ch.toLowerCase()]) { altgr = true; base = UMLAUT[ch.toLowerCase()]; if (ch !== ch.toLowerCase()) shift = true; }
+  else if (/[A-Z]/.test(ch)) { shift = true; base = ch.toLowerCase(); }
+  if (L.base[base]) return { ...L.base[base], shift, altgr, layer };
+  if (L.shifted[base]) return { ...L.base[L.shifted[base]], shift: true, altgr, layer };
+  if (kb === "piantor") {
+    if (L.sym[base]) return { ...L.sym[base], shift, altgr, layer: "sym" };
+    if (L.num[base]) return { ...L.num[base], shift, altgr, layer: "num" };
+  }
+  return null;
+}
+function charAt(kb, hand, row, col) { const rows = LAYOUT[kb][hand]; return rows && rows[row] ? rows[row][col] : undefined }
+function intrusionFor(kb, expected) {
+  const e = expected.toLowerCase(); if (!/[a-z]/.test(e)) return null;
+  const other = kb === "piantor" ? "qwerty" : "piantor";
+  const p = LAYOUT[other].base[e]; if (!p || p.row < 0) return null;
+  const c = charAt(kb, p.hand, p.row, p.col);
+  return c && c !== e ? c : null;
+}
+function classify(kb, a, b) {
+  const A = keyInfo(kb, a), B = keyInfo(kb, b), cats = [];
+  if (!A || !B) return cats;
+  if (a === " ") { cats.push("wordstart"); return cats }
+  if (b === " ") { cats.push("wordend"); return cats }
+  if (B.shift && /[A-ZÄÖÜ]/.test(b)) cats.push("capital");
+  if (/[,.;:?!'"\-()]/.test(b)) cats.push("punct");
+  if (B.altgr) cats.push("umlaut");
+  if (!/[a-zäöüß]/i.test(a) || !/[a-zäöüß]/i.test(b)) return cats;
+  cats.push("letters");
+  if (a.toLowerCase() === b.toLowerCase()) { cats.push("repeat"); return cats }
+  if (A.hand !== B.hand) { cats.push("alt"); return cats }
+  if (A.finger === B.finger) cats.push("sfb");
+  else { cats.push(ORDER[B.finger] > ORDER[A.finger] ? "rollin" : "rollout"); cats.push("roll") }
+  if (Math.abs(A.row - B.row) === 2) cats.push("rowjump");
+  return cats;
+}
+const CATS = [
+  ["letters", "All letter pairs", "baseline"],
+  ["alt", "Hand alternation", "left ↔ right"],
+  ["roll", "Same-hand rolls", "two fingers, one hand"],
+  ["rollin", "Inward rolls", "towards the index finger"],
+  ["rollout", "Outward rolls", "towards the pinky"],
+  ["sfb", "Same finger, different key", "the slowest motion there is"],
+  ["rowjump", "Top ↔ bottom row, same hand", "awkward stretches"],
+  ["repeat", "Double letters", "ll, ff, pp"],
+  ["capital", "Capital letters", "shift cost"],
+  ["punct", "Punctuation", ", . ; : ? ' \""]
+];
+
+/* ================= storage ================= */
+const store = { sessions: [], mode: "loading" };
+const LSKEY = "typinglab.sessions.v1";
+function lsRead() { try { return JSON.parse(localStorage.getItem(LSKEY) || "[]") } catch { return [] } }
+function lsWrite(list) { try { localStorage.setItem(LSKEY, JSON.stringify(list)) } catch {} }
+function setSync() {
+  const n = store.sessions.length;
+  $("sync").textContent = store.mode === "server" ? `${n} sessions saved in data/sessions/` : `${n} sessions in this browser only`;
+  const b = $("banner");
+  b.hidden = store.mode !== "local";
+  b.innerHTML = `The local server isn't running, so results are kept in this browser only and Claude can't read them. Start it with <span class="bg">~/dotfiles/typing-lab/server.py</span> and open <span class="bg">http://127.0.0.1:8765</span>.`;
+}
+async function loadSessions() {
+  try {
+    const r = await fetch("api/sessions", { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    store.sessions = await r.json(); store.mode = "server";
+  } catch { store.sessions = lsRead(); store.mode = "local" }
+  invalidate(); setSync(); renderAll();
+}
+async function saveSession(s) {
+  if (store.mode === "server") {
+    try {
+      const r = await fetch("api/sessions/" + s.id, { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify(s) });
+      if (!r.ok) throw new Error(r.status);
+    } catch (e) { $("sync").textContent = "Couldn't save to disk: " + e.message; return false }
+  } else { const list = lsRead(); list.push(s); lsWrite(list) }
+  store.sessions.push(s); invalidate(); setSync(); return true;
+}
+async function deleteSession(id) {
+  if (store.mode === "server") { try { await fetch("api/sessions/" + id, { method: "DELETE" }) } catch {} }
+  else lsWrite(lsRead().filter(s => s.id !== id));
+  store.sessions = store.sessions.filter(s => s.id !== id); invalidate(); setSync(); renderAll();
+}
+
+/* ================= text generation ================= */
+function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296 } }
+function shuffle(arr, r) { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1));[a[i], a[j]] = [a[j], a[i]] } return a }
+function makeText(src, seed, minLen) {
+  const r = rng(seed), out = [];
+  let len = 0, last = "";
+  if (src.endsWith("words")) {
+    const list = src.startsWith("en") ? EN_WORDS : DE_WORDS;
+    while (len < minLen) { let w; do { w = list[Math.floor(r() * list.length)] } while (w === last); out.push(w); last = w; len += w.length + 1 }
+  } else {
+    const list = src.startsWith("en") ? EN_PROSE : DE_PROSE;
+    const idx = shuffle(list.map((_, i) => i), r);
+    let k = 0; while (len < minLen) { const s = list[idx[k++ % idx.length]]; out.push(s); len += s.length + 1 }
+  }
+  return out.join(" ");
+}
+// Weighted sample of common words. weights: {letter: weight}. With pairs, a word must contain both letters of a pair.
+const SHORT_OK = new Set(EN_WORDS.filter(w => w.length <= 2));
+function focusText(weights, pairs, seed, minLen) {
+  const r = rng(seed), pool = [];
+  for (const [w, z] of FREQ.en.slice(0, 2500)) {
+    if (w.length < 2 || (w.length <= 2 && !SHORT_OK.has(w))) continue;
+    let score = 0;
+    if (pairs.length) { for (const [a, b, n] of pairs) if (w.includes(a) && w.includes(b)) score += n || 1 }
+    else { for (const ch of w) score += weights[ch] || 0; score /= Math.sqrt(w.length) }
+    if (score <= 0) continue;
+    pool.push([w, score * Math.max(0.3, z - 2.5)]);
+  }
+  const total = pool.reduce((a, b) => a + b[1], 0), out = []; let len = 0, last = "";
+  while (len < minLen && pool.length) {
+    let x = r() * total, i = 0; while (x > pool[i][1] && i < pool.length - 1) { x -= pool[i][1]; i++ }
+    const w = pool[i][0]; if (w === last) continue; out.push(w); last = w; len += w.length + 1;
+  }
+  return out.join(" ");
+}
+function chunkText(words, seed, minLen) {
+  const r = rng(seed), out = []; let len = 0;
+  while (len < minLen) for (const w of shuffle(words, r)) { for (let i = 0; i < 3; i++) out.push(w); len += (w.length + 1) * 3; if (len >= minLen) break }
+  return out.join(" ");
+}
+function proseText(seed, minLen) {
+  const r = rng(seed), list = shuffle(EN_PROSE_PRACTICE.concat(EN_PROSE), r), out = []; let len = 0, k = 0;
+  while (len < minLen) { const s = list[k++ % list.length]; out.push(s); len += s.length + 1 }
+  return out.join(" ");
+}
+
+/* ================= analysis ================= */
+const PRINT = k => k.length === 1 && k !== "⌫";
+// Replays a session. In strict mode a wrong key does not advance; it only counts as an error.
+function replay(s) {
+  const T = s.target, ks = s.ks, ts = s.ts;
+  let pos = 0, prev = null, total = 0, correct = 0, bs = 0;
+  const typed = [], attempted = new Set(), first = [], bigrams = [], mis = [];
+  for (let i = 0; i < ks.length; i++) {
+    const k = ks[i], t = ts[i];
+    if (PRINT(k)) {
+      const exp = T[pos]; if (exp === undefined) break;
+      const ok = k === exp, isFirst = !attempted.has(pos); attempted.add(pos);
+      total++; if (ok) correct++;
+      if (isFirst) first.push({ exp, got: k, ok, pos });
+      if (s.strict && !ok) { prev = { type: "x" }; continue }
+      if (prev && prev.type === "c" && prev.ok && prev.first && prev.pos === pos - 1 && ok && isFirst) {
+        const iki = t - prev.t; if (iki > 0 && iki < 1500) bigrams.push([T[pos - 1], exp, iki, T[pos - 2]]);
+      }
+      typed[pos] = k; prev = { type: "c", t, pos, ok, first: isFirst }; pos++;
+    } else if (k === "⌫") { bs++; pos = Math.max(0, pos - 1); prev = { type: "b" } }
+    else if (k === "⌫w") { bs++; while (pos > 0 && T[pos - 1] === " ") pos--; while (pos > 0 && T[pos - 1] !== " ") pos--; prev = { type: "b" } }
+    else { mis.push(k); prev = { type: "m" } }
+  }
+  let ok = 0; for (let i = 0; i < pos; i++) if (typed[i] === T[i]) ok++;
+  const min = s.dur / 60000;
+  return { wpm: ok / 5 / min, raw: total / 5 / min, acc: total ? correct / total : 0, first, bigrams, mis, bs, total, pos };
+}
+const median = a => { if (!a.length) return NaN; const b = [...a].sort((x, y) => x - y), m = b.length >> 1; return b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2 };
+// Clean word cycles: Space to Space with every key in between right on the first try.
+// Space is released-to-type on the Piantor too, so these are fair on both boards.
+function wordCycles(s) {
+  const T = s.target, out = []; let pos = 0, cur = null; const att = new Set();
+  for (let i = 0; i < s.ks.length; i++) {
+    const k = s.ks[i], t = s.ts[i];
+    if (!PRINT(k)) { cur = null; if (k === "⌫") pos = Math.max(0, pos - 1); else if (k === "⌫w") { while (pos > 0 && T[pos - 1] === " ") pos--; while (pos > 0 && T[pos - 1] !== " ") pos-- } continue }
+    const ok = k === T[pos] && !att.has(pos); att.add(pos);
+    if (!ok) { cur = null; if (!s.strict) pos++; continue }
+    if (T[pos] === " ") { if (cur && cur.w.length && /^[a-z]+$/.test(cur.w)) out.push({ w: cur.w, t: t - cur.t }); cur = { t, w: "" } } else if (cur) cur.w += T[pos];
+    pos++;
+  }
+  return out;
+}
+// Per-letter cost from word times: least squares with a light ridge. Fair despite keys that type on release.
+const FIT_LETTERS = [..."etaoinshrdlcumwfgypbvkjxqz"];
+function letterCosts(words) {
+  const counts = {}; for (const w of words) for (const c of w.w) counts[c] = (counts[c] || 0) + 1;
+  const letters = FIT_LETTERS.filter(c => (counts[c] || 0) >= 6);
+  if (words.length < 40 || letters.length < 8) return null;
+  const n = letters.length + 1, A = Array.from({ length: n }, () => Array(n).fill(0)), b = Array(n).fill(0);
+  for (const w of words) {
+    const x = [1, ...letters.map(c => { let k = 0; for (const ch of w.w) if (ch === c) k++; return k })];
+    for (let j = 0; j < n; j++) { if (!x[j]) continue; b[j] += x[j] * w.t; for (let k = 0; k < n; k++) A[j][k] += x[j] * x[k] }
+  }
+  for (let j = 1; j < n; j++) A[j][j] += 3;
+  for (let i = 0; i < n; i++) {
+    let p = i; for (let r = i + 1; r < n; r++) if (Math.abs(A[r][i]) > Math.abs(A[p][i])) p = r;
+    [A[i], A[p]] = [A[p], A[i]];[b[i], b[p]] = [b[p], b[i]];
+    for (let r = 0; r < n; r++) if (r !== i) { const f = A[r][i] / A[i][i]; for (let k = i; k < n; k++) A[r][k] -= f * A[i][k]; b[r] -= f * b[i] }
+  }
+  const coef = {}; letters.forEach((c, i) => coef[c] = { ms: b[i + 1] / A[i + 1][i + 1], n: counts[c] });
+  return { base: b[0] / A[0][0], coef };
+}
+// First error of each mistake run, classified by what went wrong
+function errorEvents(s) {
+  const T = s.target, out = []; let pos = 0, inErr = false;
+  for (let i = 0; i < s.ks.length; i++) {
+    const k = s.ks[i];
+    if (k === "⌫") { inErr = true; pos = Math.max(0, pos - 1); continue }
+    if (k === "⌫w") { inErr = true; while (pos > 0 && T[pos - 1] === " ") pos--; while (pos > 0 && T[pos - 1] !== " ") pos--; continue }
+    if (!PRINT(k)) continue;
+    const exp = T[pos];
+    if (k !== exp) {
+      if (!inErr) {
+        const next = s.ks.slice(i + 1).find(PRINT), A = keyInfo(s.kb, exp), B = keyInfo(s.kb, k);
+        let type;
+        if (k === T[pos + 1] && next === exp) type = "swap";
+        else if (k === T[pos + 1]) type = "skip";
+        else if (k === T[pos - 1]) type = "double";
+        else if (exp === " " || k === " ") type = "space";
+        else if (k.toLowerCase() === exp.toLowerCase()) type = "shift";
+        else if (A && B && A.hand === B.hand && A.finger === B.finger) type = "row";
+        else if (A && B && A.hand === B.hand && A.row === B.row) type = "neighbour";
+        else if (A && B && A.hand === B.hand) type = "samehand";
+        else type = "otherhand";
+        out.push({ exp, got: k, type });
+        inErr = true;
+      }
+      if (s.strict) continue;
+    } else inErr = false;
+    pos++;
+  }
+  return out;
+}
+const ERR_NAMES = { swap: "Letters swapped", skip: "Skipped a letter", double: "Repeated the previous letter", space: "Space too early or late", shift: "Accidental capital (shift misfire)", row: "Right finger, wrong row", neighbour: "Neighbouring key on the same row", samehand: "Other key, same hand", otherhand: "Key on the other hand" };
+const POSITIONAL = new Set(["row", "neighbour", "samehand"]);
+
+function aggregate(sessions, kb) {
+  const R = { n: sessions.length, wpm: [], acc: [], raw: [], key: {}, err: {}, cat: {}, conf: {}, intr: 0, errs: 0, mis: {}, misN: 0, minutes: 0, firstN: 0, bs: 0, words: [], etype: {} };
+  for (const s of sessions) {
+    const r = replay(s);
+    R.wpm.push(r.wpm); R.acc.push(r.acc); R.raw.push(r.raw); R.minutes += s.dur / 60000; R.bs += r.bs;
+    for (const [a, b, iki, z] of r.bigrams) {
+      // On the Piantor, skip pairs touching keys that type on release: their timing is shifted.
+      if (kb === "piantor" && (ON_RELEASE.has(a.toLowerCase()) || ON_RELEASE.has(b.toLowerCase()) || (z && ON_RELEASE.has(z.toLowerCase())))) continue;
+      for (const c of classify(kb, a, b)) (R.cat[c] ||= []).push(iki);
+    }
+    for (const f of r.first) {
+      R.firstN++; const e = (R.err[f.exp] ||= { n: 0, bad: 0 }); e.n++;
+      if (!f.ok) {
+        e.bad++; R.errs++;
+        const key = f.exp + "→" + f.got; R.conf[key] = (R.conf[key] || 0) + 1;
+        if (intrusionFor(kb, f.exp) === f.got.toLowerCase()) R.intr++;
+      }
+    }
+    for (const e of errorEvents(s)) R.etype[e.type] = (R.etype[e.type] || 0) + 1;
+    for (const m of r.mis) { R.mis[m] = (R.mis[m] || 0) + 1; R.misN++ }
+    if (!s.strict) R.words.push(...wordCycles(s));
+  }
+  R.letters = letterCosts(R.words);
+  return R;
+}
+
+/* ================= personal profile (drives practice) ================= */
+const DEFAULT_PROFILE = {
+  slow: [["b", 159], ["i", 146], ["d", 126], ["a", 106], ["u", 95], ["e", 85], ["l", 81]],
+  pairs: [["o", "i"], ["a", "r"], ["y", "u"], ["e", "i"], ["h", "n"], ["g", "b"], ["m", "n"]],
+  words: ["so", "those", "should", "they", "in", "of", "you", "now", "on", "this", "the", "change", "what", "first", "word", "with", "to", "and", "have", "it"]
+};
+// English letter frequency (%), so a pair's rank reflects the errors it causes in normal text
+const LETTER_FREQ = { e: 12.7, t: 9.1, a: 8.2, o: 7.5, i: 7.0, n: 6.7, s: 6.3, h: 6.1, r: 6.0, d: 4.3, l: 4.0, c: 2.8, u: 2.8, m: 2.4, w: 2.4, f: 2.2, g: 2.0, y: 2.0, p: 1.9, b: 1.5, v: 1.0, k: 0.8, j: 0.15, x: 0.15, q: 0.1, z: 0.07 };
+let _profile = null;
+function invalidate() { _profile = null }
+const byTime = (a, b) => a.at < b.at ? -1 : 1;
+function profile() {
+  if (_profile) return _profile;
+  const P = store.sessions.filter(s => s.kb === "piantor").sort(byTime).slice(-30);
+  const Q = store.sessions.filter(s => s.kb === "qwerty").sort(byTime).slice(-20);
+  // Speed is judged on natural text only (tests, sentences, bursts). Drill text is harder by design
+  // and would make every letter look slow next to the QWERTY tests.
+  const natural = s => !s.strict && (s.mode !== "practice" || s.block === "prose" || s.block === "burst");
+  const wP = P.filter(natural).flatMap(wordCycles), wQ = Q.flatMap(wordCycles);
+  const lp = letterCosts(wP), lq = letterCosts(wQ);
+  // slow letters: extra ms vs QWERTY (or vs own median when there is no QWERTY data)
+  let slow = null;
+  if (lp) {
+    const med = median(Object.values(lp.coef).map(c => c.ms));
+    slow = Object.entries(lp.coef).filter(([, c]) => c.n >= 8)
+      .map(([ch, c]) => [ch, Math.round(c.ms - (lq && lq.coef[ch] ? lq.coef[ch].ms : med))])
+      .sort((a, b) => b[1] - a[1]).filter(([, d]) => d > 20).slice(0, 7);
+    if (slow.length < 3) slow = null;
+  }
+  // Confusion pairs ranked by error RATE (errors per time either letter was due), not by count:
+  // drilled pairs get typed far more often, and counts alone would keep them on the list forever.
+  const pc = {}, due = {};
+  for (const s of P) {
+    for (const f of replay(s).first) { const c = f.exp.toLowerCase(); due[c] = (due[c] || 0) + 1 }
+    for (const e of errorEvents(s)) if (POSITIONAL.has(e.type)) {
+      const a = e.exp.toLowerCase(), b = e.got.toLowerCase(); if (!/^[a-z]$/.test(a) || !/^[a-z]$/.test(b)) continue;
+      const k = [a, b].sort().join(""); pc[k] = (pc[k] || 0) + 1;
+    }
+  }
+  let pairs = Object.entries(pc).filter(([, n]) => n >= 2)
+    .map(([k, n]) => [k[0], k[1], n, n / ((due[k[0]] || 0) + (due[k[1]] || 0) + 40) * ((LETTER_FREQ[k[0]] || 0) + (LETTER_FREQ[k[1]] || 0))])
+    .sort((a, b) => b[3] - a[3]).slice(0, 7).map(([a, b, n, r]) => [a, b, Math.max(1, Math.round(r * 10))]);
+  if (pairs.length < 3) pairs = null;
+  // words that are slow relative to QWERTY, weighted by how common they are
+  const med = (list, w) => median(list.filter(x => x.w === w).map(x => x.t));
+  const zipf = Object.fromEntries(FREQ.en.map(([w, z]) => [w, z]));
+  const cnt = {}; for (const x of wP) cnt[x.w] = (cnt[x.w] || 0) + 1;
+  let words = Object.keys(cnt).filter(w => cnt[w] >= 2).map(w => {
+    const p = med(wP, w), q = wQ.some(x => x.w === w) ? med(wQ, w) : NaN;
+    const perChar = p / (w.length + 1);
+    const slowness = isNaN(q) ? perChar / median(wP.map(x => x.t / (x.w.length + 1))) : p / q;
+    return [w, slowness, (slowness - 1) * Math.max(0.5, (zipf[w] || 3) - 3)];
+  }).filter(x => x[1] > 1.1).sort((a, b) => b[2] - a[2]).slice(0, 24).map(x => x[0]);
+  if (words.length < 10) words = [...new Set(words.concat(DEFAULT_PROFILE.words))].slice(0, 20);
+  // current speed: median of last 3 Piantor tests (not practice)
+  const tests = P.filter(s => s.mode !== "practice");
+  const wpm = tests.length ? median(tests.slice(-3).map(s => replay(s).wpm)) : 57;
+  const lastBench = tests.filter(s => s.dur >= 60000).slice(-1)[0];
+  _profile = { slow: slow || DEFAULT_PROFILE.slow, pairs: pairs || DEFAULT_PROFILE.pairs, words, wpm, lastBench, nP: P.length, fromData: { slow: !!slow, pairs: !!pairs } };
+  return _profile;
+}
+
+/* ================= typing engine ================= */
+const $ = id => document.getElementById(id);
+let kb = (() => { try { return localStorage.getItem("typinglab.kb") || "piantor" } catch { return "piantor" } })();
+const E = { cfg: null, state: "idle", target: "", ks: [], ts: [], du: [], down: {}, kbSrc: "chosen", t0: 0, pos: 0, typed: [], spans: [], timer: null };
+
+function setKb(v, detected) {
+  kb = v; try { localStorage.setItem("typinglab.kb", v) } catch {}
+  E.kbSrc = detected ? "detected" : "chosen";
+  document.querySelectorAll("header .seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.kb === v)));
+  $("lv-kb").innerHTML = `<span class="dot ${v === "piantor" ? "p" : "q"}"></span>${v === "piantor" ? "Piantor" : "QWERTY"} · ${detected ? "detected" : "checking after a few words"}`;
+}
+document.querySelectorAll("header .seg button").forEach(b => b.addEventListener("click", () => { setKb(b.dataset.kb); restart(); $("stage").focus() }));
+// Fingerprint: home-row mods and the Space layer-tap send press+release together when let go (~0 ms held).
+function detectKb(ks, du) {
+  const h = [], o = [];
+  ks.forEach((k, i) => { const d = du[i]; if (d == null || d < 0 || k.length !== 1) return; const c = k.toLowerCase(); if (ON_RELEASE.has(c)) h.push(d); else if (/[a-z]/.test(c)) o.push(d) });
+  if (h.length < 8) return null;
+  const mh = median(h);
+  if (mh <= 20 && (o.length < 5 || median(o) >= mh + 20)) return "piantor";
+  if (mh >= 35) return "qwerty";
+  return null;
+}
+
+// cfg: { target, dur, strict, mode, src, block, targetWpm, head, onDone(session, replay) }
+function startTyping(cfg) {
+  clearInterval(E.timer);
+  E.cfg = cfg; E.state = "idle"; E.target = cfg.target; E.ks = []; E.ts = []; E.du = []; E.down = {}; E.pos = 0; E.typed = [];
+  setKb(kb, false);
+  const box = $("text"); box.textContent = ""; E.spans = [];
+  let w = null;
+  for (let i = 0; i < E.target.length; i++) {
+    const ch = E.target[i];
+    if (!w) { w = document.createElement("span"); w.className = "w"; box.appendChild(w) }
+    const sp = document.createElement("span"); sp.className = "c"; sp.textContent = ch; w.appendChild(sp); E.spans.push(sp);
+    if (ch === " ") w = null;
+  }
+  $("stage").classList.add("idle");
+  $("lv-time").textContent = cfg.dur; $("lv-wpm").textContent = "–"; $("lv-acc").textContent = "–";
+  $("lv-target").textContent = cfg.targetWpm ? `target ${cfg.targetWpm} wpm` : cfg.strict ? "target 98% · a wrong key stops you" : "";
+  $("blockhead").hidden = !cfg.head; $("blockhead").innerHTML = cfg.head || "";
+  $("hints").innerHTML = cfg.strict ? `<span><kbd>Esc</kbd> restart</span><span>No backspace needed: press the right key to move on.</span>` : `<span><kbd>Esc</kbd> restart</span><span><kbd>Ctrl</kbd>+<kbd>⌫</kbd> delete word</span><span>The keyboard is detected from your typing after a few words.</span>`;
+  paint(0, 0); scrollStage();
+}
+function restart() { if (E.cfg) { const c = { ...E.cfg, target: E.cfg.regen ? E.cfg.regen() : E.cfg.target }; startTyping(c) } }
+function paint(from, to) {
+  for (let i = Math.max(0, from); i <= Math.min(to, E.spans.length - 1); i++) {
+    const sp = E.spans[i], t = E.typed[i];
+    sp.className = "c" + (i < E.pos ? (t === E.target[i] ? " ok" : " bad") : "") + (i === E.pos ? " cur" : "");
+  }
+}
+function scrollStage() {
+  const sp = E.spans[E.pos]; if (!sp) return;
+  const stage = $("stage"), lh = parseFloat(getComputedStyle(stage).lineHeight);
+  stage.scrollTop = Math.max(0, sp.offsetTop - lh);
+}
+function liveStats() {
+  const el = (performance.now() - E.t0) / 1000, left = Math.max(0, E.cfg.dur - el);
+  $("lv-time").textContent = Math.ceil(left);
+  if (el > 1) {
+    const r = replay({ target: E.target, ks: E.ks, ts: E.ts, dur: el * 1000, strict: E.cfg.strict });
+    $("lv-wpm").textContent = Math.round(r.wpm);
+    if (r.total) $("lv-acc").textContent = Math.round(r.acc * 100) + "%";
+    if (E.cfg.targetWpm) $("lv-target").className = "target" + (r.wpm >= E.cfg.targetWpm ? " hit" : "");
+  }
+  if (left <= 0) finish();
+}
+function record(k, t) {
+  if (E.state === "idle") { E.state = "running"; E.t0 = t; $("stage").classList.remove("idle"); E.timer = setInterval(liveStats, 250); E.cfg.onStart && E.cfg.onStart() }
+  E.ks.push(k); E.ts.push(Math.round(t - E.t0)); E.du.push(-1);
+}
+$("stage").addEventListener("keydown", e => {
+  if (!E.cfg) return;
+  if (E.state === "done") { if (e.key === "Enter" || e.key === "Escape") { e.preventDefault(); E.cfg.onContinue ? E.cfg.onContinue(e.key) : restart() } return }
+  if (e.key === "Escape") { e.preventDefault(); restart(); return }
+  if (e.repeat || e.isComposing) { e.preventDefault(); return }
+  const t = e.timeStamp || performance.now();
+  if (["Shift", "Control", "Alt", "AltGraph", "Meta", "CapsLock", "Dead", "Unidentified", "Process", "OS", "Super", "Hyper"].includes(e.key)) return;
+  const altgr = e.getModifierState && e.getModifierState("AltGraph");
+  if (e.key === "Backspace") {
+    e.preventDefault(); if (E.state === "idle" || E.cfg.strict) return;
+    const old = E.pos;
+    if (e.ctrlKey || e.altKey) { record("⌫w", t); while (E.pos > 0 && E.target[E.pos - 1] === " ") E.pos--; while (E.pos > 0 && E.target[E.pos - 1] !== " ") E.pos-- }
+    else { record("⌫", t); E.pos = Math.max(0, E.pos - 1) }
+    paint(E.pos, old); scrollStage(); return;
+  }
+  if (e.key.length === 1 && !e.metaKey && (!(e.ctrlKey || e.altKey) || altgr)) {
+    e.preventDefault();
+    if (E.pos >= E.target.length) return;
+    record(e.key, t); E.down[e.code] = { t, i: E.ks.length - 1 };
+    if (E.cfg.strict && e.key !== E.target[E.pos]) {
+      const sp = E.spans[E.pos]; sp.classList.add("miss"); setTimeout(() => sp.classList.remove("miss"), 180); return;
+    }
+    E.typed[E.pos] = e.key; E.pos++;
+    paint(E.pos - 1, E.pos); scrollStage(); return;
+  }
+  if (E.state !== "running") return;
+  const name = (e.ctrlKey ? "Ctrl+" : "") + (e.altKey && !altgr ? "Alt+" : "") + (e.metaKey ? "Super+" : "") + (e.key === " " ? "Space" : e.key.length === 1 ? e.key.toLowerCase() : e.key);
+  e.preventDefault(); record("!" + name, t);
+});
+$("stage").addEventListener("keyup", e => {
+  const d = E.down[e.code]; if (!d) return; delete E.down[e.code];
+  E.du[d.i] = Math.round((e.timeStamp || performance.now()) - d.t);
+  if (E.state === "running") { const det = detectKb(E.ks, E.du); if (det && (det !== kb || E.kbSrc !== "detected")) setKb(det, true) }
+});
+$("stage").addEventListener("focus", () => $("focushint").hidden = true);
+$("stage").addEventListener("blur", () => { $("focushint").hidden = false });
+$("stage").addEventListener("click", () => $("stage").focus());
+
+const localDay = d => { const x = new Date(d); return x.getFullYear() + "-" + String(x.getMonth() + 1).padStart(2, "0") + "-" + String(x.getDate()).padStart(2, "0") };
+async function finish() {
+  clearInterval(E.timer); E.state = "done"; $("stage").classList.add("idle");
+  const det = detectKb(E.ks, E.du); if (det) setKb(det, true);
+  const c = E.cfg;
+  const s = { id: "s" + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36), kb, kbSource: det ? "detected" : "chosen", mode: c.mode, src: c.src, block: c.block || null, strict: !!c.strict, dur: c.dur * 1000, at: new Date().toISOString(), target: E.target.slice(0, E.pos + 40), ks: E.ks, ts: E.ts, du: E.du };
+  if (c.targetWpm) s.targetWpm = c.targetWpm;
+  const r = replay(s);
+  Object.assign(s, { wpm: +r.wpm.toFixed(1), raw: +r.raw.toFixed(1), acc: +r.acc.toFixed(4) });
+  const saved = r.total >= 20 ? await saveSession(s) : null;
+  c.onDone(s, r, saved);
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" })[c]);
+const vis = s => s.replace(/ /g, "␣");
+function moveTyping(slotId) { const slot = $(slotId); if ($("typing").parentElement !== slot) slot.appendChild($("typing")) }
+
+/* ================= result card (shared) ================= */
+function resultHTML(s, r, saved, extra) {
+  const slowPairs = Object.entries(r.bigrams.reduce((m, [a, b, i, z]) => {
+    if (s.kb === "piantor" && (ON_RELEASE.has(a.toLowerCase()) || ON_RELEASE.has(b.toLowerCase()) || (z && ON_RELEASE.has(z.toLowerCase())))) return m;
+    (m[a + b] ||= []).push(i); return m }, {})).filter(([, v]) => v.length >= 2).map(([k, v]) => [k, median(v), v.length]).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const errs = errorEvents(s).slice(0, 10);
+  const misC = r.mis.reduce((m, k) => (m[k] = (m[k] || 0) + 1, m), {});
+  return `
+  <div class="tiles">
+    <div class="tile"><span class="label">wpm</span><span class="v">${s.wpm.toFixed(0)}</span><span class="s">raw ${s.raw.toFixed(0)}${s.targetWpm ? ` · target ${s.targetWpm} ${s.wpm >= s.targetWpm ? "✓" : ""}` : ""}</span></div>
+    <div class="tile"><span class="label">accuracy</span><span class="v">${(s.acc * 100).toFixed(1)}%</span><span class="s">${r.total} keys${s.strict ? (s.acc >= 0.98 ? " · target 98% ✓" : " · target 98%") : `, ${r.bs} backspaces`}</span></div>
+    <div class="tile"><span class="label">misfires</span><span class="v">${r.mis.length}</span><span class="s">${r.mis.length ? Object.entries(misC).map(([k, n]) => esc(k.slice(1)) + (n > 1 ? " ×" + n : "")).join(", ") : "no stray modifiers or layers"}</span></div>
+    <div class="tile"><span class="label">keyboard</span><span class="v" style="font-size:20px;display:flex;gap:8px;align-items:center"><span class="dot ${s.kb === "piantor" ? "p" : "q"}"></span>${s.kb === "piantor" ? "Piantor" : "QWERTY"}</span><span class="s">${saved === true ? "Saved." : saved === false ? "Not saved." : "Too short to save."}</span></div>
+  </div>
+  <div class="two">
+    <div class="panel"><h3>Slowest pairs</h3>${slowPairs.length ? `<table><tr><th>pair</th><th class="r">median</th><th class="r">seen</th></tr>${slowPairs.map(([k, m, n]) => `<tr><td><span class="bg">${esc(vis(k))}</span></td><td class="r">${Math.round(m)} ms</td><td class="r">${n}×</td></tr>`).join("")}</table>${s.kb === "piantor" ? `<p class="muted small">Pairs with home-row-mod keys or Space are left out: those keys type when released, so their timing is shifted.</p>` : ""}` : `<p class="muted">Not enough repeated pairs yet.</p>`}</div>
+    <div class="panel"><h3>Mistakes</h3>${errs.length ? `<table><tr><th>wanted</th><th>typed</th><th>kind</th></tr>${errs.map(f => `<tr><td><span class="bg">${esc(vis(f.exp))}</span></td><td><span class="bg">${esc(vis(f.got))}</span></td><td class="small">${ERR_NAMES[f.type]}${intrusionFor(s.kb, f.exp) === f.got.toLowerCase() ? ` <span class="pill warn">${s.kb === "piantor" ? "QWERTY habit" : "Colemak habit"}</span>` : ""}</td></tr>`).join("")}</table>` : `<p class="muted">No mistakes.</p>`}</div>
+  </div>${extra || ""}`;
+}
+
+/* ================= TEST view ================= */
+function testCfg() {
+  const src = $("src").value, dur = +$("dur").value;
+  const regen = () => makeText(src, Math.floor(Math.random() * 2 ** 31), dur * 18 + 200);
+  return { target: regen(), regen, dur, src, mode: "test", strict: false,
+    onStart: () => { $("test-result").hidden = true },
+    onDone: (s, r, saved) => { const el = $("test-result"); el.hidden = false; el.innerHTML = resultHTML(s, r, saved, `<div style="display:flex;gap:10px;align-items:center"><button class="btn primary" id="t-again">Next test</button><span class="status">or press <kbd>Enter</kbd></span></div>`); $("t-again").onclick = () => { restart(); $("stage").focus() } } };
+}
+$("src").addEventListener("change", () => { startTyping(testCfg()); $("stage").focus() });
+$("dur").addEventListener("change", () => { startTyping(testCfg()); $("stage").focus() });
+
+/* ================= PRACTICE view ================= */
+const BLOCKS = [
+  { id: "chunks", name: "Chunk the common words", dur: 120, why: "Your most common slow words, each three times in a row. Type each as one smooth motion instead of letter by letter." },
+  { id: "precision", name: "Hit the right key", dur: 300, strict: true, why: "Words built around the keys you mix up. A wrong key stops you until you press the right one. Slow down until you rarely miss: the target is 98%." },
+  { id: "letters", name: "Slow letters", dur: 300, why: "Words packed with your slowest letters. Lift home-row keys quickly: they only type when you let go." },
+  { id: "prose", name: "Real sentences", dur: 300, why: "Everyday sentences at a comfortable pace. Read ahead, keep a steady rhythm, fix mistakes as they happen." },
+  { id: "burst", name: "Bursts", dur: 30, reps: 2, why: "Two 30-second pushes at 10% above your current speed. Errors are fine here; speed is the point." }
+];
+let activeBlock = null;
+function todayDone() {
+  const today = localDay(new Date()), done = {};
+  for (const s of store.sessions) if (s.mode === "practice" && s.kb === "piantor" && localDay(s.at) === today) done[s.block] = (done[s.block] || 0) + 1;
+  return done;
+}
+function nextBlock() { const d = todayDone(); return BLOCKS.find(b => (d[b.id] || 0) < (b.reps || 1)) || null }
+function blockCfg(b) {
+  const P = profile(), seed = () => Math.floor(Math.random() * 2 ** 31), len = b.dur * 18 + 200;
+  let regen, head = `<span class="label">Practice · ${esc(b.name)}</span><p class="small muted" style="max-width:75ch">${esc(b.why)}</p>`, targetWpm = null;
+  if (b.id === "chunks") regen = () => chunkText(P.words, seed(), len);
+  else if (b.id === "precision") regen = () => focusText({}, P.pairs, seed(), len);
+  else if (b.id === "letters") regen = () => focusText(Object.fromEntries(P.slow), [], seed(), len);
+  else if (b.id === "prose") regen = () => proseText(seed(), len);
+  else { targetWpm = Math.round(P.wpm * 1.1); regen = () => makeText("en-words", seed(), len) }
+  return { target: regen(), regen, dur: b.dur, strict: !!b.strict, mode: "practice", src: "practice-" + b.id, block: b.id, targetWpm, head,
+    onStart: () => { $("practice-result").hidden = true },
+    onDone: (s, r, saved) => {
+      renderPractice();
+      const nb = nextBlock(), el = $("practice-result"); el.hidden = false;
+      const warn = s.kb !== "piantor" ? `<p class="banner">This block was typed on the QWERTY keyboard, so it doesn't count towards today's Piantor practice.</p>` : "";
+      el.innerHTML = warn + resultHTML(s, r, saved, `<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">${nb ? `<button class="btn primary" id="p-next">Start next: ${esc(nb.name)}</button><span class="status">or press <kbd>Enter</kbd> · <kbd>Esc</kbd> repeats this block</span>` : `<span class="pill good">Today's practice is done</span><span class="status">Come back tomorrow; sleep consolidates what you practised.</span>`}</div>`);
+      if (nb) $("p-next").onclick = () => runBlock(nb);
+    },
+    onContinue: key => { const nb = nextBlock(); runBlock(key === "Enter" && nb ? nb : b) } };
+}
+function runBlock(b) {
+  activeBlock = b; moveTyping("practice-slot"); $("practice-slot").hidden = false; $("practice-result").hidden = true;
+  startTyping(blockCfg(b)); $("stage").focus(); renderPractice();
+}
+function renderPractice() {
+  const P = profile(), done = todayDone(), nb = nextBlock();
+  const left = BLOCKS.reduce((a, b) => a + Math.max(0, (b.reps || 1) - (done[b.id] || 0)) * b.dur, 0);
+  const plan = BLOCKS.map((b, i) => {
+    const n = done[b.id] || 0, reps = b.reps || 1, isDone = n >= reps, isNext = nb && nb.id === b.id;
+    let focus = "";
+    if (b.id === "chunks") focus = P.words.slice(0, 8).join(", ") + "…";
+    if (b.id === "precision") focus = P.pairs.map(p => p[0] + "/" + p[1]).join(" · ");
+    if (b.id === "letters") focus = P.slow.map(x => x[0]).join(" · ");
+    if (b.id === "burst") focus = `target ${Math.round(P.wpm * 1.1)} wpm`;
+    if (b.id === "prose") focus = "60 sentences, rotating";
+    return `<div class="step${isDone ? " done" : ""}${isNext ? " next" : ""}"><span class="mark">${isDone ? "✓" : i + 1}</span>
+      <span class="title"><span class="nm">${esc(b.name)}</span><span class="muted small num">${reps > 1 ? reps + " × " : ""}${b.dur >= 60 ? b.dur / 60 + " min" : b.dur + " s"}${reps > 1 && n ? ` · ${n}/${reps}` : ""}</span></span>
+      <button class="btn${isNext ? " primary" : ""}" data-run="${b.id}">${isDone ? "Again" : "Start"}</button>
+      <span class="sub">${esc(focus)}</span></div>`;
+  }).join("");
+  const bench = P.lastBench, days = bench ? Math.floor((Date.now() - new Date(bench.at)) / 864e5) : null;
+  $("practice-top").innerHTML = `
+    <div class="panel">
+      <h3>Today <span class="label">${left ? Math.ceil(left / 60) + " min left" : "done"}</span></h3>
+      <div class="plan">${plan}</div>
+    </div>
+    <div class="panel">
+      <h3>Your focus <span class="label">from ${P.nP} Piantor sessions</span></h3>
+      <div><p class="label" style="margin-bottom:6px">Slowest letters · extra time vs QWERTY</p><div class="chips">${P.slow.map(([c, d]) => `<span class="chip">${esc(c)}<small>+${d} ms</small></span>`).join("")}</div></div>
+      <div><p class="label" style="margin-bottom:6px">Keys you mix up</p><div class="chips">${P.pairs.map(p => `<span class="chip">${esc(p[0])} / ${esc(p[1])}</span>`).join("")}</div></div>
+      <div><p class="label" style="margin-bottom:6px">Slow common words</p><p class="small num">${P.words.map(esc).join(" · ")}</p></div>
+      <p class="small muted">Current Piantor speed ${Math.round(P.wpm)} wpm (median of your last tests). ${days == null ? "No 60 s benchmark yet." : days >= 7 ? `<b>Benchmark due:</b> last one was ${days} days ago. <a href="#test">Run it on the Test tab.</a>` : `Next benchmark in ${7 - days} day${7 - days === 1 ? "" : "s"}.`}</p>
+    </div>`;
+  $("practice-top").querySelectorAll("[data-run]").forEach(btn => btn.onclick = () => runBlock(BLOCKS.find(b => b.id === btn.dataset.run)));
+  // progress: last 28 days of practice minutes + benchmark trend
+  const mins = {}; for (const s of store.sessions) if (s.mode === "practice" && s.kb === "piantor") mins[localDay(s.at)] = (mins[localDay(s.at)] || 0) + s.dur / 60000;
+  const cells = []; let streak = 0, counting = true;
+  for (let i = 27; i >= 0; i--) { const d = localDay(Date.now() - i * 864e5), m = mins[d] || 0; cells.push(`<i title="${d}: ${Math.round(m)} min" style="${m ? `background:color-mix(in oklab, var(--piantor) ${Math.min(100, 25 + m / 19 * 75)}%, var(--key))` : ""}"></i>`) }
+  for (let i = 0; i < 365; i++) { const m = mins[localDay(Date.now() - i * 864e5)] || 0; if (m) streak++; else if (i > 0) break }
+  $("practice-bottom").innerHTML = `<div class="two">
+    <div class="panel"><h3>Last 4 weeks <span class="label">${streak} day streak</span></h3><div class="cal">${cells.join("")}</div><p class="small muted">Each square is a day; darker means more practice. 15–20 minutes a day beats long sessions.</p></div>
+    <div class="panel trend"><h3>Benchmarks</h3>${trendSVG(store.sessions.filter(s => s.mode !== "practice"))}</div></div>`;
+  if (!activeBlock) $("practice-slot").hidden = true;
+}
+
+/* ================= COMPARE view ================= */
+function pick(k) {
+  const f = $("f-src").value, n = +$("f-n").value;
+  let list = store.sessions.filter(s => s.kb === k && s.mode !== "practice" && (f === "all" || s.src === f || s.src.startsWith(f + "-")));
+  list.sort(byTime);
+  return n ? list.slice(-n) : list;
+}
+let mapMetric = "extra";
+function renderCompare() {
+  const box = $("cmp");
+  const sp = pick("piantor"), sq = pick("qwerty");
+  if (!sp.length && !sq.length) { box.innerHTML = `<div class="empty"><h3>No tests for this filter yet</h3><p class="muted">Run tests on the Test tab; results show up here as soon as one keyboard has a test.</p><a class="btn" href="#test">Go to the test</a></div>`; return }
+  const P = aggregate(sp, "piantor"), Q = aggregate(sq, "qwerty");
+  const mP = median(P.wpm), mQ = median(Q.wpm), both = sp.length && sq.length;
+  const ms = v => isNaN(v) ? "–" : Math.round(v) + " ms";
+  const cleanW = R => { const m = median(R.words.map(w => w.t / (w.w.length + 1))); return isNaN(m) ? NaN : 12000 / m };
+  const cP = cleanW(P), cQ = cleanW(Q);
+  let html = `<div class="legend"><span><i class="dot q"></i>QWERTY · ${sq.length} test${sq.length === 1 ? "" : "s"}</span><span><i class="dot p"></i>Piantor · ${sp.length} test${sp.length === 1 ? "" : "s"}</span></div>`;
+  const pair = (q, p, f) => `<span style="color:var(--qwerty)">${isNaN(q) ? "–" : f(q)}</span> <span class="muted" style="font-size:16px">vs</span> <span style="color:var(--piantor)">${isNaN(p) ? "–" : f(p)}</span>`;
+  html += `<div class="headline" style="margin-top:12px">
+    <div class="tile"><span class="label">Piantor speed vs QWERTY</span><span class="ratio">${both ? Math.round(mP / mQ * 100) + "%" : "–"}</span><span class="s">median wpm of tests</span></div>
+    <div class="tile"><span class="label">wpm</span><span class="v" style="font-size:24px">${pair(mQ, mP, v => v.toFixed(0))}</span><span class="s">QWERTY vs Piantor</span></div>
+    <div class="tile"><span class="label">speed on error-free words</span><span class="v" style="font-size:24px">${pair(cQ, cP, v => v.toFixed(0))}</span><span class="s">wpm while nothing goes wrong</span></div>
+    <div class="tile"><span class="label">accuracy</span><span class="v" style="font-size:22px">${pair(median(Q.acc), median(P.acc), v => (v * 100).toFixed(1) + "%")}</span><span class="s">first-try keystrokes</span></div>
+    <div class="tile"><span class="label">backspaces / min</span><span class="v" style="font-size:22px">${pair(Q.minutes ? Q.bs / Q.minutes : NaN, P.minutes ? P.bs / P.minutes : NaN, v => v.toFixed(1))}</span><span class="s">correction load</span></div>
+    <div class="tile"><span class="label">misfires / min</span><span class="v" style="font-size:22px">${pair(Q.minutes ? Q.misN / Q.minutes : NaN, P.minutes ? P.misN / P.minutes : NaN, v => v.toFixed(1))}</span><span class="s">stray modifiers, layers, arrows</span></div>
+  </div>`;
+  html += `<div class="panel trend"><h3>Speed over time <span class="label">tests only</span></h3>${trendSVG(store.sessions.filter(s => s.mode !== "practice"))}</div>`;
+
+  // letters (regression)
+  html += `<div class="panel"><h3>Key by key</h3>
+    <div class="controls"><div class="seg" role="group" aria-label="Map metric">
+      <button data-m="extra" aria-pressed="${mapMetric === "extra"}">Extra time on Piantor</button>
+      <button data-m="err" aria-pressed="${mapMetric === "err"}">Errors</button></div></div>
+    <p class="muted small">Extra time per letter is estimated from whole-word times, which stay fair even though the Piantor's home-row-mod keys and Space only type when released.</p>
+    ${keyMaps(P, Q)}</div>`;
+
+  // words
+  if (both) {
+    const byW = R => { const m = {}; for (const w of R.words) (m[w.w] ||= []).push(w.t); return m };
+    const wp = byW(P), wq = byW(Q), zipf = Object.fromEntries(FREQ.en);
+    const rows = Object.keys(wp).filter(w => wp[w].length >= 2 && wq[w] && wq[w].length >= 2).map(w => { const p = median(wp[w]), q = median(wq[w]); return { w, p, q, r: p / q, cost: (p - q) * Math.pow(10, (zipf[w] || 3) - 6) } }).sort((a, b) => b.cost - a.cost).slice(0, 16);
+    html += `<div class="panel"><h3>Words that cost you the most</h3><p class="muted small">Ranked by how much slower the word is on the Piantor times how common it is in English.</p>
+      ${rows.length ? `<div class="tscroll"><table><tr><th>word</th><th class="r">QWERTY</th><th class="r">Piantor</th><th class="r">ratio</th></tr>${rows.map(r => `<tr><td><span class="bg">${esc(r.w)}</span></td><td class="r">${ms(r.q)}</td><td class="r">${ms(r.p)}</td><td class="r">×${r.r.toFixed(2)}</td></tr>`).join("")}</table></div>` : `<p class="muted">Needs more tests on both keyboards.</p>`}</div>`;
+  }
+
+  // categories (Piantor pairs that are timed fairly only)
+  const rows = CATS.map(([id, nm, sub]) => ({ id, nm, sub, q: median(Q.cat[id] || []), p: median(P.cat[id] || []), nq: (Q.cat[id] || []).length, np: (P.cat[id] || []).length })).filter(r => r.nq >= 5 || r.np >= 5);
+  const max = Math.max(...rows.flatMap(r => [r.nq >= 5 ? r.q : 0, r.np >= 5 ? r.p : 0]), 1);
+  html += `<div class="panel"><h3>Time per keystroke by motion <span class="label">median, lower is better</span></h3>
+  <p class="muted small">On the Piantor only pairs without home-row-mod keys or Space are counted, because those keys type on release and would distort the timing. Expect fewer samples there.</p>
+  <div class="bars">${rows.map(r => `<div class="barrow"><div class="nm">${r.nm}<small>${r.sub}</small></div><div class="barpair">
+    <div class="mbar q" title="QWERTY: ${ms(r.q)} over ${r.nq} pairs"><i style="width:${r.nq >= 5 ? r.q / max * 85 : 0}%"></i>${r.nq >= 5 ? ms(r.q) : "too few"}</div>
+    <div class="mbar p" title="Piantor: ${ms(r.p)} over ${r.np} pairs"><i style="width:${r.np >= 5 ? r.p / max * 85 : 0}%"></i>${r.np >= 5 ? ms(r.p) : "too few"}${r.nq >= 5 && r.np >= 5 ? ` <span style="color:var(--ink)">×${(r.p / r.q).toFixed(2)}</span>` : ""}</div>
+  </div></div>`).join("")}</div></div>`;
+
+  // errors
+  const errPanel = (R, k) => {
+    const tot = Object.values(R.etype).reduce((a, b) => a + b, 0);
+    return `<div class="panel"><h3><span class="dot ${k === "piantor" ? "p" : "q"}"></span>${k === "piantor" ? "Piantor" : "QWERTY"} mistakes</h3>
+    ${tot ? `<p class="small"><span class="num">${R.errs}</span> wrong first tries out of <span class="num">${R.firstN}</span>; <span class="num">${R.errs ? Math.round(R.intr / R.errs * 100) : 0}%</span> typed the letter the ${k === "piantor" ? "QWERTY" : "Colemak"} position would give.</p>
+    <table><tr><th>what went wrong</th><th class="r">times</th></tr>${Object.entries(R.etype).sort((a, b) => b[1] - a[1]).map(([t, n]) => `<tr><td>${ERR_NAMES[t]}</td><td class="r">${n}</td></tr>`).join("")}</table>` : `<p class="muted">No mistakes recorded.</p>`}
+    ${R.misN ? `<p class="small">Misfires: ${Object.entries(R.mis).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([m, n]) => `<span class="bg">${esc(m.slice(1))}</span> ×${n}`).join(", ")}</p>` : ""}</div>`;
+  };
+  html += `<div class="two">${sq.length ? errPanel(Q, "qwerty") : ""}${sp.length ? errPanel(P, "piantor") : ""}</div>`;
+
+  // history (all sessions)
+  const hist = [...store.sessions].sort((a, b) => a.at < b.at ? 1 : -1);
+  html += `<div class="panel"><h3>All sessions</h3><div class="tscroll"><table><tr><th>when</th><th>keyboard</th><th>what</th><th class="r">wpm</th><th class="r">acc</th><th></th></tr>
+    ${hist.map(s => `<tr><td class="num" style="font-size:12.5px">${new Date(s.at).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</td><td><span class="dot ${s.kb === "piantor" ? "p" : "q"}"></span> ${s.kb === "piantor" ? "Piantor" : "QWERTY"}</td><td>${s.mode === "practice" ? "Practice · " + esc((BLOCKS.find(b => b.id === s.block) || {}).name || s.block) : srcName[s.src] || s.src} · ${s.dur / 1000}s</td><td class="r">${(+s.wpm).toFixed(0)}</td><td class="r">${(s.acc * 100).toFixed(1)}%</td><td class="r"><span><button class="btn ghost" data-ask="${s.id}">Delete</button></span></td></tr>`).join("")}
+  </table></div></div>`;
+
+  box.innerHTML = html;
+  box.querySelectorAll("[data-m]").forEach(b => b.onclick = () => { mapMetric = b.dataset.m; renderCompare() });
+  box.querySelectorAll("[data-ask]").forEach(b => b.onclick = () => {
+    const span = b.parentElement, id = b.dataset.ask;
+    span.innerHTML = `<span class="confirm">Delete? <button class="btn" data-yes>Delete</button><button class="btn ghost" data-no>Keep</button></span>`;
+    span.querySelector("[data-yes]").onclick = () => deleteSession(id);
+    span.querySelector("[data-no]").onclick = () => renderCompare();
+  });
+}
+const srcName = { "en-words": "English words", "en-prose": "English sentences", "de-words": "German words", "de-prose": "German sentences" };
+
+function keyMaps(P, Q) {
+  const shade = (pct, hue) => pct > 0 ? `background:color-mix(in oklab, var(${hue}) ${Math.round(pct)}%, var(--key));${pct > 55 ? "color:var(--on-strong)" : ""}` : "";
+  const lp = P.letters, lq = Q.letters;
+  function cell(R, kbn, c) {
+    let style = "", label = "", tip = `${c === " " ? "space" : c}: `;
+    if (mapMetric === "err") { const e = R.err[c]; if (e && e.n >= 5) { const v = e.bad / e.n; style = shade(Math.min(100, v / 0.15 * 100), "--hot"); label = (v * 100).toFixed(0) + "%"; tip += label + " wrong on first try" } }
+    else if (lp && lq && lp.coef[c] && lq.coef[c]) { const d = lp.coef[c].ms - lq.coef[c].ms; style = d >= 0 ? shade(Math.min(100, d / 160 * 100), "--hot") : shade(Math.min(100, -d / 80 * 100), "--cool"); label = (d >= 0 ? "+" : "") + Math.round(d); tip += `${Math.round(lp.coef[c].ms)} ms vs ${Math.round(lq.coef[c].ms)} ms on QWERTY` }
+    if (!label) tip += "not enough data";
+    const hrm = kbn === "piantor" && LAYOUT.piantor.hrm.has(c);
+    return `<div class="k${hrm ? " hrm" : ""}${c === " " && kbn === "qwerty" ? " wide" : ""}" style="${style}" title="${esc(tip)}"><b>${c === " " ? "␣" : esc(c)}</b><span>${label || "&nbsp;"}</span></div>`;
+  }
+  const piantorMap = R => `<div class="kb">${["L", "R"].map(h => `<div class="half">${LAYOUT.piantor[h].map(row => [...row].map(c => cell(R, "piantor", c)).join("")).join("")}${h === "L" ? `<div class="thumbs">${cell(R, "piantor", " ")}</div>` : ""}</div>`).join("")}</div>`;
+  const qwertyMap = R => `<div class="kbq">${LAYOUT.qwerty.L.map((row, i) => `<div class="row" style="padding-left:${[0, 12, 34][i]}px">${[...row + LAYOUT.qwerty.R[i]].map(c => cell(R, "qwerty", c)).join("")}</div>`).join("")}<div class="row" style="padding-left:140px">${cell(R, "qwerty", " ")}</div></div>`;
+  if (mapMetric === "extra") return (lp && lq ? `<div class="kbwrap">${piantorMap(P)}</div>` : `<p class="muted">Needs more tests on both keyboards.</p>`) + `<div class="scale">faster <span class="grad" style="background:linear-gradient(90deg,var(--cool),var(--key) 30%,var(--hot))"></span> +160 ms slower per letter · underlined keys are home-row mods</div>`;
+  return `<div style="display:grid;gap:18px">${pick("qwerty").length ? `<div><p class="label" style="margin-bottom:6px"><span class="dot q"></span> QWERTY</p><div class="kbwrap">${qwertyMap(Q)}</div></div>` : ""}${pick("piantor").length ? `<div><p class="label" style="margin-bottom:6px"><span class="dot p"></span> Piantor</p><div class="kbwrap">${piantorMap(P)}</div></div>` : ""}</div><div class="scale">0% <span class="grad" style="background:linear-gradient(90deg,var(--key),var(--hot))"></span> 15%+ wrong on first try</div>`;
+}
+
+function trendSVG(sessions) {
+  const list = [...sessions].sort(byTime);
+  if (list.length < 2) return `<p class="muted">The chart appears after your second test.</p>`;
+  const W = 640, H = 190, pl = 34, pr = 12, pt = 10, pb = 22;
+  const maxW = Math.ceil(Math.max(...list.map(s => s.wpm)) / 20) * 20 || 20;
+  const x = i => pl + i / (list.length - 1) * (W - pl - pr), y = v => pt + (1 - v / maxW) * (H - pt - pb);
+  let g = "";
+  for (let v = 0; v <= maxW; v += 20) g += `<line x1="${pl}" x2="${W - pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${pl - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  for (const k of ["qwerty", "piantor"]) {
+    const pts = list.map((s, i) => [i, s]).filter(([, s]) => s.kb === k);
+    if (pts.length > 1) g += `<polyline fill="none" stroke="var(--${k})" stroke-width="2" stroke-linejoin="round" points="${pts.map(([i, s]) => x(i) + "," + y(s.wpm)).join(" ")}"/>`;
+    g += pts.map(([i, s]) => `<circle cx="${x(i)}" cy="${y(s.wpm)}" r="4.5" fill="var(--${k})" stroke="var(--surface)" stroke-width="2"><title>${k === "piantor" ? "Piantor" : "QWERTY"} · ${srcName[s.src] || s.src} · ${Math.round(s.wpm)} wpm · ${(s.acc * 100).toFixed(1)}% · ${new Date(s.at).toLocaleDateString()}</title></circle>`).join("");
+  }
+  g += `<text x="${pl}" y="${H - 4}">oldest</text><text x="${W - pr}" y="${H - 4}" text-anchor="end">newest</text>`;
+  return `<div class="legend"><span><i class="dot q"></i>QWERTY</span><span><i class="dot p"></i>Piantor</span><span>wpm per test</span></div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Words per minute for each test, oldest to newest">${g}</svg>`;
+}
+
+/* ================= routing ================= */
+function view() { return location.hash === "#compare" ? "compare" : location.hash === "#test" ? "test" : "practice" }
+function route() {
+  const v = view();
+  for (const n of ["practice", "test", "compare"]) { $("view-" + n).hidden = n !== v; const t = $("tab-" + n); if (n === v) t.setAttribute("aria-current", "page"); else t.removeAttribute("aria-current") }
+  if (v === "test") { moveTyping("test-slot"); if (!E.cfg || E.cfg.mode !== "test") startTyping(testCfg()); setTimeout(() => $("stage").focus(), 0) }
+  if (v === "practice") { moveTyping("practice-slot"); if (activeBlock) { if (!E.cfg || E.cfg.mode !== "practice") startTyping(blockCfg(activeBlock)) } renderPractice() }
+  if (v === "compare") { moveTyping("test-slot"); renderCompare() }
+}
+function renderAll() { const v = view(); if (v === "practice") renderPractice(); if (v === "compare") renderCompare() }
+$("f-src").addEventListener("change", renderCompare); $("f-n").addEventListener("change", renderCompare);
+window.addEventListener("hashchange", route);
+setKb(kb); route(); loadSessions();
+</script>
+</body>
+</html>
