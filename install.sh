@@ -33,6 +33,9 @@ stow -S agents-config claude-resume cinnamon fonts git herdr intellij kitty misc
 # Clear font cache
 fc-cache -f -v;
 
+echo "Installing Herdr (app + herdr-core)..."
+curl -fsSL https://releases.herdr.dev/app/install.sh | sh
+
 sudo ./install-packages.sh
 
 echo "Dotfiles installation complete!"
