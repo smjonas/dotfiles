@@ -38,8 +38,11 @@ export default class Tasks extends View {
     this.tasks = null;
     this.day = null;
     this.error = null;
-    this.loading = false;
+    this.loading = false; // a full refresh is running
+    this.quick = false; // a quick (--cached) refresh is running
     this.fetchedAt = 0;
+    this.agentSig = undefined; // herdr's agents as last rendered, see watchAgents
+    this.quickDue = []; // when the quick refreshes after an agent change are due
     this.query = "";
     this.filter = "";
     this.heights = {}; // today row heights, for the drag placeholder
@@ -63,7 +66,7 @@ export default class Tasks extends View {
     cx.timer.every(POLL_MS, (cx) => this.refresh(cx));
     cx.timer.every(DAY_POLL_MS, (cx) => { if (!this.drag) this.loadDay(cx); });
     cx.timer.every(60 * 1000, (cx) => cx.notify()); // keeps "3m ago" honest
-    this.quickDue = [];
+    // watchAgents runs in render, which has no cx to start a timer with: it leaves times here.
     cx.timer.every(1000, (cx) => {
       if (this.quickDue.length && Date.now() >= this.quickDue[0]) {
         this.quickDue.shift();
@@ -82,8 +85,10 @@ export default class Tasks extends View {
   // Full: asks Jira and GitLab (~6s, spinner). Quick: `--cached`, re-reads only the agent
   // sessions, checkouts and today's list (~0.1s), with Jira and GitLab from the last full run.
   refresh(cx, quick = false) {
-    if (this.loading || (quick && this.quick)) return;
-    if (quick) this.quick = true; else { this.loading = true; cx.notify(); }
+    const busy = quick ? "quick" : "loading";
+    if (this.loading || this[busy]) return;
+    this[busy] = true;
+    if (!quick) cx.notify();
     cx.spawn(async (cx) => {
       try {
         this.tasks = await this.task(["ls", "--json", ...(quick ? ["--cached"] : [])]);
@@ -92,7 +97,7 @@ export default class Tasks extends View {
       } catch (e) {
         this.error = String(e?.message ?? e);
       } finally {
-        if (quick) this.quick = false; else this.loading = false;
+        this[busy] = false;
         cx.notify();
       }
     });
@@ -115,7 +120,7 @@ export default class Tasks extends View {
         this.error = String(e?.message ?? e);
       }
       cx.notify();
-      if (action.length) this.refresh(cx, true); // NEXT depends on the list
+      if (action.length) this.refresh(cx, true);
     });
   }
 
@@ -135,7 +140,12 @@ export default class Tasks extends View {
     });
   }
 
-  remove(key, cx) { this.change(cx, ["rm", key], (items) => items.splice(items.findIndex((i) => i.key === key), 1)); }
+  remove(key, cx) {
+    this.change(cx, ["rm", key], (items) => {
+      const at = items.findIndex((i) => i.key === key);
+      if (at >= 0) items.splice(at, 1);
+    });
+  }
 
   toggle(item, cx) {
     this.change(cx, [item.done ? "uncheck" : "check", item.key], () => { item.done = !item.done; });
