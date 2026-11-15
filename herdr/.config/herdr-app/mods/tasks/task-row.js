@@ -32,6 +32,16 @@ export function withHandOver(el, task) {
   });
 }
 
+/**
+ * Hovering a ticket's key tells its Jira type (Bug, Sub-Task, Task, Story) and, on a second
+ * line, a subtask's story. Only for tickets `task ls` lists: the type comes from there.
+ */
+function withTypeTip(el, task) {
+  if (!task.type) return el;
+  const story = task.parent?.summary;
+  return el.tooltip(story ? `${task.type}\n${story}` : task.type);
+}
+
 function headline(t, task, { pane, done, extra }) {
   const dim = (text) => div().flex_none().text_color(t.dim).child(text);
   return h_flex().gap(8).items_center().text_size(11.5).children(compact([
@@ -48,7 +58,8 @@ function headline(t, task, { pane, done, extra }) {
 // A ticket links to Jira; an agent session without a ticket only has its id.
 function keyLabel(t, task, done) {
   if (isTicket(task.key)) {
-    return link(t, `key-${task.key}`, task.key, task.url, done ? t.dim : t.accent);
+    const key = link(t, `key-${task.key}`, task.key, task.url, done ? t.dim : t.accent);
+    return withTypeTip(key, task);
   }
   return div().flex_none().text_color(t.muted).child(task.key.replace(/^session:/, ""));
 }
