@@ -36,6 +36,9 @@ fc-cache -f -v;
 echo "Installing Herdr (app + herdr-core)..."
 curl -fsSL https://releases.herdr.dev/app/install.sh | sh
 
+echo "Applying Cinnamon keyboard shortcuts (ctrl+alt+t opens Herdr)..."
+dconf load /org/cinnamon/desktop/keybindings/ < cinnamon/.config/cinnamon/keybindings.dconf
+
 sudo ./install-packages.sh
 
 echo "Dotfiles installation complete!"

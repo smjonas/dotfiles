@@ -1,0 +1,9 @@
+# Cinnamon custom keyboard shortcuts. Apply with:
+#   dconf load /org/cinnamon/desktop/keybindings/ < ~/.config/cinnamon/keybindings.dconf
+[/]
+custom-list=['custom0', '__dummy__']
+
+[custom-keybindings/custom0]
+binding=['<Primary><Alt>t']
+command='herdr-app'
+name='Launch Herdr'
