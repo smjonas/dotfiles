@@ -1,0 +1,16 @@
+# herdr writes its bundled defaults and runtime state here; track only my own files.
+/*
+!/.gitignore
+!/keys.json
+!/settings.json
+
+!/layouts/
+/layouts/*
+!/layouts/jonas.json
+
+!/mods/
+/mods/*
+!/mods/claude-usage/
+!/mods/my-tabs/
+!/mods/task-handover/
+!/mods/tasks/
