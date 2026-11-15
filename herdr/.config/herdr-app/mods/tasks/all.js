@@ -3,7 +3,7 @@
 import { div } from "gpui-kit";
 import { h_flex } from "gpui-base";
 import { field, isTicket, note, quietButton } from "./kit.js";
-import { taskDetails } from "./task-row.js";
+import { taskDetails, withHandOver } from "./task-row.js";
 
 export function allView(view, t, agentPanes) {
   const out = [field(t, "filter", view.filterInput, Boolean(view.filter))];
@@ -45,7 +45,7 @@ function groupHeading(t, group, count, first) {
 
 // The outlined card is task's NEXT.
 function card(view, t, task, pane) {
-  return div().id(`task-${task.key}`)
+  return withHandOver(div().id(`task-${task.key}`), task)
     .px(10).py(7).rounded(7)
     .when(Boolean(task.next), (el) => el.bg(t.raised).border(1).border_color(t.accent))
     .hover((s) => s.bg(t.hover))

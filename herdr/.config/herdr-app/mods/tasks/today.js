@@ -4,7 +4,7 @@
 import { div } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
 import { checkbox, field, note, quietButton } from "./kit.js";
-import { taskDetails } from "./task-row.js";
+import { taskDetails, withHandOver } from "./task-row.js";
 
 export function todayView(view, t, agentPanes) {
   const day = view.day;
@@ -82,7 +82,8 @@ const spacer = () => div().w(6).flex_none();
 function row(view, t, item, at, n, agentPanes) {
   const key = item.key;
   const remove = quietButton(t, `rm-${key}`, "✕", "Remove from today", (cx) => view.remove(key, cx));
-  return rowShell(`today-${key}`)
+  const task = view.withLiveDetails(item);
+  return withHandOver(rowShell(`today-${key}`), item.done ? item : task)
     .when(!view.drag, (el) => el.hover((s) => s.bg(t.hover)))
     .on_size_change((size) => { view.heights[key] = size.height; })
     .on_mouse_move((e, cx) => view.hoverRow(at, e, cx))
@@ -94,7 +95,7 @@ function row(view, t, item, at, n, agentPanes) {
     .child(number(t, n, item.done))
     .child(checkbox(t, item.done, `check-${key}`, (cx) => view.toggle(item, cx)))
     .child(spacer())
-    .child(taskDetails(t, view.withLiveDetails(item), {
+    .child(taskDetails(t, task, {
       pane: agentPanes.get(key),
       done: item.done,
       extra: [remove],

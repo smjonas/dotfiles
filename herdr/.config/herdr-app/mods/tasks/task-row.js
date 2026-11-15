@@ -4,7 +4,7 @@
 //   reasons · MRs with their pipeline
 import { div } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
-import { run } from "herdr";
+import { openOverlay, run } from "herdr";
 import { ago, compact, isTicket, link, strongButton } from "./kit.js";
 
 /**
@@ -16,6 +16,20 @@ export function taskDetails(t, task, { pane = null, done = false, extra = [] } =
     .child(headline(t, task, { pane, done, extra }))
     .child(title(t, task, done))
     .children(compact([!done && reasonsAndMrs(t, task)]));
+}
+
+/**
+ * A right-click on a ticket that's still to do offers to hand it to a new Claude agent
+ * (the task-handover mod: a one-item menu, then its dialog).
+ */
+export function withHandOver(el, task) {
+  if (!isTicket(task.key) || task.group !== "To do") return el;
+  const { key, summary, type } = task;
+  const menu = { mod: "task-handover", kind: "popup", width: 210, height: 41 };
+  return el.on_mouse_down("right", (_e, cx) => {
+    cx.stop_propagation();
+    openOverlay({ ...menu, props: { menu: true, task: { key, summary, type } } });
+  });
 }
 
 function headline(t, task, { pane, done, extra }) {
