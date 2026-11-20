@@ -347,10 +347,14 @@ export default class Agents extends View {
       const below = [full && more ? name : null, branches.get(a.pane)].filter(Boolean).join(" \u00b7 ");
       const twoLine = Boolean(below);
       const task = more ?? (/^\d+$/.test(label(a)) ? null : label(a));
+      // The title wraps onto a second line at most; the rest is clipped (the tooltip has it all).
+      const titleText = (text) => div().min_w(0).whitespace_normal().text_size(12).line_height("15px").max_h(30).overflow_hidden()
+        .text_color(idle ? t.muted : t.foreground).child(text);
       return h_flex()
         .id(`ag-${a.address}`)
         .px(8)
-        .h(twoLine ? 42 : 30)
+        .min_h(twoLine ? 42 : 30)
+        .py(5)
         .when(Boolean(task), (el) => el.tooltip(task))
         .flex_none()
         .rounded(8)
@@ -373,10 +377,10 @@ export default class Agents extends View {
           })).child(pic)))
         .child(twoLine
           ? v_flex().flex_1().min_w(0).gap(1)
-            .child(div().min_w(0).truncate().text_color(idle ? t.muted : t.foreground).child(top))
+            .child(titleText(top))
             .child(div().min_w(0).truncate().text_size(11).text_color(t.dim).child(below))
           : h_flex().flex_1().min_w(0).items_center()
-            .child(div().min_w(0).truncate().text_color(idle ? t.muted : t.foreground).child(name)))
+            .child(titleText(name)))
         .when(Boolean(machine), el => el.child(div().text_size(10).text_color(t.dim).child(machine)))
         .when(subs.length > 0, el => el.child(fold(a, subs)))
         .when(this.hovered === a.address, el => el.child(pin))
