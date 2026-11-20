@@ -26,7 +26,24 @@ alias gp='git push'
 alias pull='git pull'
 alias co='git checkout'
 alias br='git checkout -b'
-alias gb='git checkout -b'
+# gb <branch>: switch to <branch>, creating it if needed. A branch that only exists on
+# origin is fetched first and checked out tracking origin/<branch>. Replaces gco (oh-my-zsh).
+unalias gco gb 2>/dev/null
+gb() {
+  if [ $# -ne 1 ] || [ "${1#-}" != "$1" ]; then
+    git checkout "$@"
+  elif git show-ref --verify --quiet "refs/heads/$1"; then
+    git checkout "$1"
+  else
+    git fetch --quiet origin "$1" 2>/dev/null
+    if git show-ref --verify --quiet "refs/remotes/origin/$1"; then
+      git checkout -b "$1" --track "origin/$1"
+    else
+      git checkout -b "$1"
+    fi
+  fi
+}
+(( $+functions[compdef] )) && compdef _git gb=git-checkout
 alias add='git add -A'
 alias merge='git merge'
 alias stash='git stash'
