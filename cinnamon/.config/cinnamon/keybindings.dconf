@@ -1,9 +1,16 @@
 # Cinnamon custom keyboard shortcuts. Apply with:
 #   dconf load /org/cinnamon/desktop/keybindings/ < ~/.config/cinnamon/keybindings.dconf
 [/]
-custom-list=['custom0', '__dummy__']
+custom-list=['custom0', 'custom1', '__dummy__']
+# Free up Super+S (default: show desklets) for Flameshot
+show-desklets=@as []
 
 [custom-keybindings/custom0]
 binding=['<Primary><Alt>t']
 command='herdr-app'
 name='Launch Herdr'
+
+[custom-keybindings/custom1]
+binding=['<Super>s']
+command='flameshot gui'
+name='Flameshot screenshot'
