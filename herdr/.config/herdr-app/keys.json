@@ -42,6 +42,8 @@
     "alt-[": "tab.prev",
     "ctrl-shift-pagedown": "space.next",
     "ctrl-shift-pageup": "space.prev",
+    "ctrl-shift-down": "space.next",
+    "ctrl-shift-up": "space.prev",
     "alt-down": "agent.next",
     "alt-up": "agent.prev",
     "ctrl-?": "app.help",
