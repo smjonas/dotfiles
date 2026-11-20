@@ -1,6 +1,6 @@
 import { View, div, svg, image } from "gpui-kit";
 import { h_flex, ScrollHandle } from "gpui-base";
-import { spaces, panes, run, openOverlay, theme, window, shared, layout, settings } from "herdr";
+import { spaces, panes, run, openOverlay, theme, window, shared, layout, settings, nextCommand, checking } from "herdr";
 
 function find(node, id) {
   if (node?.id === id) return node;
@@ -12,10 +12,43 @@ function find(node, id) {
 }
 
 export default class Tabs extends View {
-  init() {
+  init(_props, cx) {
     this.pressed = null;
     this.scroll = ScrollHandle.new();
     this.panels = JSON.parse(localStorage.getItem("panels") ?? "{}");
+    this.fresh = {}; // space -> the tab that replaced its closed last tab
+    if (checking()) return;
+    cx.spawn(async (cx) => {
+      for (;;) {
+        if (await nextCommand() === "close") this.close();
+        cx.notify();
+      }
+    });
+  }
+
+  // Spaces outlive their tabs: closing a space's only tab swaps it for a fresh
+  // shell there, and only closing that fresh tab asks to close the space.
+  close() {
+    const space = spaces().find(s => s.active), tab = space?.tabs.find(c => c.active);
+    if (!tab || this.replacing) return;
+    if (space.tabs.length > 1 || this.fresh[space.id] === tab.id) {
+      run("tab.close", { id: tab.id });
+      return;
+    }
+    this.replacing = { space: space.id, old: tab.id, until: Date.now() + 3000 };
+    run("tab.new", { space: space.id });
+  }
+
+  // The new tab shows up in spaces() a moment after tab.new: close the old one then.
+  finishReplacing() {
+    const r = this.replacing;
+    if (!r) return;
+    const made = spaces().find(s => s.id === r.space)?.tabs.find(c => c.id !== r.old);
+    if (made) {
+      this.fresh[r.space] = made.id;
+      run("tab.close", { id: r.old });
+    }
+    if (made || Date.now() > r.until) this.replacing = null;
   }
 
   // The side panel is remembered per space: switching shows that space's choice
@@ -47,6 +80,7 @@ export default class Tabs extends View {
   }
 
   render() {
+    this.finishReplacing();
     const t = theme();
     const space = spaces().find(p => p.active);
     const shown = space?.tabs ?? [];

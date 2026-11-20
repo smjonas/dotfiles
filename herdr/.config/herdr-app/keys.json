@@ -52,7 +52,7 @@
     "ctrl-shift-b": "layout.toggle:sidebar",
     "ctrl-shift-n": "space.new",
     "ctrl-shift-t": "tab.new",
-    "ctrl-shift-q": "tab.close",
+    "ctrl-shift-q": "my-tabs.close",
     "ctrl-shift-k": "mod.open:picker",
     "ctrl-shift-p": "app.palette",
     "ctrl-,": "app.settings",
