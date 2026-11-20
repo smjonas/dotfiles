@@ -4,6 +4,10 @@
 !/keys.json
 !/settings.json
 
+!/themes/
+/themes/*
+!/themes/tokyonight-moon.json
+
 !/layouts/
 /layouts/*
 !/layouts/jonas.json

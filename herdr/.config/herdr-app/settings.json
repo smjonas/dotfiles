@@ -10,5 +10,6 @@
   "terminal_scroll_speed": 1.0,
   "minimum_contrast": 1.0,
   "appearance": "dark",
-  "font_weight": 400
+  "font_weight": 400,
+  "theme": "tokyonight-moon"
 }
