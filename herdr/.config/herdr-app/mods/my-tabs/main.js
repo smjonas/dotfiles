@@ -99,7 +99,19 @@ export default class Tabs extends View {
           else { run("layout.select", { stack: "panel-body", child: id }); run("layout.show", { id: "panel" }); }
         }).child(svg(icon).size(14)).child(label);
     };
-    return h_flex().size_full().min_w(0).px(10).pl(lightsPadding).gap(3).items_center().bg(t.chrome).border_b(1).border_color(t.border)
+    // Window buttons: the visible chip stays small, but each one's hit area spans
+    // the bar's full height and the last reaches the window's right edge, so
+    // flinging the pointer into the top-right corner lands on close.
+    const windowButton = (id, icon, action, last) => {
+      const hot = this.hovered === id;
+      return h_flex().id(id).h_full().flex_none().items_center().pl(1.5).pr(last ? 10 : 1.5)
+        .on_hover((on, cx) => { if (on) this.hovered = id; else if (this.hovered === id) this.hovered = null; cx.notify(); })
+        .on_mouse_down("left", stop).on_click(action)
+        .child(div().size(26).flex().items_center().justify_center().rounded(6)
+          .text_color(hot ? t.foreground : t.dim).when(hot, el => el.bg(t.hover))
+          .child(svg(`mods/my-tabs/${icon}.svg`).size(16)));
+    };
+    return h_flex().size_full().min_w(0).px(10).pl(lightsPadding).pr(w?.buttons ? 0 : 10).gap(3).items_center().bg(t.chrome).border_b(1).border_color(t.border)
       .on_mouse_up("left", () => { this.pressed = null; })
       .on_scroll_wheel(e => { if (Math.abs(e.delta.y) >= 1) run(e.delta.y > 0 ? "tab.prev" : "tab.next"); })
       .child(h_flex().id("tab-scroll").flex_1().min_w(0).h_full().items_center().gap(3).overflow_x_scrollbar().track_scroll(this.scroll)
@@ -109,8 +121,9 @@ export default class Tabs extends View {
       .when(enabled.includes("files"), el => el.child(panelButton("files", "Files", "mods/files/file.svg")))
       .when(enabled.includes("changes"), el => el.child(panelButton("changes", "Changes", "mods/changes/changes.svg")))
       .child(panelButton("tasks", "Tasks", "mods/tasks/tasks.svg"))
-      .when(w?.buttons, el => el.child(button("minimize", w.platform === "windows" ? svg("mods/tabs/win-min.svg").size(16) : "−", () => run("window.minimize")))
-        .child(button("maximize", w.platform === "windows" ? svg(`mods/tabs/${w.maximized ? "win-restore" : "win-max"}.svg`).size(16) : "□", () => run("window.maximize")))
-        .child(button("close-window", w.platform === "windows" ? svg("mods/tabs/win-close.svg").size(16) : svg("mods/pane/close.svg").size(13), () => run("window.close"))));
+      .when(w?.buttons, el => el.child(h_flex().h_full().flex_none()
+        .child(windowButton("minimize", "win-min", () => run("window.minimize")))
+        .child(windowButton("maximize", w.maximized ? "win-restore" : "win-max", () => run("window.maximize")))
+        .child(windowButton("close-window", "win-close", () => run("window.close"), true))));
   }
 }
