@@ -11,6 +11,7 @@
 !/mods/
 /mods/*
 !/mods/claude-usage/
+!/mods/my-agents/
 !/mods/my-tabs/
 !/mods/task-handover/
 !/mods/tasks/
