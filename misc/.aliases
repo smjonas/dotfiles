@@ -24,8 +24,6 @@ alias g='git'
 alias gs='git status'
 alias gp='git push'
 alias pull='git pull'
-alias co='git checkout'
-alias br='git checkout -b'
 # gb <branch>: switch to <branch>, creating it if needed. A branch that only exists on
 # origin is fetched first and checked out tracking origin/<branch>. Replaces gco (oh-my-zsh).
 unalias gco gb 2>/dev/null
