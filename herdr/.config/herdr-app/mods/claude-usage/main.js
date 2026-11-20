@@ -1,17 +1,76 @@
 // Claude plan usage (5h session + weekly) for the status bar.
 // Reads Claude Code's OAuth token from ~/.claude/.credentials.json and polls
-// the same endpoint `/usage` in Claude Code uses. Claude Code refreshes the
-// token itself; we re-read the file on every poll and never refresh it here.
+// the same endpoint `/usage` in Claude Code uses. When the access token is
+// (nearly) expired we refresh it the way Claude Code does and write the new
+// tokens back, like a second Claude Code instance would: refresh tokens rotate,
+// so the file must hold the new one or Claude Code's next refresh would fail.
+// Running Claude Code sessions re-read the file when their token goes stale.
 import { View, div } from "gpui-kit";
 import { h_flex } from "gpui-base";
-import { theme, home, readTextFile } from "herdr";
+import { theme, home, readTextFile, writeTextFile, exec, checking } from "herdr";
 
 const URL = "https://api.anthropic.com/api/oauth/usage";
+const TOKEN_URL = "https://platform.claude.com/v1/oauth/token";
+const CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e"; // Claude Code's
+const REFRESH_MARGIN_MS = 5 * 60 * 1000;
 // The endpoint is undocumented and known to answer 429 when polled often
 // (Claude Code sessions poll it too, sharing the same limit). herdr's fetch
 // exposes no headers, so retry-after can't be read: back off exponentially.
 const POLL_MS = 5 * 60 * 1000;
 const MAX_BACKOFF_MS = 60 * 60 * 1000;
+
+const credPath = () => `${home()}/.claude/.credentials.json`;
+
+// Exchanges the refresh token and saves the result back into the credentials file.
+async function refreshToken(raw) {
+  const oauth = JSON.parse(raw).claudeAiOauth;
+  if (!oauth?.refreshToken) throw new Error("token expired, no refresh token (run claude)");
+  const res = await fetch(TOKEN_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      grant_type: "refresh_token",
+      refresh_token: oauth.refreshToken,
+      client_id: CLIENT_ID,
+      scope: (oauth.scopes ?? []).join(" "),
+    }),
+  });
+  if (!res.ok) throw new Error(`token refresh failed: HTTP ${res.status} (run claude)`);
+  const t = await res.json();
+  const fresh = {
+    accessToken: t.access_token,
+    refreshToken: t.refresh_token ?? oauth.refreshToken,
+    expiresAt: Date.now() + t.expires_in * 1000,
+    ...(t.refresh_token_expires_in ? { refreshTokenExpiresAt: Date.now() + t.refresh_token_expires_in * 1000 } : {}),
+    ...(t.scope ? { scopes: t.scope.split(" ") } : {}),
+  };
+  // The old refresh token is now spent, so the new one must reach the file.
+  // Retry on a stale snapshot, merging into whatever is there now, unless
+  // Claude Code refreshed in the meantime (its refresh token differs from ours).
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const cur = attempt === 0 ? raw : await readTextFile(credPath());
+    const c = JSON.parse(cur);
+    if (attempt > 0 && c.claudeAiOauth?.refreshToken !== oauth.refreshToken) break;
+    c.claudeAiOauth = { ...c.claudeAiOauth, ...fresh };
+    try {
+      await writeTextFile(credPath(), JSON.stringify(c), cur);
+      await exec("chmod", ["600", credPath()]);
+      break;
+    } catch {}
+  }
+  return t.access_token;
+}
+
+async function accessToken({ force = false } = {}) {
+  const raw = await readTextFile(credPath());
+  const oauth = raw && JSON.parse(raw).claudeAiOauth;
+  if (!oauth?.accessToken) throw new Error("not logged in");
+  if (force || (oauth.expiresAt && oauth.expiresAt - REFRESH_MARGIN_MS < Date.now())) {
+    if (checking()) throw new Error("token expired");
+    return refreshToken(raw);
+  }
+  return oauth.accessToken;
+}
 
 function fmtLeft(iso) {
   if (!iso) return "";
@@ -61,17 +120,16 @@ export default class ClaudeUsage extends View {
     this.loading = true;
     cx.spawn(async (cx) => {
       try {
-        const raw = await readTextFile(`${home()}/.claude/.credentials.json`);
-        const oauth = raw && JSON.parse(raw).claudeAiOauth;
-        if (!oauth?.accessToken) throw new Error("not logged in");
-        if (oauth.expiresAt && oauth.expiresAt < Date.now()) throw new Error("token expired (run claude)");
-        const res = await fetch(URL, {
+        const get = (token) => fetch(URL, {
           headers: {
-            Authorization: `Bearer ${oauth.accessToken}`,
+            Authorization: `Bearer ${token}`,
             "anthropic-beta": "oauth-2025-04-20",
             "Content-Type": "application/json",
           },
         });
+        let res = await get(await accessToken());
+        // Revoked or expired early despite expiresAt: refresh once and retry.
+        if (res.status === 401) res = await get(await accessToken({ force: true }));
         if (res.status === 429) {
           this.delay = Math.min(this.delay * 2, MAX_BACKOFF_MS);
           throw new Error(`rate limited, retry in ${Math.round(this.delay / 60000)}m`);
