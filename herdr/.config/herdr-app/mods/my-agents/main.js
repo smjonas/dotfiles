@@ -1,7 +1,7 @@
 // Agents in grouped or priority views; parents take their most urgent sub-agent's place.
 // Cloned from Herdr's `agents` 0.1.16. Changed: where a row names its space (priority view,
-// pinned) it takes two lines, the agent's task on top and the space below, instead of
-// squeezing the task behind the space name; a row's tooltip is its full task.
+// pinned) the agent's task is on top and the space below it, instead of squeezing the
+// task behind the space name; the second line also shows the agent's git branch; a row's tooltip is its full task.
 
 import { View, div, image, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
@@ -283,7 +283,9 @@ export default class Agents extends View {
     // agent's own title, never an automatic tab number unless two rows would
     // otherwise read the same.
     // Read the pane snapshot once: every host read copies the whole list into JS.
-    const leads = leadPanes(panes());
+    const paneList = panes();
+    const leads = leadPanes(paneList);
+    const branches = new Map(paneList.map((p) => [p.pane, p.branch]));
     const tabs = new Map(spaces().flatMap(s => s.tabs).map(tab => [tab.id, tab]));
     const labels = new Map(list.map(a => {
       const tab = tabs.get(a.tab);
@@ -340,8 +342,10 @@ export default class Agents extends View {
       // Without a space header above (priority, pinned) the row names its space.
       const full = byPriority || isPinned;
       const name = full ? a.space_name || label(a) : more ?? (/^\d+$/.test(label(a)) ? a.program?.name || label(a) : label(a));
-      // Two lines when there is a task to show next to the space: the task leads.
-      const twoLine = full && Boolean(more);
+      // The task leads; below it the space (where the task took its place) and the branch.
+      const top = full && more ? more : name;
+      const below = [full && more ? name : null, branches.get(a.pane)].filter(Boolean).join(" \u00b7 ");
+      const twoLine = Boolean(below);
       const task = more ?? (/^\d+$/.test(label(a)) ? null : label(a));
       return h_flex()
         .id(`ag-${a.address}`)
@@ -369,8 +373,8 @@ export default class Agents extends View {
           })).child(pic)))
         .child(twoLine
           ? v_flex().flex_1().min_w(0).gap(1)
-            .child(div().min_w(0).truncate().text_color(idle ? t.muted : t.foreground).child(more))
-            .child(div().min_w(0).truncate().text_size(11).text_color(t.dim).child(name))
+            .child(div().min_w(0).truncate().text_color(idle ? t.muted : t.foreground).child(top))
+            .child(div().min_w(0).truncate().text_size(11).text_color(t.dim).child(below))
           : h_flex().flex_1().min_w(0).items_center()
             .child(div().min_w(0).truncate().text_color(idle ? t.muted : t.foreground).child(name)))
         .when(Boolean(machine), el => el.child(div().text_size(10).text_color(t.dim).child(machine)))
