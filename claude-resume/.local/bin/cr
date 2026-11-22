@@ -32,7 +32,7 @@ ROOTS = [Path(os.path.expanduser(p)) for p in
 CACHE = Path(os.environ.get("XDG_CACHE_HOME", HOME / ".cache")) / "claude-resume"
 INDEX = CACHE / "index.json"
 TEXT = CACHE / "text"
-INDEX_VERSION = 1
+INDEX_VERSION = 2
 SELF = os.path.realpath(__file__)
 
 # ---------------------------------------------------------------------------- colors
@@ -63,7 +63,8 @@ def prompt_text(msg):
         content = " ".join(p for p in parts if p)
     if not isinstance(content, str) or not content.strip():
         return None
-    content = content.strip()
+    # text pasted into the prompt is wrapped in these tags; a prompt can be nothing but a paste
+    content = re.sub(r"</?pasted_content\b[^>]*>", "", content).strip()
     if content.startswith("<command-name>"):
         name = re.search(r"<command-name>(.*?)</command-name>", content)
         args = re.search(r"<command-args>(.*?)</command-args>", content, re.S)
