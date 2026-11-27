@@ -12,7 +12,7 @@ local M = {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
   dependencies = {
-    "nvim-treesitter/nvim-treesitter-textobjects",
+    { "nvim-treesitter/nvim-treesitter-textobjects", branch = "main" },
     {
       "nvim-treesitter/nvim-treesitter-context",
       config = { max_lines = 1 },
@@ -29,50 +29,22 @@ M.init = function()
 end
 
 M.config = function()
-  require("nvim-treesitter").setup {
-    ignore_install = { "latex" }, -- VimTex handles this instead
-    sync_install = true,
-    auto_install = true,
-    highlight = {
-      enable = true,
-    },
-    indent = {
-      enable = false,
-    },
-    context_commentstring = {
-      enable = true,
-    },
-    textobjects = {
-      select = {
-        enable = true,
-      },
-      move = {
-        enable = true,
-        set_jumps = true,
-        goto_previous_start = {
-          ["[["] = "@function.outer",
-        },
-        goto_next_start = {
-          ["]]"] = "@function.outer",
-        },
-      },
-    },
-    incremental_selection = {
-      enable = true,
-      keymaps = {
-        init_selection = "<c-space>",
-        node_incremental = "<c-space>",
-        scope_incremental = "<c-s>",
-        node_decremental = "<leader><space>",
-      },
-    },
-    include_surrounding_whitespace = true,
-    query_linter = {
-      enable = true,
-      use_virtual_text = true,
-      lint_events = { "BufWrite", "CursorHold" },
-    },
+  -- nvim-treesitter `main` branch: highlighting is started via the FileType
+  -- autocmd in M.init; the old `configs` module options no longer exist.
+  require("nvim-treesitter").setup {}
+
+  require("nvim-treesitter-textobjects").setup {
+    select = { include_surrounding_whitespace = true },
+    move = { set_jumps = true },
   }
+
+  local move = require "nvim-treesitter-textobjects.move"
+  vim.keymap.set({ "n", "x", "o" }, "]]", function()
+    move.goto_next_start("@function.outer", "textobjects")
+  end, { desc = "Next function start" })
+  vim.keymap.set({ "n", "x", "o" }, "[[", function()
+    move.goto_previous_start("@function.outer", "textobjects")
+  end, { desc = "Previous function start" })
 end
 
 return M
