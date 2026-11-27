@@ -1,7 +1,7 @@
 // Agents in grouped or priority views; parents take their most urgent sub-agent's place.
 // Cloned from Herdr's `agents` 0.1.16. Changed: where a row names its space (priority view,
 // pinned) the agent's task is on top and the space below it, instead of squeezing the
-// task behind the space name; the second line also shows the agent's git branch; a row's tooltip is its full task.
+// task behind the space name; the second line also shows the agent's repo and git branch; a row's tooltip is its full task.
 
 import { View, div, image, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
@@ -14,6 +14,24 @@ function find(node, id) {
     if (found) return found;
   }
   return null;
+}
+
+// A repo as it's called day to day: the folder right under ~/Desktop/NeoCargo (so a worktree
+// in <repo>/.claude/worktrees/<key> is its repo), else the folder's own name; null outside a folder.
+const REPO_NAMES = {
+  "consignment-service": "NeoBase",
+  "neomatch-service": "NeoMatch",
+  "matcher-service": "Matcher",
+  "timocom-addon": "TCC",
+  "neoup-addon": "NeoUp",
+};
+function repoOf(cwd) {
+  if (!cwd) return null;
+  const parts = cwd.replace(/\/+$/, "").split("/");
+  const at = parts.indexOf("NeoCargo");
+  const dir = at >= 0 && parts[at - 1] === "Desktop" ? parts[at + 1] : parts[parts.length - 1];
+  if (!dir) return null;
+  return REPO_NAMES[dir] ?? dir;
 }
 
 // The sidebar's rail goes by its width, not a flag: dragging its edge narrows it too.
@@ -286,6 +304,7 @@ export default class Agents extends View {
     const paneList = panes();
     const leads = leadPanes(paneList);
     const branches = new Map(paneList.map((p) => [p.pane, p.branch]));
+    const repos = new Map(paneList.map((p) => [p.pane, repoOf(p.cwd)]));
     const tabs = new Map(spaces().flatMap(s => s.tabs).map(tab => [tab.id, tab]));
     const labels = new Map(list.map(a => {
       const tab = tabs.get(a.tab);
@@ -342,9 +361,12 @@ export default class Agents extends View {
       // Without a space header above (priority, pinned) the row names its space.
       const full = byPriority || isPinned;
       const name = full ? a.space_name || label(a) : more ?? (/^\d+$/.test(label(a)) ? a.program?.name || label(a) : label(a));
-      // The task leads; below it the space (where the task took its place) and the branch.
+      // The task leads; below it the space (where the task took its place), the repo it's in
+      // (spaces are kinds of work, not repos) and the branch.
       const top = full && more ? more : name;
-      const below = [full && more ? name : null, branches.get(a.pane)].filter(Boolean).join(" \u00b7 ");
+      const repo = repos.get(a.pane);
+      const shownRepo = repo && repo.toLowerCase() !== (a.space_name ?? "").toLowerCase() ? repo : null;
+      const below = [full && more ? name : null, shownRepo, branches.get(a.pane)].filter(Boolean).join(" \u00b7 ");
       const twoLine = Boolean(below);
       const task = more ?? (/^\d+$/.test(label(a)) ? null : label(a));
       // The title wraps onto a second line at most; the rest is clipped (the tooltip has it all).
