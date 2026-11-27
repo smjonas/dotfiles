@@ -221,8 +221,8 @@ export default class Handover extends View {
       try {
         const folder = await prepareCheckout(project, task.key, this.states.get(project));
         closeOverlay(overlay);
-        // Into the Tickets space (my-spaces keeps it), whichever space is shown now.
-        const tickets = spaces().find((s) => !s.machine && s.name.toLowerCase() === "tickets");
+        // Into the Development space (my-spaces keeps it), whichever space is shown now.
+        const tickets = spaces().find((s) => !s.machine && s.name.toLowerCase() === "development");
         run("tab.new", { name: task.key, folder, argv: AGENT, task: this.message.value().trim(), ...(tickets ? { space: tickets.id } : {}) });
       } catch (e) {
         this.error = String(e?.message ?? e);

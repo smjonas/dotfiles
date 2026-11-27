@@ -18,7 +18,7 @@ const NO_REPO = new Set(["NeoBase", "NeoMatch", "Matcher"]);
 // adopted. my-tabs never lets them close and starts their new tabs in `folder` (relative to
 // home). Their row shows no repo or branch: their terminals are anywhere.
 const FIXED = [
-  { name: "Tickets", folder: "Desktop/NeoCargo", color: "ansi4" },
+  { name: "Development", folder: "Desktop/NeoCargo", color: "ansi4" },
   { name: "Support", folder: "Desktop/NeoCargo", color: "ansi1" },
   { name: "Reviews", folder: "Desktop/NeoCargo", color: "ansi5" },
   { name: "Random", folder: "", color: "ansi3" },
