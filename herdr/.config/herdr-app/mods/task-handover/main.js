@@ -9,7 +9,7 @@
 // work on one project at once. The dialog makes the worktree before it starts the agent.
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, Input, InputState, Textarea, TextareaState } from "gpui-base";
-import { closeOverlay, exec, home, openOverlay, props, readTextFile, run, theme, writeTextFile } from "herdr";
+import { closeOverlay, exec, home, openOverlay, props, readTextFile, run, spaces, theme, writeTextFile } from "herdr";
 
 const MOD = "task-handover";
 const AGENT = ["claude-neocargo"];
@@ -221,7 +221,9 @@ export default class Handover extends View {
       try {
         const folder = await prepareCheckout(project, task.key, this.states.get(project));
         closeOverlay(overlay);
-        run("tab.new", { name: task.key, folder, argv: AGENT, task: this.message.value().trim() });
+        // Into the Tickets space (my-spaces keeps it), whichever space is shown now.
+        const tickets = spaces().find((s) => !s.machine && s.name.toLowerCase() === "tickets");
+        run("tab.new", { name: task.key, folder, argv: AGENT, task: this.message.value().trim(), ...(tickets ? { space: tickets.id } : {}) });
       } catch (e) {
         this.error = String(e?.message ?? e);
         this.starting = false;

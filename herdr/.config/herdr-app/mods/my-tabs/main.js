@@ -11,6 +11,29 @@ function find(node, id) {
   return null;
 }
 
+// my-spaces' fixed spaces ({name, folder}) that `space` is one of, or null.
+function fixedOf(space) {
+  if (!space || space.machine) return null;
+  return (shared("spaces.fixed") ?? []).find(f => f.name.toLowerCase() === space.name.toLowerCase()) ?? null;
+}
+
+// Drops what an agent puts before its title (a status glyph or spinner), as my-agents does.
+const clean = (s) => (s ?? "").replace(/^[^\p{L}\p{N}\p{Ps}\p{Pi}]+/u, "").replace(/^\[ [!.] \] /, "").trim();
+const base = (path) => (path ?? "").replace(/\/+$/, "").split("/").pop();
+
+// An unnamed tab's label: its agent's title (Claude's session title), else the folder its
+// terminal is in, else the program. A named tab (F2, or the handover's ticket key) keeps its name.
+function label(tab) {
+  if (tab.named) return tab.name;
+  const own = panes().filter(p => p.tab === tab.id && p.terminal);
+  const lead = own.find(p => p.program?.agent) ?? own.find(p => p.focused) ?? own[0];
+  if (!lead) return tab.name;
+  const title = clean(lead.title);
+  const telling = lead.program?.agent && title && title !== lead.program.name && !/^[~/]/.test(title) && !title.includes("@");
+  if (telling) return title;
+  return base(lead.cwd) || lead.program?.name || tab.name;
+}
+
 export default class Tabs extends View {
   init(_props, cx) {
     this.pressed = null;
@@ -20,23 +43,40 @@ export default class Tabs extends View {
     if (checking()) return;
     cx.spawn(async (cx) => {
       for (;;) {
-        if (await nextCommand() === "close") this.close();
+        const command = await nextCommand();
+        if (command === "close") this.close();
+        else if (command === "new") this.open();
         cx.notify();
       }
     });
   }
 
+  // A new tab in the shown space. A fixed space's tabs start in its own folder, not in
+  // wherever its focused terminal has cd'd to, so the space doesn't drift.
+  open() {
+    const space = spaces().find(s => s.active), fixed = fixedOf(space);
+    run("tab.new", fixed ? { space: space.id, folder: fixed.folder } : {});
+  }
+
   // Spaces outlive their tabs: closing a space's only tab swaps it for a fresh
-  // shell there, and only closing that fresh tab asks to close the space.
-  close() {
-    const space = spaces().find(s => s.active), tab = space?.tabs.find(c => c.active);
+  // shell there, and only closing that fresh tab asks to close the space. A fixed
+  // space never closes: its last fresh shell just stays.
+  // `id`: the tab to close (default: the shown one).
+  close(id) {
+    const space = id ? spaces().find(s => s.tabs.some(c => c.id === id)) : spaces().find(s => s.active);
+    const tab = space?.tabs.find(c => (id ? c.id === id : c.active));
     if (!tab || this.replacing) return;
-    if (space.tabs.length > 1 || this.fresh[space.id] === tab.id) {
+    const fixed = fixedOf(space);
+    if (space.tabs.length > 1) {
       run("tab.close", { id: tab.id });
       return;
     }
+    if (this.fresh[space.id] === tab.id) {
+      if (!fixed) run("tab.close", { id: tab.id });
+      return;
+    }
     this.replacing = { space: space.id, old: tab.id, until: Date.now() + 3000 };
-    run("tab.new", { space: space.id });
+    run("tab.new", fixed ? { space: space.id, folder: fixed.folder } : { space: space.id });
   }
 
   // The new tab shows up in spaces() a moment after tab.new: close the old one then.
@@ -96,7 +136,7 @@ export default class Tabs extends View {
       .on_mouse_down("left", stop).on_click(action).child(label);
     const item = (c, i) => {
       const program = panes().find(p => p.tab === c.id && p.program?.agent)?.program ?? panes().find(p => p.tab === c.id)?.program;
-      const name = /^tb\d+$/.test(c.name) ? program?.name ?? "Terminal" : c.name;
+      const name = label(c);
       return h_flex().id(`tab-${c.id}`).h(29).px(10).gap(7).rounded(7).items_center().flex_none().text_size(12.8)
         // A rename or status dot on this or an earlier tab can push the active one out.
         .when(i <= active, el => el.on_size_change((_size, cx) => { this.scroll.scroll_to_item(active); cx.notify(); }))
@@ -113,7 +153,7 @@ export default class Tabs extends View {
         .child(div().max_w(170).truncate().child(c.zoomed ? `${name} Z` : name))
         .when(c.status === "working", el => el.child(svg("mods/workspace-chrome/spinner.svg").size(12).flex_none().text_color(t.working).spin(900)))
         .when(c.status === "blocked" || c.status === "done", el => el.child(div().size(6).rounded(3).bg(t[c.status])))
-        .when(c.active, el => el.child(div().id(`close-${c.id}`).text_color(t.dim).on_mouse_down("left", stop).on_click((_e, cx) => { cx.stop_propagation(); run("tab.close", { id: c.id }); }).child(svg("mods/pane/close.svg").size(12))));
+        .when(c.active, el => el.child(div().id(`close-${c.id}`).text_color(t.dim).on_mouse_down("left", stop).on_click((_e, cx) => { cx.stop_propagation(); this.close(c.id); }).child(svg("mods/pane/close.svg").size(12))));
     };
     const root = layout(), sidebar = find(root, "sidebar"), w = window();
     // Old saved rails and a dragged-narrow sidebar can be smaller than the window buttons.

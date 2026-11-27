@@ -2,14 +2,32 @@
 // grouped by machine when more than one is known. After a space's name, the repo
 // its first terminal is in now, only where unusual: branch, ahead/behind. Agent state lives in the agents list, not here. Click to
 // switch, right-click for its menu, drag to reorder.
-// Cloned from Herdr's `spaces` 0.1.16. Changed: the spaces in NO_REPO don't show their repo's name.
+// Cloned from Herdr's `spaces` 0.1.16. Changed: the spaces in NO_REPO don't show their repo's name,
+// and the FIXED spaces always exist, come first and keep their color.
 
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, ScrollHandle } from "gpui-base";
-import { spaces, machines, panes, run, openOverlay, exec, hc, theme, shared, setShared, watchFolder, window, layout } from "herdr";
+import { spaces, machines, panes, run, openOverlay, exec, hc, theme, shared, setShared, watchFolder, window, layout, home, checking } from "herdr";
 
 // Spaces whose name already says which repo they are in.
 const NO_REPO = new Set(["NeoBase", "NeoMatch", "Matcher"]);
+
+// The fixed spaces, one per kind of work (tabs are the cases in it: a ticket, a customer, an MR).
+// On every start, a missing one is made (in the background) and all of them move to the top in
+// this order, so alt-1.. always reach the same space. A space of the same name (any case) is
+// adopted. my-tabs never lets them close and starts their new tabs in `folder` (relative to
+// home). Their row shows no repo or branch: their terminals are anywhere.
+const FIXED = [
+  { name: "Tickets", folder: "Desktop/NeoCargo", color: "ansi4" },
+  { name: "Support", folder: "Desktop/NeoCargo", color: "ansi1" },
+  { name: "Reviews", folder: "Desktop/NeoCargo", color: "ansi5" },
+  { name: "Random", folder: "", color: "ansi3" },
+  { name: "Dotfiles", folder: "dotfiles", color: "ansi2" },
+];
+const fixedFolder = (f) => (f.folder ? `${home()}/${f.folder}` : home());
+const fixedOf = (s) => (s.machine ? null : FIXED.find((f) => f.name.toLowerCase() === s.name.toLowerCase()) ?? null);
+// A space.new that hasn't shown up in spaces() by then is asked for again.
+const FIXED_RETRY_MS = 10000;
 
 function find(node, id) {
   if (node?.id === id) return node;
@@ -91,10 +109,42 @@ export default class Spaces extends View {
       for (const state of Object.values(this.reconnecting)) state.busy = false;
     } catch { this.reconnecting = {}; }
     try { this.folded = new Set(JSON.parse(localStorage.getItem("machines.folded") ?? "[]")); } catch { this.folded = new Set(); }
+    this.fixedAsked = {}; // fixed space name -> when space.new was run for it
+    this.fixedDone = false;
+    setShared("spaces.fixed", FIXED.map((f) => ({ name: f.name, folder: fixedFolder(f) })));
+    if (!checking()) cx.timer.every(1000, () => this.ensureFixed());
     this.refreshMachines(cx);
     cx.timer.every(15000, cx => this.refreshMachines(cx));
     // Refresh only when the refs could have changed (see `due`).
     cx.timer.every(250, (cx) => this.checkNew(cx));
+  }
+
+  // Makes the missing fixed spaces, names adopted ones exactly, then (once per start) puts them
+  // first. Never closes anything. Waits for this computer's layout: structural commands fail before.
+  ensureFixed() {
+    if (this.fixedDone) return;
+    if (machines().find((m) => m.name === null)?.layout !== "ready") return;
+    const now = Date.now();
+    const mine = spaces().filter((s) => !s.machine);
+    const find = (f) => mine.find((s) => s.name.toLowerCase() === f.name.toLowerCase());
+    let missing = false;
+    for (const f of FIXED) {
+      const s = find(f);
+      if (s) {
+        if (s.name !== f.name || !s.named) run("space.rename", { id: s.id, name: f.name });
+        continue;
+      }
+      missing = true;
+      if (now - (this.fixedAsked[f.name] ?? 0) < FIXED_RETRY_MS) continue;
+      this.fixedAsked[f.name] = now;
+      run("space.new", { name: f.name, folder: fixedFolder(f), focus: false });
+    }
+    if (missing) return;
+    FIXED.forEach((f, i) => {
+      const s = find(f);
+      if (s.index !== i + 1) run("space.move", { id: s.id, index: i + 1 });
+    });
+    this.fixedDone = true;
   }
 
   checkNew(cx) {
@@ -498,7 +548,7 @@ export default class Spaces extends View {
           .when(Boolean(tree), el => el.pl(22).child(svg("mods/workspace-chrome/branch.svg").size(13).flex_none().text_color(t.dim)))
           .when(!tree, el => el.child(h_flex().size(18).flex_none().rounded(5).bg(fill).items_center().justify_center().text_size(10.5).font_bold().text_color("#ffffff").child([...w.name][0]?.toUpperCase() ?? "?")))
           .child(div().flex_initial().min_w(SIDE_MIN).truncate().text_color(t.foreground).child(w.name))
-          .child(g ? this.gitTail(g, tree, w.name, t) : div().flex_1()),
+          .child(g && !fixedOf(w) ? this.gitTail(g, tree, w.name, t) : div().flex_1()),
       );
   }
 
@@ -527,6 +577,12 @@ export default class Spaces extends View {
     const kept = Object.fromEntries(Object.entries(shared("space.colors") ?? {}).filter(([id]) => ids.has(id)));
     let changed = Object.keys(kept).length !== Object.keys(shared("space.colors") ?? {}).length;
     for (const p of sp) {
+      const fixed = fixedOf(p);
+      if (fixed && kept[p.id] !== fixed.color) {
+        kept[p.id] = fixed.color;
+        changed = true;
+        continue;
+      }
       if (kept[p.id] || p.name === "~") continue;
       const uses = c => Object.values(kept).filter(v => v === c).length;
       kept[p.id] = palette.reduce((best, c) => uses(c) < uses(best) ? c : best);
